@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="xposed_scope">
+        <item>android</item>
+        <item>com.miui.powerkeeper</item>
+        <item>cn.myflv.noactive</item>
+    </string-array>
+
+
+    <string-array name="app_filter">
+        <item>用户应用</item>
+        <item>系统应用</item>
+        <item>所有应用</item>
+    </string-array>
+
+
+    <string-array name="process_op">
+        <item>冻结</item>
+        <item>杀死</item>
+        <item>白名单</item>
+    </string-array>
+</resources>

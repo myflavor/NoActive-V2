@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="28dp">
+
+    <EditText
+        android:id="@+id/search_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:background="@drawable/rounded_editview"
+        android:ems="10"
+        android:hint="@string/search"
+        android:inputType="textFilter"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/app_scope"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:entries="@array/app_filter"
+        android:textAlignment="textStart"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:popupBackground="@drawable/shape_for_custom_spinner"
+        app:layout_constraintTop_toBottomOf="@id/search_txt" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

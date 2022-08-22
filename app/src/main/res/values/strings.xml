@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">NoActive</string>
+    <string name="app_description">Let app no active in background</string>
+    <string name="package_name">cn.myflv.noactive</string>
+    <string name="search">搜索</string>
+    <string name="app_info">应用详情</string>
+    <string name="white_app">白名单</string>
+    <string name="black_app">黑名单</string>
+</resources>

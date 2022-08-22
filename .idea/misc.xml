@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-v24/gray_thumb.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-v24/my_thumb.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-v24/shape_for_custom_spinner.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-xhdpi/rounded_textview.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-xhdpi/textview_black.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-xhdpi/textview_white.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable/rounded_editview.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/activity_app_bar.xml" value="0.15989583333333332" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/activity_app_description.xml" value="0.2504528985507246" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/activity_app_info.xml" value="0.2504528985507246" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/activity_app_list.xml" value="0.1453125" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/activity_filter.xml" value="0.15989583333333332" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/app_item.xml" value="0.5" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/process_item.xml" value="0.2504528985507246" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/shape_for_custom_spinner.xml" value="0.15989583333333332" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/spinner_border.xml" value="0.15989583333333332" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/spinner_item.xml" value="0.1453125" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/spinner_layout.xml" value="0.15989583333333332" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/mipmap-anydpi-v26/ic_logo.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/mipmap-anydpi-v26/ic_logo_round.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/abc_ic_ab_back_material.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/abc_ic_menu_overflow_material.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/dialog_background.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/dialog_background_night.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/editview_background.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/ic_click_check.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/ic_main_bg.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/ic_main_down_bg.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/ic_popup_select.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/ic_right_arrow.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/ic_up_down.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/l_button_background.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/l_button_background_disable.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/l_button_background_no_pressed.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/l_button_background_pressed.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/loading_background.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/miui_rounded_corners_pop.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/r_button_background.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/r_button_background_disable.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/r_button_background_no_pressed.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/r_button_background_pressed.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/seekbar_progress_drawable.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/switch_thumb.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/blockmiui/src/main/res/drawable/switch_track.xml" value="0.169" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
