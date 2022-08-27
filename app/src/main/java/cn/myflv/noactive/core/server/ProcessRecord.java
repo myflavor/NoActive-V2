@@ -14,6 +14,7 @@ public class ProcessRecord {
     private final int userId;
     private final ApplicationInfo applicationInfo;
     private Object processRecord;
+    private final String packageName;
 
 
     public ProcessRecord(Object processRecord) {
@@ -27,6 +28,7 @@ public class ProcessRecord {
         this.processName = (String) XposedHelpers.getObjectField(processRecord, FieldEnum.processName);
         this.userId = XposedHelpers.getIntField(processRecord, FieldEnum.userId);
         this.applicationInfo = new ApplicationInfo(XposedHelpers.getObjectField(processRecord, FieldEnum.info));
+        this.packageName = applicationInfo.getPackageName();
     }
 
     public void setCurAdj(int curAdj) {
@@ -35,6 +37,10 @@ public class ProcessRecord {
 
     public boolean isSandboxProcess() {
         return uid >= 99000;
+    }
+
+    public boolean isMainProcess() {
+        return processName.equals(packageName);
     }
 
 }

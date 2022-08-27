@@ -2,12 +2,13 @@ package cn.myflv.noactive.core.app;
 
 import cn.myflv.noactive.core.entity.MemData;
 import cn.myflv.noactive.core.hook.ANRHook;
-import cn.myflv.noactive.core.hook.ActivityIdleHook;
 import cn.myflv.noactive.core.hook.ActivitySwitchHook;
+import cn.myflv.noactive.core.hook.BinderTransHook;
 import cn.myflv.noactive.core.hook.BroadcastDeliverHook;
 import cn.myflv.noactive.core.hook.CacheFreezerHook;
 import cn.myflv.noactive.core.hook.FreezerSupportHook;
 import cn.myflv.noactive.core.hook.PowerManagerHook;
+import cn.myflv.noactive.core.hook.TaskTrimHook;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
@@ -41,7 +42,7 @@ public class AndroidHook extends AppHook {
         new PowerManagerHook(classLoader, memData);
 
         // Hook 切换事件
-        new ActivitySwitchHook(classLoader, memData);
+        ActivitySwitchHook activitySwitchHook = new ActivitySwitchHook(classLoader, memData);
 
         // Hook 广播分发
         new BroadcastDeliverHook(classLoader, memData);
@@ -52,12 +53,21 @@ public class AndroidHook extends AppHook {
         // Hook 禁用暂停执行
         new CacheFreezerHook(classLoader);
 
+        // new ProcessKilledHook(classLoader, memData);
+
+        // new ActivityIdleHook(classLoader, memData);
+
+        // new TaskRemoveHook(classLoader);
+
+        new TaskTrimHook(classLoader);
+
+        // new WhiteListHook(classLoader, memData);
+
+        new BinderTransHook(classLoader, activitySwitchHook);
+
         // 显示暂停已缓存开关
         new FreezerSupportHook(classLoader);
 
-        // new ProcessKilledHook(classLoader, memData);
-
-        new ActivityIdleHook(classLoader, memData);
 
         Log.i("Load success");
     }

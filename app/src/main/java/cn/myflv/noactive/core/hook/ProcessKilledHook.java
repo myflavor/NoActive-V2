@@ -7,7 +7,7 @@ import cn.myflv.noactive.core.entity.MemData;
 import cn.myflv.noactive.core.entity.MethodEnum;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import de.robv.android.xposed.XC_MethodHook;
-
+@Deprecated
 public class ProcessKilledHook extends MethodHook {
 
     private final MemData memData;
@@ -65,4 +65,5 @@ public class ProcessKilledHook extends MethodHook {
     public String successLog() {
         return "Listen process killed";
     }
+
 }

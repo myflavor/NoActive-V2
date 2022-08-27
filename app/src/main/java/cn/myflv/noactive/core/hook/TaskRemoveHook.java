@@ -2,10 +2,19 @@ package cn.myflv.noactive.core.hook;
 
 import android.os.Build;
 
+import java.util.Arrays;
+import java.util.List;
+
+import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.core.entity.MethodEnum;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
-
+import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedBridge;
+@Deprecated
 public class TaskRemoveHook extends MethodHook {
+
+    private final List<String> blockedReasonList = Arrays.asList("recent-task-trimmed", "remove-hidden-task");
 
     public TaskRemoveHook(ClassLoader classLoader) {
         super(classLoader);
@@ -13,40 +22,43 @@ public class TaskRemoveHook extends MethodHook {
 
     @Override
     public String getTargetClass() {
-        return "com.android.server.wm.ActivityTaskSupervisor";
+        return ClassEnum.ActivityTaskSupervisor;
     }
 
     @Override
     public String getTargetMethod() {
-        return "removeTask";
+        return MethodEnum.removeTask;
     }
 
     @Override
     public Object[] getTargetParam() {
-        return new Object[]{"com.android.server.wm.Task", boolean.class, boolean.class, String.class};
+        return new Object[]{ClassEnum.Task, boolean.class, boolean.class, String.class};
     }
 
     @Override
     public XC_MethodHook getTargetHook() {
-        return new XC_MethodHook() {
+        return new XC_MethodReplacement() {
             @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
+            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
                 Log.i("removeTask task -> " + param.args[0]);
                 Log.i("removeTask killProcess -> " + param.args[1]);
                 Log.i("removeTask removeFromRecents -> " + param.args[2]);
-                if (param.args[3] != null) {
-                    Log.i("removeTask reason -> " + param.args[3]);
-                }
-            }
-
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
+                Log.i("removeTask reason -> " + param.args[3]);
                 printStackTrace();
+                return null;
+                /*
+                if (param.args[3] != null) {
+                    String reason = (String) param.args[3];
+                    if (blockedReasonList.contains(reason)) {
+                        return null;
+                    }
+                }
+                return XposedBridge.invokeOriginalMethod(param.method, param.thisObject, param.args);
+                 */
             }
         };
     }
+
 
     @Override
     public int getMinVersion() {

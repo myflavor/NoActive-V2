@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cn.myflv.noactive.utils.VersionUtil;
 import de.robv.android.xposed.XposedBridge;
 
 public class Log {
@@ -32,6 +33,7 @@ public class Log {
         File config = new File(FreezerConfig.ConfigDir, "debug");
         isDebug = config.exists();
         i("Debug " + (isDebug ? "on" : "off"));
+        i("Android " + VersionUtil.getAndroidVersion());
     }
 
     public static void d(String msg) {

@@ -26,4 +26,5 @@ public interface FieldEnum {
     String mFlags = "mFlags";
     String mLock = "mLock";
     String mTag = "mTag";
+    String intent = "intent";
 }

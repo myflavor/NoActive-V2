@@ -31,4 +31,10 @@ public interface MethodEnum {
     String forceStopPackage = "forceStopPackage";
     String kill = "kill";
     String activityIdleInternal = "activityIdleInternal";
+    String trimInactiveRecentTasks = "trimInactiveRecentTasks";
+    String freezeBinder = "freezeBinder";
+    String reportBinderTrans = "reportBinderTrans";
+    String nQueryBinder = "nQueryBinder";
+    String removeTask = "removeTask";
+    String isPackageInList = "isPackageInList";
 }

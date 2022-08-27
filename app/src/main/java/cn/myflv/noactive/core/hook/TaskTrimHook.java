@@ -1,26 +1,25 @@
 package cn.myflv.noactive.core.hook;
 
-import android.os.Build;
-
 import cn.myflv.noactive.core.entity.ClassEnum;
 import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 
-public class FreezerSupportHook extends MethodHook {
+public class TaskTrimHook extends MethodHook {
 
-    public FreezerSupportHook(ClassLoader classLoader) {
+    public TaskTrimHook(ClassLoader classLoader) {
         super(classLoader);
     }
 
     @Override
     public String getTargetClass() {
-        return ClassEnum.CachedAppOptimizer;
+        return ClassEnum.RecentTasks;
     }
 
     @Override
     public String getTargetMethod() {
-        return MethodEnum.isFreezerSupported;
+        return MethodEnum.trimInactiveRecentTasks;
     }
 
     @Override
@@ -33,19 +32,20 @@ public class FreezerSupportHook extends MethodHook {
         return new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
-                return true;
+                Log.d("Avoid trimInactiveRecentTasks");
+                return null;
             }
         };
     }
 
     @Override
     public int getMinVersion() {
-        return Build.VERSION_CODES.R;
+        return ANY_VERSION;
     }
 
     @Override
     public String successLog() {
-        return "Happy Freezer";
+        return "Disable task trim";
     }
 
 }

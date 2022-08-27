@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
 public abstract class MethodHook {
@@ -17,10 +18,14 @@ public abstract class MethodHook {
 
     public MethodHook(ClassLoader classLoader) {
         this.classLoader = classLoader;
-        try {
-            hook();
-        } catch (Throwable throwable) {
-            Log.e(getTargetClass() + "." + getTargetMethod() + " failed: " + throwable.getMessage());
+        if (isToHook()) {
+            try {
+                hook();
+            } catch (Throwable throwable) {
+                if (!isIgnoreError()) {
+                    Log.e(getTargetClass() + "." + getTargetMethod() + " failed: " + throwable.getMessage());
+                }
+            }
         }
     }
 
@@ -36,6 +41,10 @@ public abstract class MethodHook {
 
     public abstract String successLog();
 
+    public boolean isIgnoreError() {
+        return false;
+    }
+
     public void hook() {
         int minVersion = getMinVersion();
         if (minVersion == ANY_VERSION || Build.VERSION.SDK_INT >= minVersion) {
@@ -50,10 +59,7 @@ public abstract class MethodHook {
     }
 
     public void printStackTrace() {
-        printStackTrace(new Throwable());
-    }
-
-    public void printStackTrace(Throwable throwable) {
+        Throwable throwable = new Throwable();
         Log.i("---------------> " + getTargetMethod());
         StackTraceElement[] stackElements = throwable.getStackTrace();
         for (StackTraceElement element : stackElements) {
@@ -61,6 +67,14 @@ public abstract class MethodHook {
                     "(" + element.getFileName() + ":" + element.getLineNumber() + ")");
         }
         Log.i(getTargetMethod() + " <---------------");
+    }
+
+    public boolean isToHook() {
+        return true;
+    }
+
+    public Object invokeOriginalMethod(XC_MethodHook.MethodHookParam param) throws Throwable{
+        return XposedBridge.invokeOriginalMethod(param.method,param.thisObject,param.args);
     }
 
 }

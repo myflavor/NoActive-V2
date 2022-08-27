@@ -82,5 +82,10 @@ public class ActivityManagerService {
         Log.d(packageName + " was killed");
     }
 
+    public String getNameForUid(int uid) {
+        PackageManager packageManager = context.getPackageManager();
+        return packageManager.getNameForUid(uid);
+    }
+
 
 }

@@ -195,4 +195,5 @@ public class FreezeUtils {
         Class<?> Process = XposedHelpers.findClass(ClassEnum.Process, classLoader);
         XposedHelpers.callStaticMethod(Process, MethodEnum.setProcessFrozen, pid, uid, frozen);
     }
+
 }

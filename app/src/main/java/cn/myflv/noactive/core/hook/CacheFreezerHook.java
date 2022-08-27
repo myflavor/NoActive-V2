@@ -48,4 +48,5 @@ public class CacheFreezerHook extends MethodHook {
     public String successLog() {
         return "Disable Android Freezer";
     }
+
 }

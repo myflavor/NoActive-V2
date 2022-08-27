@@ -50,4 +50,5 @@ public class PowerManagerHook extends MethodHook {
     public String successLog() {
         return "Auto wakelock";
     }
+
 }
