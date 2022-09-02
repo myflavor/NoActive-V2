@@ -3,8 +3,6 @@ package cn.myflv.noactive.core.hook;
 import android.content.Intent;
 import android.os.Build;
 
-import java.util.Arrays;
-
 import cn.myflv.noactive.core.entity.ClassEnum;
 import cn.myflv.noactive.core.entity.FieldEnum;
 import cn.myflv.noactive.core.entity.MemData;
@@ -14,6 +12,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+
 @Deprecated
 public class ActivityIdleHook extends MethodHook {
     private final MemData memData;

@@ -37,6 +37,7 @@ public interface ClassEnum {
 
     String RecentTasks = "com.android.server.wm.RecentTasks";
     String GreezeManagerService = "com.miui.server.greeze.GreezeManagerService";
-    Object Task = "com.android.server.wm.Task";
+    String Task = "com.android.server.wm.Task";
     String ProcessManagerService = "com.android.server.am.ProcessManagerService";
+    String FreezeUtils = "com.miui.server.greeze.FreezeUtils";
 }

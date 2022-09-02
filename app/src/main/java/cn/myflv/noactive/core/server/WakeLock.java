@@ -8,10 +8,10 @@ import lombok.Data;
 
 @Data
 public class WakeLock {
-    private String packageName;
-    private int flags;
     private final IBinder lock;
     private final String tag;
+    private String packageName;
+    private int flags;
 
     public WakeLock(Object wakeLock) {
         this.packageName = (String) XposedHelpers.getObjectField(wakeLock, FieldEnum.mPackageName);

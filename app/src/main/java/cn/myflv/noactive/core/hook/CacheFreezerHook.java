@@ -5,7 +5,6 @@ import android.os.Build;
 import cn.myflv.noactive.core.entity.ClassEnum;
 import cn.myflv.noactive.core.entity.MethodEnum;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 
 public class CacheFreezerHook extends MethodHook {
 
@@ -31,12 +30,7 @@ public class CacheFreezerHook extends MethodHook {
 
     @Override
     public XC_MethodHook getTargetHook() {
-        return new XC_MethodReplacement() {
-            @Override
-            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
-                return false;
-            }
-        };
+        return constantResult(false);
     }
 
     @Override

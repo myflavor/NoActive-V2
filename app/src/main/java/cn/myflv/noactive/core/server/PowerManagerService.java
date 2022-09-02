@@ -14,24 +14,29 @@ import lombok.Data;
 @Data
 public class PowerManagerService {
     private final Object powerManagerService;
-    private final Map<String, List<WakeLock>> wakeLockMap = new HashMap<>();
+    private final Object wakeLocks;
 
     public PowerManagerService(Object powerManagerService) {
         this.powerManagerService = powerManagerService;
-        Object mWakeLocks = XposedHelpers.getObjectField(powerManagerService, FieldEnum.mWakeLocks);
-        synchronized (XposedHelpers.getObjectField(powerManagerService, FieldEnum.mWakeLocks)) {
-            List<?> wakeLocks = (List<?>) mWakeLocks;
-            for (Object item : wakeLocks) {
+        this.wakeLocks = XposedHelpers.getObjectField(powerManagerService, FieldEnum.mWakeLocks);
+    }
+
+
+    public Map<String, List<WakeLock>> getWakeLockMap() {
+        Map<String, List<WakeLock>> wakeLockMap = new HashMap<>();
+        synchronized (wakeLocks) {
+            List<?> wakeLockList = (List<?>) wakeLocks;
+            for (Object item : wakeLockList) {
                 WakeLock wakeLock = new WakeLock(item);
                 List<WakeLock> list = wakeLockMap.computeIfAbsent(wakeLock.getPackageName(), k -> new ArrayList<>());
                 list.add(wakeLock);
             }
         }
+        return wakeLockMap;
     }
 
-
     public void release(String packageName) {
-        List<WakeLock> wakeLocks = wakeLockMap.get(packageName);
+        List<WakeLock> wakeLocks = getWakeLockMap().get(packageName);
         if (wakeLocks == null) {
             return;
         }

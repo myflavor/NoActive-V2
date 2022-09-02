@@ -9,9 +9,9 @@ import cn.fkj233.ui.activity.view.SpinnerV
 import cn.fkj233.ui.activity.view.SwitchV
 import cn.fkj233.ui.activity.view.TextV
 import cn.myflv.noactive.core.utils.FreezerConfig
+import cn.myflv.noactive.entity.SwitchData
 import cn.myflv.noactive.utils.ConfigUtils
 import cn.myflv.noactive.utils.PackageUtils
-import cn.myflv.noactive.entity.SwitchData
 
 class SubActivity : MIUIActivity() {
     private val handler by lazy { Handler(Looper.getMainLooper()) }
@@ -31,8 +31,8 @@ class SubActivity : MIUIActivity() {
 
                 val binding = GetDataBinding({ SwitchData.isOn() }) { view, flags, data ->
                     when (flags) {
-                        1 -> (view as LinearLayout).visibility = if (data as Boolean) View.VISIBLE else View.GONE;
-                        2 -> (view as LinearLayout).visibility = if (!(data as Boolean)) View.VISIBLE else View.GONE;
+                        1 -> (view as LinearLayout).visibility = if (data as Boolean) View.VISIBLE else View.GONE
+                        2 -> (view as LinearLayout).visibility = if (!(data as Boolean)) View.VISIBLE else View.GONE
                     }
                 }
 
@@ -43,32 +43,32 @@ class SubActivity : MIUIActivity() {
                 TextWithSwitch(TextV(if (appInfo.system) "系统黑名单" else "应用白名单"), SwitchV("binding", defValue = SwitchData.isOn(), dataBindingSend = binding.bindingSend) {
                     val fileName = if (appInfo.system) FreezerConfig.blackSystemAppConfig else FreezerConfig.whiteAppConfig
                     if (it) {
-                        ConfigUtils.addIfNot(fileName, packageName);
+                        ConfigUtils.addIfNot(fileName, packageName)
                     } else {
-                        ConfigUtils.delIfExist(fileName, packageName);
+                        ConfigUtils.delIfExist(fileName, packageName)
                     }
                 })
 
                 TextWithSwitch(TextV("忽略前台"), SwitchV("binding", defValue = appInfo.direct) {
                     if (it) {
-                        ConfigUtils.addIfNot(FreezerConfig.directAppConfig, packageName);
+                        ConfigUtils.addIfNot(FreezerConfig.directAppConfig, packageName)
                     } else {
-                        ConfigUtils.delIfExist(FreezerConfig.directAppConfig, packageName);
+                        ConfigUtils.delIfExist(FreezerConfig.directAppConfig, packageName)
                     }
                 }, dataBindingRecv = binding.getRecv(if (appInfo.system) 1 else 2))
 
                 for (proc in appInfo.processSet) {
                     TextWithSpinner(TextV(proc, textSize = 15f), SpinnerV(if (appInfo.killProcessSet.contains(proc)) "杀死" else (if (appInfo.whiteProcessSet.contains(proc)) "白名单" else "冻结")) {
                         add("冻结") {
-                            ConfigUtils.delIfExist(FreezerConfig.whiteProcessConfig, proc);
+                            ConfigUtils.delIfExist(FreezerConfig.whiteProcessConfig, proc)
                             ConfigUtils.delIfExist(FreezerConfig.killProcessConfig, proc)
                         }
                         add("杀死") {
-                            ConfigUtils.addIfNot(FreezerConfig.killProcessConfig, proc);
+                            ConfigUtils.addIfNot(FreezerConfig.killProcessConfig, proc)
                             ConfigUtils.delIfExist(FreezerConfig.whiteProcessConfig, proc)
                         }
                         add("白名单") {
-                            ConfigUtils.addIfNot(FreezerConfig.whiteProcessConfig, proc);
+                            ConfigUtils.addIfNot(FreezerConfig.whiteProcessConfig, proc)
                             ConfigUtils.delIfExist(FreezerConfig.killProcessConfig, proc)
                         }
                     }, dataBindingRecv = binding.getRecv(if (appInfo.system) 1 else 2))

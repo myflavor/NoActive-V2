@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
@@ -22,9 +23,7 @@ public abstract class MethodHook {
             try {
                 hook();
             } catch (Throwable throwable) {
-                if (!isIgnoreError()) {
-                    Log.e(getTargetClass() + "." + getTargetMethod() + " failed: " + throwable.getMessage());
-                }
+                onError(throwable);
             }
         }
     }
@@ -51,10 +50,7 @@ public abstract class MethodHook {
             ArrayList<Object> param = new ArrayList<>(Arrays.asList(getTargetParam()));
             param.add(getTargetHook());
             XposedHelpers.findAndHookMethod(getTargetClass(), classLoader, getTargetMethod(), param.toArray());
-            String log = successLog();
-            if (log != null) {
-                Log.i(log);
-            }
+            onSuccess();
         }
     }
 
@@ -73,8 +69,35 @@ public abstract class MethodHook {
         return true;
     }
 
-    public Object invokeOriginalMethod(XC_MethodHook.MethodHookParam param) throws Throwable{
-        return XposedBridge.invokeOriginalMethod(param.method,param.thisObject,param.args);
+    public Object invokeOriginalMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+        return XposedBridge.invokeOriginalMethod(param.method, param.thisObject, param.args);
     }
 
+    public void logSuccess() {
+        String log = successLog();
+        if (log == null) {
+            return;
+        }
+        Log.i(log);
+
+    }
+
+    public void onSuccess() {
+        logSuccess();
+    }
+
+    public void logError(Throwable throwable) {
+        if (isIgnoreError()) {
+            return;
+        }
+        Log.e(getTargetClass() + "." + getTargetMethod() + " failed: " + throwable.getMessage());
+    }
+
+    public void onError(Throwable throwable) {
+        logError(throwable);
+    }
+
+    public XC_MethodReplacement constantResult(final Object result) {
+        return XC_MethodReplacement.returnConstant(result);
+    }
 }

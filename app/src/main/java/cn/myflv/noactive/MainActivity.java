@@ -3,7 +3,6 @@ package cn.myflv.noactive;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -16,32 +15,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.topjohnwu.superuser.Shell;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 import cn.myflv.noactive.adapter.AppItemAdapter;
-import cn.myflv.noactive.core.utils.FreezerConfig;
 import cn.myflv.noactive.entity.AppItem;
-import cn.myflv.noactive.utils.ConfigUtils;
 import cn.myflv.noactive.utils.PackageUtils;
 
 public class MainActivity extends AppCompatActivity {
     private final List<AppItem> appItemList = new ArrayList<>();
+    private final Handler handler = new Handler();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private AppItemAdapter appItemAdapter;
     private String text = null;
     private int type = 1;
-    private final Handler handler = new Handler();
     private Integer index;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             appItemList.clear();
             appItemList.addAll(filter);
             handler.post(() -> {
-                synchronized (appItemList){
+                synchronized (appItemList) {
                     appItemAdapter.notifyDataSetChanged();
                 }
             });

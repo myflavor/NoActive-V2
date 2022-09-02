@@ -1,6 +1,5 @@
 package cn.myflv.noactive.core.utils;
 
-import android.annotation.SuppressLint;
 import android.os.Build;
 
 import java.io.BufferedReader;
@@ -16,7 +15,6 @@ import cn.myflv.noactive.core.entity.MethodEnum;
 import de.robv.android.xposed.XposedHelpers;
 
 public class FreezerConfig {
-
 
     public final static String ConfigDir = "/data/system/NoActive";
     public final static String LogDir = ConfigDir + "/log";
@@ -36,6 +34,13 @@ public class FreezerConfig {
     public final static String lastLog = "last.log";
     public final static String currentLog = "current.log";
 
+    // public final static String Scheduled = "scheduled";
+
+    /*
+    public static boolean isScheduledOn() {
+        return isConfigOn(Scheduled);
+    }
+     */
 
     public final static String[] listenConfig = {whiteAppConfig, whiteProcessConfig,
             killProcessConfig, blackSystemAppConfig, directAppConfig};

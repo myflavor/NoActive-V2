@@ -37,4 +37,7 @@ public interface MethodEnum {
     String nQueryBinder = "nQueryBinder";
     String removeTask = "removeTask";
     String isPackageInList = "isPackageInList";
+    String writeNode = "writeNode";
+    String setFreezeAction = "setFreezeAction";
+    String isEmbedded = "isEmbedded";
 }

@@ -9,7 +9,6 @@ import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedBridge;
 
 public class ANRHook extends MethodHook {
 
@@ -70,7 +69,7 @@ public class ANRHook extends MethodHook {
                     String packageName = processRecord.getApplicationInfo().getPackageName();
                     // 不是目标APP就调用原方法
                     if (!memData.isTargetApp(packageName)) {
-                        return XposedBridge.invokeOriginalMethod(param.method, param.thisObject, param.args);
+                        return invokeOriginalMethod(param);
                     }
                     Log.d("Keep " + (processRecord.getProcessName() != null ? processRecord.getProcessName() : packageName));
                     // 不处理

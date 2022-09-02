@@ -1,13 +1,11 @@
 package cn.myflv.noactive.core.hook;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import cn.myflv.noactive.core.entity.ClassEnum;
 import cn.myflv.noactive.core.entity.MethodEnum;
-import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
 
 public class BinderTransHook extends MethodHook {
@@ -70,4 +68,5 @@ public class BinderTransHook extends MethodHook {
     public boolean isIgnoreError() {
         return true;
     }
+
 }

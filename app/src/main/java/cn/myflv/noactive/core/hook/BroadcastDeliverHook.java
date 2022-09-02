@@ -65,6 +65,8 @@ public class BroadcastDeliverHook extends MethodHook {
 
                 // 不是冻结APP就不处理
                 if (!memData.getFreezerAppSet().contains(packageName)) {
+                    // 意味着广播执行
+                    broadcastStart(param, packageName);
                     return;
                 }
 
@@ -79,25 +81,54 @@ public class BroadcastDeliverHook extends MethodHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-
-                // 获取进程
-                Object app = param.getObjectExtra(FieldEnum.app);
-                if (app == null) {
-                    return;
-                }
-
-                Object[] args = param.args;
-                if (args[1] == null) {
-                    return;
-                }
-                Object receiverList = XposedHelpers.getObjectField(args[1], FieldEnum.receiverList);
-                if (receiverList == null) {
-                    return;
-                }
-                // 还原修改
-                XposedHelpers.setObjectField(receiverList, FieldEnum.app, app);
+                restore(param);
+                broadcastFinish(param);
             }
         };
+    }
+
+    /**
+     * 广播开始执行
+     *
+     * @param packageName 包名
+     */
+    private void broadcastStart(XC_MethodHook.MethodHookParam param, String packageName) {
+        memData.broadcastStart(packageName);
+        param.setObjectExtra(FieldEnum.packageName, packageName);
+    }
+
+    /**
+     * 广播结束执行
+     */
+    private void broadcastFinish(XC_MethodHook.MethodHookParam param) {
+        Object obj = param.getObjectExtra(FieldEnum.packageName);
+        if (obj == null) {
+            return;
+        }
+        String packageName = (String) obj;
+        memData.broadcastFinish(packageName);
+    }
+
+    /**
+     * 恢复被修改的参数
+     */
+    private void restore(XC_MethodHook.MethodHookParam param) {
+        // 获取进程
+        Object app = param.getObjectExtra(FieldEnum.app);
+        if (app == null) {
+            return;
+        }
+
+        Object[] args = param.args;
+        if (args[1] == null) {
+            return;
+        }
+        Object receiverList = XposedHelpers.getObjectField(args[1], FieldEnum.receiverList);
+        if (receiverList == null) {
+            return;
+        }
+        // 还原修改
+        XposedHelpers.setObjectField(receiverList, FieldEnum.app, app);
     }
 
     @Override

@@ -82,6 +82,60 @@ public class FreezeUtils {
         return pids;
     }
 
+    public static boolean isFrozonPid(int pid) {
+        return getFrozenPids().contains(pid);
+    }
+
+    public static void freezePid(int pid) {
+        writeNode(V1_FREEZER_FROZEN_PORCS, pid);
+    }
+
+    public static void thawPid(int pid) {
+        writeNode(V1_FREEZER_THAWED_PORCS, pid);
+    }
+
+    private static void writeNode(String path, int val) {
+        try {
+            PrintWriter writer = new PrintWriter(path);
+            writer.write(Integer.toString(val));
+            writer.close();
+        } catch (FileNotFoundException e) {
+            Log.e("Freezer V1 not supported");
+        } catch (Exception e) {
+            Log.e("Freezer V1 failed: " + e.getMessage());
+        }
+    }
+
+    private static void setFreezeAction(int pid, int uid, boolean action) {
+        String path = "/sys/fs/cgroup/uid_" + uid + "/pid_" + pid + "/cgroup.freeze";
+        try {
+            PrintWriter writer = new PrintWriter(path);
+            if (action) {
+                writer.write(Integer.toString(FREEZE_ACTION));
+            } else {
+                writer.write(Integer.toString(UNFREEZE_ACTION));
+            }
+            writer.close();
+        } catch (FileNotFoundException e) {
+            Log.e("Freezer V2 not supported");
+        } catch (Exception e) {
+            Log.e("Freezer V2 failed: " + e.getMessage());
+        }
+    }
+
+    public static void thawPid(int pid, int uid) {
+        setFreezeAction(pid, uid, false);
+    }
+
+    public static void freezePid(int pid, int uid) {
+        setFreezeAction(pid, uid, true);
+    }
+
+    public static void kill(ProcessRecord processRecord) {
+        Process.killProcess(processRecord.getPid());
+        Log.d(processRecord.getProcessName() + " kill");
+    }
+
     public void freezer(ProcessRecord processRecord) {
         if (useKill) {
             Process.sendSignal(processRecord.getPid(), stopSignal);
@@ -101,7 +155,6 @@ public class FreezeUtils {
         }
         Log.d(processRecord.getProcessName() + " freezer");
     }
-
 
     public void unFreezer(List<ProcessRecord> processRecords) {
         if (processRecords.isEmpty()) {
@@ -130,65 +183,6 @@ public class FreezeUtils {
             }
         }
         Log.d(processRecord.getProcessName() + " unFreezer");
-    }
-
-    public static boolean isFrozonPid(int pid) {
-        return getFrozenPids().contains(pid);
-    }
-
-
-    public static void freezePid(int pid) {
-        writeNode(V1_FREEZER_FROZEN_PORCS, pid);
-    }
-
-
-    public static void thawPid(int pid) {
-        writeNode(V1_FREEZER_THAWED_PORCS, pid);
-    }
-
-
-    private static void writeNode(String path, int val) {
-        try {
-            PrintWriter writer = new PrintWriter(path);
-            writer.write(Integer.toString(val));
-            writer.close();
-        } catch (FileNotFoundException e) {
-            Log.e("Freezer V1 not supported");
-        } catch (Exception e) {
-            Log.e("Freezer V1 failed: " + e.getMessage());
-        }
-    }
-
-
-    private static void setFreezeAction(int pid, int uid, boolean action) {
-        String path = "/sys/fs/cgroup/uid_" + uid + "/pid_" + pid + "/cgroup.freeze";
-        try {
-            PrintWriter writer = new PrintWriter(path);
-            if (action) {
-                writer.write(Integer.toString(FREEZE_ACTION));
-            } else {
-                writer.write(Integer.toString(UNFREEZE_ACTION));
-            }
-            writer.close();
-        } catch (FileNotFoundException e) {
-            Log.e("Freezer V2 not supported");
-        } catch (Exception e) {
-            Log.e("Freezer V2 failed: " + e.getMessage());
-        }
-    }
-
-    public static void thawPid(int pid, int uid) {
-        setFreezeAction(pid, uid, false);
-    }
-
-
-    public static void freezePid(int pid, int uid) {
-        setFreezeAction(pid, uid, true);
-    }
-
-    public static void kill(ProcessRecord processRecord) {
-        Process.killProcess(processRecord.getPid());
-        Log.d(processRecord.getProcessName() + " kill");
     }
 
     public void setProcessFrozen(int pid, int uid, boolean frozen) {

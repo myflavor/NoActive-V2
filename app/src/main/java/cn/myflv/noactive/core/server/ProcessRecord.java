@@ -13,8 +13,8 @@ public class ProcessRecord {
     private final String processName;
     private final int userId;
     private final ApplicationInfo applicationInfo;
-    private Object processRecord;
     private final String packageName;
+    private Object processRecord;
 
 
     public ProcessRecord(Object processRecord) {

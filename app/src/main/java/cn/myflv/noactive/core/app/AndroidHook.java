@@ -68,7 +68,8 @@ public class AndroidHook extends AppHook {
         // 显示暂停已缓存开关
         new FreezerSupportHook(classLoader);
 
-
         Log.i("Load success");
     }
+
+
 }

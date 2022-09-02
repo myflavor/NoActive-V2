@@ -39,7 +39,7 @@ public class WhiteListHook extends MethodHook {
                 if (args[0] != null) {
                     String packageName = (String) args[0];
                     if (memData.getFreezerAppSet().contains(packageName)) {
-                        Log.i(packageName+" is whiteList");
+                        Log.i(packageName + " is whiteList");
                         return true;
                     }
                 }

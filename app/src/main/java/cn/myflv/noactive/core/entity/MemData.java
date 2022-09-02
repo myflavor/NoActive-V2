@@ -4,6 +4,7 @@ package cn.myflv.noactive.core.entity;
 import android.os.FileObserver;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +16,8 @@ import cn.myflv.noactive.core.server.PowerManagerService;
 import cn.myflv.noactive.core.server.ProcessList;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.utils.ConfigFileObserver;
+import cn.myflv.noactive.core.utils.Log;
+import cn.myflv.noactive.core.utils.ThreadUtils;
 import lombok.Data;
 
 /**
@@ -22,6 +25,14 @@ import lombok.Data;
  */
 @Data
 public class MemData {
+    // 配置文件监听
+    private final FileObserver fileObserver = new ConfigFileObserver(this);
+    // 已冻结APP
+    private final Set<String> freezerAppSet = Collections.synchronizedSet(new HashSet<>());
+    // 冻结Token
+    private final Map<String, Long> freezerTokenMap = Collections.synchronizedMap(new HashMap<>());
+    // 正在执行广播的APP
+    private final Map<String, Integer> broadcastAppMap = new HashMap<>();
     // 白名单APP
     private Set<String> whiteApps = new HashSet<>();
     // 忽略前台APP
@@ -32,28 +43,73 @@ public class MemData {
     private Set<String> whiteProcessList = new HashSet<>();
     // 杀死进程
     private Set<String> killProcessList = new HashSet<>();
-
-    // 配置文件监听
-    private final FileObserver fileObserver = new ConfigFileObserver(this);
-
+    // private final Set<String> freezerAppSet = Collections.synchronizedSet(FreezerConfig.isScheduledOn() ? new LinkedHashSet<>() : new HashSet<>());
     // PMS
     private PowerManagerService powerManagerService = null;
-
     // AMS
     private ActivityManagerService activityManagerService = null;
-
-    // 已冻结APP
-    private final Set<String> freezerAppSet = new HashSet<>();
-
-    // 冻结Token
-    private final Map<String, Long> freezerTokenMap = new HashMap<>();
-
 
     public MemData() {
         // 开始监听配置文件
         fileObserver.startWatching();
     }
 
+    /**
+     * 等待应用未执行广播
+     *
+     * @param packageName 包名
+     */
+    public void waitBroadcastIdle(String packageName) {
+        while (isBroadcastApp(packageName)) {
+            Log.d(packageName + " is executing broadcast");
+            ThreadUtils.sleep(100);
+        }
+        Log.d(packageName + " broadcast state idle");
+    }
+
+    /**
+     * 应用是否正在执行广播
+     *
+     * @param packageName 包名
+     */
+    public boolean isBroadcastApp(String packageName) {
+        synchronized (broadcastAppMap) {
+            return broadcastAppMap.containsKey(packageName);
+        }
+    }
+
+    /**
+     * 应用广播开始
+     *
+     * @param packageName 包名
+     */
+    public void broadcastStart(String packageName) {
+        Log.d(packageName + " broadcast executing start");
+        synchronized (broadcastAppMap) {
+            int count = broadcastAppMap.computeIfAbsent(packageName, k -> 0);
+            count++;
+            broadcastAppMap.put(packageName, count);
+        }
+    }
+
+    /**
+     * 应用广播结束
+     *
+     * @param packageName 包名
+     */
+    public void broadcastFinish(String packageName) {
+        Log.d(packageName + " broadcast executing finish");
+        synchronized (broadcastAppMap) {
+            int count = broadcastAppMap.computeIfAbsent(packageName, k -> 0);
+            count--;
+            if (count > 0) {
+                broadcastAppMap.put(packageName, count);
+            } else {
+                Log.d(packageName + " broadcast state idle");
+                broadcastAppMap.remove(packageName);
+            }
+        }
+    }
 
     /**
      * 是否目标APP
@@ -170,9 +226,9 @@ public class MemData {
      * @param value       值
      * @return 是否正确
      */
-    public boolean isCorrectToken(String packageName, long value) {
+    public boolean isInCorrectToken(String packageName, long value) {
         Long token = freezerTokenMap.get(packageName);
-        return token != null && value == token;
+        return token == null || value != token;
     }
 
 }

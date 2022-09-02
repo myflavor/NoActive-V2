@@ -10,7 +10,7 @@ import cn.myflv.noactive.core.entity.MethodEnum;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedBridge;
+
 @Deprecated
 public class TaskRemoveHook extends MethodHook {
 
