@@ -1,5 +1,8 @@
 package cn.myflv.noactive.core.entity;
 
+/**
+ * 类枚举.
+ */
 public interface ClassEnum {
     String ActivityManagerService = "com.android.server.am.ActivityManagerService";
     String ComponentName = "android.content.ComponentName";
@@ -40,4 +43,8 @@ public interface ClassEnum {
     String Task = "com.android.server.wm.Task";
     String ProcessManagerService = "com.android.server.am.ProcessManagerService";
     String FreezeUtils = "com.miui.server.greeze.FreezeUtils";
+    String PidMap = "com.android.server.am.ActivityManagerService.PidMap";
+    String UsageStatsService = "com.android.server.usage.UsageStatsService";
+    String AppStandbyController = "com.android.server.usage.AppStandbyController";
+    String NetworkManagementService = "com.android.server.NetworkManagementService";
 }

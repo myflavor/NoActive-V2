@@ -1,5 +1,8 @@
 package cn.myflv.noactive.core.entity;
 
+/**
+ * 字段枚举.
+ */
 public interface FieldEnum {
     String packageName = "packageName";
     String uid = "uid";

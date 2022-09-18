@@ -15,4 +15,7 @@ public class AppItem {
     private PackageInfo packageInfo;
     private boolean isWhite;
     private boolean isBlack;
+    private boolean isDirect;
+    private int killProcCount;
+    private int whiteProcCount;
 }

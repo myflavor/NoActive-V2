@@ -6,7 +6,14 @@ import cn.myflv.noactive.core.entity.MethodEnum;
 import cn.myflv.noactive.core.server.PowerManagerService;
 import de.robv.android.xposed.XC_MethodHook;
 
+/**
+ * PMS启动Hook.
+ */
 public class PowerManagerHook extends MethodHook {
+
+    /**
+     * 数据类.
+     */
     private final MemData memData;
 
     public PowerManagerHook(ClassLoader classLoader, MemData memData) {
@@ -36,6 +43,7 @@ public class PowerManagerHook extends MethodHook {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 PowerManagerService powerManagerService = new PowerManagerService(param.thisObject);
+                // 存进数据类
                 memData.setPowerManagerService(powerManagerService);
             }
         };

@@ -11,7 +11,13 @@ import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 
+/**
+ * 广播分发Hook.
+ */
 public class BroadcastDeliverHook extends MethodHook {
+    /**
+     * 内存数据.
+     */
     private final MemData memData;
 
     public BroadcastDeliverHook(ClassLoader classLoader, MemData memData) {
@@ -81,7 +87,9 @@ public class BroadcastDeliverHook extends MethodHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
+                // 恢复被修改的参数
                 restore(param);
+                // 广播结束
                 broadcastFinish(param);
             }
         };

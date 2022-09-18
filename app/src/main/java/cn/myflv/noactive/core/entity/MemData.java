@@ -7,15 +7,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import cn.myflv.noactive.core.server.ActivityManagerService;
+import cn.myflv.noactive.core.server.AppStandbyController;
 import cn.myflv.noactive.core.server.PowerManagerService;
 import cn.myflv.noactive.core.server.ProcessList;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.utils.ConfigFileObserver;
+import cn.myflv.noactive.core.utils.FreezerConfig;
 import cn.myflv.noactive.core.utils.Log;
 import cn.myflv.noactive.core.utils.ThreadUtils;
 import lombok.Data;
@@ -25,37 +28,69 @@ import lombok.Data;
  */
 @Data
 public class MemData {
-    // 配置文件监听
-    private final FileObserver fileObserver = new ConfigFileObserver(this);
-    // 已冻结APP
-    private final Set<String> freezerAppSet = Collections.synchronizedSet(new HashSet<>());
-    // 冻结Token
+
+    /**
+     * 冻结Token.
+     */
     private final Map<String, Long> freezerTokenMap = Collections.synchronizedMap(new HashMap<>());
-    // 正在执行广播的APP
+    /**
+     * 正在执行广播的APP.
+     */
     private final Map<String, Integer> broadcastAppMap = new HashMap<>();
-    // 白名单APP
+    /**
+     * 白名单APP.
+     */
     private Set<String> whiteApps = new HashSet<>();
-    // 忽略前台APP
+    /**
+     * 忽略前台APP.
+     */
     private Set<String> directApps = new HashSet<>();
-    // 系统黑名单APP
+    /**
+     * 系统黑名单APP.
+     */
     private Set<String> blackSystemApps = new HashSet<>();
-    // 白名单进程
+    /**
+     * 白名单进程.
+     */
     private Set<String> whiteProcessList = new HashSet<>();
-    // 杀死进程
+    /**
+     * 杀死进程.
+     */
     private Set<String> killProcessList = new HashSet<>();
-    // private final Set<String> freezerAppSet = Collections.synchronizedSet(FreezerConfig.isScheduledOn() ? new LinkedHashSet<>() : new HashSet<>());
-    // PMS
+    /**
+     * 已冻结APP.
+     */
+    private final Set<String> freezerAppSet = Collections.synchronizedSet(FreezerConfig.isScheduledOn() ? new LinkedHashSet<>() : new HashSet<>());
+    /**
+     * 前台应用.
+     */
+    private final Set<String> foregroundAppSet = Collections.synchronizedSet(new HashSet<>());
+
+    /**
+     * PMS.
+     */
     private PowerManagerService powerManagerService = null;
-    // AMS
+    /**
+     * AMS.
+     */
     private ActivityManagerService activityManagerService = null;
 
+    private AppStandbyController appStandbyController = null;
+
+    /**
+     * 配置文件监听.
+     */
+    private final FileObserver fileObserver;
+
     public MemData() {
+        // 初始化监听
+        fileObserver = new ConfigFileObserver(this);
         // 开始监听配置文件
         fileObserver.startWatching();
     }
 
     /**
-     * 等待应用未执行广播
+     * 等待应用未执行广播.
      *
      * @param packageName 包名
      */
@@ -68,7 +103,7 @@ public class MemData {
     }
 
     /**
-     * 应用是否正在执行广播
+     * 应用是否正在执行广播.
      *
      * @param packageName 包名
      */
@@ -79,7 +114,7 @@ public class MemData {
     }
 
     /**
-     * 应用广播开始
+     * 应用广播开始.
      *
      * @param packageName 包名
      */
@@ -93,7 +128,7 @@ public class MemData {
     }
 
     /**
-     * 应用广播结束
+     * 应用广播结束.
      *
      * @param packageName 包名
      */
@@ -112,7 +147,7 @@ public class MemData {
     }
 
     /**
-     * 是否目标APP
+     * 是否目标APP.
      *
      * @param packageName 包名
      */
@@ -139,12 +174,18 @@ public class MemData {
         return !whiteApps.contains(packageName);
     }
 
+    /**
+     * 是否目标进程，
+     *
+     * @param processRecord 进程
+     * @return 是否目标进程
+     */
     public boolean isTargetProcess(ProcessRecord processRecord) {
         return isTargetProcess(false, processRecord);
     }
 
     /**
-     * 是否目标进程
+     * 是否目标进程.
      *
      * @param ignoreApp     是否忽略APP判断
      * @param processRecord 进程
@@ -177,7 +218,7 @@ public class MemData {
 
 
     /**
-     * 获取目标进程
+     * 获取目标进程.
      *
      * @param packageName 包名
      * @return 目标进程列表
@@ -210,7 +251,7 @@ public class MemData {
 
 
     /**
-     * 设置冻结Token
+     * 设置冻结Token.
      *
      * @param packageName 应用包名
      * @param token       token
@@ -220,7 +261,7 @@ public class MemData {
     }
 
     /**
-     * 校验Token
+     * 校验Token.
      *
      * @param packageName 应用包名
      * @param value       值

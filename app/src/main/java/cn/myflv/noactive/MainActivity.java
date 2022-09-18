@@ -1,10 +1,14 @@
 package cn.myflv.noactive;
 
+import android.app.UiModeManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.topjohnwu.superuser.Shell;
 
@@ -47,6 +52,28 @@ public class MainActivity extends AppCompatActivity {
         initEditView();
         initSpinnerView();
         initListView();
+        initMenu();
+    }
+
+    private void initMenu() {
+        UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+        int nightMode = uiModeManager.getNightMode();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        if (nightMode == 2) {
+            toolbar.inflateMenu(R.menu.main_night);
+        } else {
+            toolbar.inflateMenu(R.menu.main);
+        }
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, SettingActivity.class);
+                startActivity(intent);
+                return false;
+            }
+        });
     }
 
     private void initSpinnerView() {

@@ -3,6 +3,7 @@ package cn.myflv.noactive.core.server;
 import android.os.Build;
 
 import cn.myflv.noactive.core.entity.FieldEnum;
+import cn.myflv.noactive.utils.PackageUtils;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
 
@@ -25,10 +26,12 @@ public class ProcessRecord {
             this.pid = XposedHelpers.getIntField(processRecord, FieldEnum.pid);
         }
         this.uid = XposedHelpers.getIntField(processRecord, FieldEnum.uid);
-        this.processName = (String) XposedHelpers.getObjectField(processRecord, FieldEnum.processName);
+
         this.userId = XposedHelpers.getIntField(processRecord, FieldEnum.userId);
         this.applicationInfo = new ApplicationInfo(XposedHelpers.getObjectField(processRecord, FieldEnum.info));
         this.packageName = applicationInfo.getPackageName();
+        String processName = (String) XposedHelpers.getObjectField(processRecord, FieldEnum.processName);
+        this.processName = PackageUtils.absoluteProcessName(packageName, processName);
     }
 
     public void setCurAdj(int curAdj) {

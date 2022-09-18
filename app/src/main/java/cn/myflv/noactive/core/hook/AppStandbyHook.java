@@ -1,0 +1,55 @@
+package cn.myflv.noactive.core.hook;
+
+import android.os.Build;
+
+import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.core.entity.MemData;
+import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.core.server.AppStandbyController;
+import de.robv.android.xposed.XC_MethodHook;
+
+public class AppStandbyHook extends MethodHook {
+    private final MemData memData;
+
+    public AppStandbyHook(ClassLoader classLoader, MemData memData) {
+        super(classLoader);
+        this.memData = memData;
+    }
+
+    @Override
+    public String getTargetClass() {
+        return ClassEnum.AppStandbyController;
+    }
+
+    @Override
+    public String getTargetMethod() {
+        return MethodEnum.onBootPhase;
+    }
+
+    @Override
+    public Object[] getTargetParam() {
+        return new Object[]{int.class};
+    }
+
+    @Override
+    public XC_MethodHook getTargetHook() {
+        return new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                AppStandbyController appStandbyController = new AppStandbyController(param.thisObject);
+                memData.setAppStandbyController(appStandbyController);
+            }
+        };
+    }
+
+    @Override
+    public int getMinVersion() {
+        return Build.VERSION_CODES.P;
+    }
+
+    @Override
+    public String successLog() {
+        return "Auto Standby";
+    }
+}

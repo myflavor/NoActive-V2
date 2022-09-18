@@ -33,14 +33,12 @@ public class FreezerConfig {
     public final static String V1 = "V1";
     public final static String lastLog = "last.log";
     public final static String currentLog = "current.log";
+    public final static String Debug = "debug";
+    public final static String Scheduled = "scheduled";
 
-    // public final static String Scheduled = "scheduled";
-
-    /*
     public static boolean isScheduledOn() {
         return isConfigOn(Scheduled);
     }
-     */
 
     public final static String[] listenConfig = {whiteAppConfig, whiteProcessConfig,
             killProcessConfig, blackSystemAppConfig, directAppConfig};
@@ -105,9 +103,6 @@ public class FreezerConfig {
                 return;
             }
         }
-        File source = new File(LogDir, currentLog);
-        File dest = new File(LogDir, lastLog);
-        moveFile(source, dest);
         for (String configName : listenConfig) {
             File config = new File(configDir, configName);
             if (!config.exists()) {
@@ -115,6 +110,12 @@ public class FreezerConfig {
                 Log.i("Init " + configName);
             }
         }
+    }
+
+    public static void cleanLog() {
+        File source = new File(LogDir, currentLog);
+        File dest = new File(LogDir, lastLog);
+        moveFile(source, dest);
     }
 
     public static void moveFile(File source, File dest) {

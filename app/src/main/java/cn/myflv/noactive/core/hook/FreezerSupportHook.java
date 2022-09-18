@@ -6,6 +6,9 @@ import cn.myflv.noactive.core.entity.ClassEnum;
 import cn.myflv.noactive.core.entity.MethodEnum;
 import de.robv.android.xposed.XC_MethodHook;
 
+/**
+ * Happy Freezer.
+ */
 public class FreezerSupportHook extends MethodHook {
 
     public FreezerSupportHook(ClassLoader classLoader) {
@@ -29,6 +32,7 @@ public class FreezerSupportHook extends MethodHook {
 
     @Override
     public XC_MethodHook getTargetHook() {
+        // 返回支持暂停已缓存
         return constantResult(true);
     }
 

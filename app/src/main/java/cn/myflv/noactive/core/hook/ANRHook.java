@@ -10,8 +10,14 @@ import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 
+/**
+ * ANR相关Hook.
+ */
 public class ANRHook extends MethodHook {
 
+    /**
+     * 内存数据
+     */
     private final MemData memData;
 
     public ANRHook(ClassLoader classLoader, MemData memData) {

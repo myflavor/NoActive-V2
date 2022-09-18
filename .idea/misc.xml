@@ -10,20 +10,38 @@
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-xhdpi/rounded_textview.xml" value="0.169" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-xhdpi/textview_black.xml" value="0.2385" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-xhdpi/textview_white.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-xxhdpi/circle_black.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-xxhdpi/textview_green.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-xxhdpi/textview_ignore.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-xxxhdpi/circle_black.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable-xxxhdpi/circle_white.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable/app_logp.xml" value="0.11" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2385" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable/rounded_editview.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable/shape_for_custom_spinner.xml" value="0.177" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable/textview_black.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable/textview_direct.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable/textview_green.xml" value="0.169" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/drawable/textview_white.xml" value="0.2385" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/activity_app_bar.xml" value="0.15989583333333332" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/activity_app_description.xml" value="0.2504528985507246" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/activity_app_info.xml" value="0.2504528985507246" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/activity_app_list.xml" value="0.1453125" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/activity_filter.xml" value="0.15989583333333332" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/app_item.xml" value="0.5" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/app_item.xml" value="0.625" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/process_item.xml" value="0.2504528985507246" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/shape_for_custom_spinner.xml" value="0.15989583333333332" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/spinner_border.xml" value="0.15989583333333332" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/spinner_item.xml" value="0.1453125" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/layout/spinner_layout.xml" value="0.15989583333333332" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/menu/main-night.xml" value="0.325" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/menu/main.xml" value="0.325" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/menu/main_night.xml" value="0.325" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/mipmap-anydpi-v26/ic_alipay.xml" value="0.1065" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/mipmap-anydpi-v26/ic_gh.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/mipmap-anydpi-v26/ic_head.xml" value="0.2385" />
+        <entry key="..\:/Projects/Android/NoActive/app/src/main/res/mipmap-anydpi-v26/ic_head_round.xml" value="0.169" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.169" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.169" />
         <entry key="..\:/Projects/Android/NoActive/app/src/main/res/mipmap-anydpi-v26/ic_logo.xml" value="0.2385" />

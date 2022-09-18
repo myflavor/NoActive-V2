@@ -6,6 +6,9 @@ import cn.myflv.noactive.core.entity.ClassEnum;
 import cn.myflv.noactive.core.entity.MethodEnum;
 import de.robv.android.xposed.XC_MethodHook;
 
+/**
+ * 禁用暂停执行已缓存Hook.
+ */
 public class CacheFreezerHook extends MethodHook {
 
 
@@ -30,6 +33,7 @@ public class CacheFreezerHook extends MethodHook {
 
     @Override
     public XC_MethodHook getTargetHook() {
+        // 返回不使用暂停执行已缓存
         return constantResult(false);
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="foreground">#000000</color>
+    <color name="foreground">#121212</color>
     <color name="rounded_pop">#333333</color>
     <color name="menu">#FFFFFF</color>
     <color name="author_tips">#ACACAC</color>

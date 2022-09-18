@@ -12,6 +12,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  * 电量和性能Hook
  */
 public class PowerKeeperHook extends AppHook {
+
     public PowerKeeperHook(XC_LoadPackage.LoadPackageParam packageParam) {
         super(packageParam);
     }
@@ -28,6 +29,7 @@ public class PowerKeeperHook extends AppHook {
 
     @Override
     public void hook() {
+        // 禁用Millet
         try {
             XposedHelpers.findAndHookMethod(ClassEnum.MilletConfig, packageParam.classLoader, MethodEnum.getEnable, Context.class, XC_MethodReplacement.returnConstant(false));
             log("Disable millet");
@@ -36,7 +38,7 @@ public class PowerKeeperHook extends AppHook {
         } catch (Throwable throwable) {
             log("Disable millet failed: " + throwable.getMessage());
         }
-
+        // 阻止杀进程
         try {
             XposedHelpers.findAndHookMethod(ClassEnum.ProcessManager, packageParam.classLoader, MethodEnum.kill, ClassEnum.ProcessConfig, XC_MethodReplacement.returnConstant(false));
             log("Disable kill process");

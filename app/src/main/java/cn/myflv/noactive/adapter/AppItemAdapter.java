@@ -38,6 +38,23 @@ public class AppItemAdapter extends ArrayAdapter<AppItem> {
         white_app.setVisibility(appItem.isWhite() ? View.VISIBLE : View.GONE);
         TextView black_app = convertView.findViewById(R.id.black_app);
         black_app.setVisibility(appItem.isBlack() ? View.VISIBLE : View.GONE);
+
+        TextView direct_app = convertView.findViewById(R.id.direct_app);
+        direct_app.setVisibility((!appItem.isWhite() && appItem.isDirect()) ? View.VISIBLE : View.GONE);
+
+        TextView other_config = convertView.findViewById(R.id.other_config);
+        boolean otherConfig = appItem.getWhiteProcCount() + appItem.getKillProcCount() > 0;
+        other_config.setVisibility(otherConfig ? View.VISIBLE : View.GONE);
+        /*
+        TextView kill_proc = convertView.findViewById(R.id.kill_proc);
+        kill_proc.setText(String.valueOf(appItem.getKillProcCount()));
+        kill_proc.setVisibility((appItem.getKillProcCount() > 0) ? View.VISIBLE : View.GONE);
+
+        TextView white_proc = convertView.findViewById(R.id.white_proc);
+        white_proc.setText(String.valueOf(appItem.getWhiteProcCount()));
+        white_proc.setVisibility((appItem.getWhiteProcCount() > 0) ? View.VISIBLE : View.GONE);
+         */
+
         appIconImage.setImageDrawable(appItem.getAppIcon());
         appNameText.setText(appItem.getAppName());
         packageNameText.setText(appItem.getPackageName());

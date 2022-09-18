@@ -8,8 +8,16 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  */
 public abstract class AppHook {
 
+    /**
+     * 载入应用参数.
+     */
     public final XC_LoadPackage.LoadPackageParam packageParam;
 
+    /**
+     * 执行Hook.
+     *
+     * @param packageParam 载入应用参数
+     */
     public AppHook(XC_LoadPackage.LoadPackageParam packageParam) {
         String targetPackageName = getTargetPackageName();
         if (targetPackageName == null) {
@@ -27,16 +35,26 @@ public abstract class AppHook {
         }
     }
 
-    //目标应用包名
+    /**
+     * @return 目标包名
+     */
     public abstract String getTargetPackageName();
 
-    // 目标应用名称
+    /**
+     * @return 目标应用名称
+     */
     public abstract String getTargetAppName();
 
-    // Hook处理方法
+    /**
+     * 真正的Hook实现
+     */
     public abstract void hook();
 
-    // 集成Log
+    /**
+     * 打印日志.
+     *
+     * @param msg 消息
+     */
     public void log(String msg) {
         String targetAppName = getTargetAppName();
         if (targetAppName == null) {

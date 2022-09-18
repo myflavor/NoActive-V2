@@ -14,6 +14,7 @@ public class ConfigFileObserver extends FileObserver {
         super(FreezerConfig.ConfigDir);
         this.memData = memData;
         FreezerConfig.checkAndInit();
+        FreezerConfig.cleanLog();
         reload();
     }
 

@@ -131,6 +131,15 @@ public class FreezeUtils {
         setFreezeAction(pid, uid, true);
     }
 
+    public static void kill(List<ProcessRecord> processRecords) {
+        if (processRecords == null || processRecords.isEmpty()) {
+            return;
+        }
+        for (ProcessRecord processRecord : processRecords) {
+            kill(processRecord);
+        }
+    }
+
     public static void kill(ProcessRecord processRecord) {
         Process.killProcess(processRecord.getPid());
         Log.d(processRecord.getProcessName() + " kill");

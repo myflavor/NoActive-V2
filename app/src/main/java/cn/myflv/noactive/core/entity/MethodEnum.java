@@ -1,5 +1,8 @@
 package cn.myflv.noactive.core.entity;
 
+/**
+ * 方法枚举.
+ */
 public interface MethodEnum {
     String updateActivityUsageStats = "updateActivityUsageStats";
     String deliverToRegisteredReceiverLocked = "deliverToRegisteredReceiverLocked";
@@ -40,4 +43,14 @@ public interface MethodEnum {
     String writeNode = "writeNode";
     String setFreezeAction = "setFreezeAction";
     String isEmbedded = "isEmbedded";
+    String doAddInternal = "doAddInternal";
+    String doRemoveInternal = "doRemoveInternal";
+    String addPidLocked = "addPidLocked";
+    String removePidLocked = "removePidLocked";
+    String put = "put";
+    String remove = "remove";
+    String onBootPhase = "onBootPhase";
+    String forceIdleState = "forceIdleState";
+    String setUidOnMeteredNetworkList = "setUidOnMeteredNetworkList";
+    String systemReady = "systemReady";
 }
