@@ -30,4 +30,7 @@ public interface FieldEnum {
     String mLock = "mLock";
     String mTag = "mTag";
     String intent = "intent";
+    String mNetdService = "mNetdService";
+    String start = "start";
+    String stop = "stop";
 }

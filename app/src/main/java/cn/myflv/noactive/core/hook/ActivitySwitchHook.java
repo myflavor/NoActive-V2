@@ -117,7 +117,7 @@ public class ActivitySwitchHook extends MethodHook {
                 Log.e("scheduled", throwable);
             }
         }, 1);
-        Log.i("Enable scheduled");
+        Log.i("Interval unfreeze");
     }
 
     @Override
@@ -292,6 +292,7 @@ public class ActivitySwitchHook extends MethodHook {
             Log.d(packageName + " event is updated");
             return;
         }
+        ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
         // 存放杀死进程
         List<ProcessRecord> killProcessList = new ArrayList<>();
         // 防止同时解冻冻结
@@ -313,9 +314,13 @@ public class ActivitySwitchHook extends MethodHook {
             }
             FreezeUtils.kill(killProcessList);
             // 如果白名单进程不包含主进程就释放唤醒锁
-            if (!memData.getWhiteProcessList().contains(packageName)) {
-                memData.getPowerManagerService().release(packageName);
-                memData.getAppStandbyController().forceIdleState(packageName, true);
+            if (memData.getWhiteProcessList().contains(packageName)) {
+                return;
+            }
+            memData.getPowerManagerService().release(packageName);
+            memData.getAppStandbyController().forceIdleState(packageName, true);
+            if (!memData.getSocketApps().contains(packageName)) {
+                memData.getNetworkManagementService().socketDestroy(applicationInfo);
             }
 
         }
@@ -343,11 +348,11 @@ public class ActivitySwitchHook extends MethodHook {
 
 
     /**
-     * 收到Binder的回调.
+     * 临时解冻.
      *
      * @param uid 应用ID
      */
-    public void binderReceived(int uid) {
+    public void temporaryUnfreeze(int uid, String reason) {
         if (uid < 10000) {
             return;
         }
@@ -359,7 +364,7 @@ public class ActivitySwitchHook extends MethodHook {
         if (!memData.getFreezerAppSet().contains(packageName)) {
             return;
         }
-        Log.i(packageName + " received sync binder");
+        Log.i(packageName + " " + reason);
         Log.d(packageName + " unFreezer all");
         onResume(true, packageName);
         onPause(true, packageName, 3000);

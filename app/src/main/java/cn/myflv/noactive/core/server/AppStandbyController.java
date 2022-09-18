@@ -17,7 +17,7 @@ public class AppStandbyController {
     public void forceIdleState(String packageName, boolean idle) {
         try {
             XposedHelpers.callMethod(appStandbyController, MethodEnum.forceIdleState, packageName, ActivityManagerService.MAIN_USER, idle);
-            Log.i(packageName + " " + (idle ? "idle" : "active"));
+            Log.d(packageName + " " + (idle ? "idle" : "active"));
         } catch (Throwable throwable) {
             Log.e("forceIdleState", throwable);
         }

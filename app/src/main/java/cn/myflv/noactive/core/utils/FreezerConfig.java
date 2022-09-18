@@ -20,6 +20,7 @@ public class FreezerConfig {
     public final static String LogDir = ConfigDir + "/log";
     public final static String whiteAppConfig = "whiteApp.conf";
     public final static String directAppConfig = "directApp.conf";
+    public final static String socketAppConfig = "socketApp.conf";
     public final static String blackSystemAppConfig = "blackSystemApp.conf";
     public final static String whiteProcessConfig = "whiteProcess.conf";
     public final static String killProcessConfig = "killProcess.conf";
@@ -41,7 +42,7 @@ public class FreezerConfig {
     }
 
     public final static String[] listenConfig = {whiteAppConfig, whiteProcessConfig,
-            killProcessConfig, blackSystemAppConfig, directAppConfig};
+            killProcessConfig, blackSystemAppConfig, directAppConfig, socketAppConfig};
 
 
     public static boolean isConfigOn(String configName) {

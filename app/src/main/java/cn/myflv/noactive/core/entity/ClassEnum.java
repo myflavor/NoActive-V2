@@ -47,4 +47,5 @@ public interface ClassEnum {
     String UsageStatsService = "com.android.server.usage.UsageStatsService";
     String AppStandbyController = "com.android.server.usage.AppStandbyController";
     String NetworkManagementService = "com.android.server.NetworkManagementService";
+    String UidRangeParcel = "android.net.UidRangeParcel";
 }

@@ -13,9 +13,10 @@ public class AppItem {
     private String packageName;
     private Drawable appIcon;
     private PackageInfo packageInfo;
-    private boolean isWhite;
-    private boolean isBlack;
-    private boolean isDirect;
+    private boolean white;
+    private boolean black;
+    private boolean direct;
+    private boolean socket;
     private int killProcCount;
     private int whiteProcCount;
 }

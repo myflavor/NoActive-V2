@@ -44,6 +44,19 @@
                 android:textSize="11sp" />
 
 
+            <TextView
+                android:id="@+id/direct_app"
+                android:textStyle="bold"
+                android:textColor="#FF8C00"
+                android:layout_marginStart="5dp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/textview_direct"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="3dp"
+                android:text="@string/direct_app"
+                android:textSize="11sp" />
 
 
             <TextView
@@ -61,19 +74,6 @@
                 android:textSize="11sp" />
 
 
-            <TextView
-                android:id="@+id/direct_app"
-                android:textStyle="bold"
-                android:textColor="#FF8C00"
-                android:layout_marginStart="5dp"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/textview_direct"
-                android:paddingHorizontal="6dp"
-                android:paddingVertical="3dp"
-                android:text="@string/direct_app"
-                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/other_config"

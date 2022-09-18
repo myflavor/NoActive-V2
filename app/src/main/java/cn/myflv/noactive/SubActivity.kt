@@ -57,6 +57,15 @@ class SubActivity : MIUIActivity() {
                     }
                 }, dataBindingRecv = binding.getRecv(if (appInfo.system) 1 else 2))
 
+
+                TextWithSwitch(TextV("保持连接"), SwitchV("binding", defValue = appInfo.socket) {
+                    if (it) {
+                        ConfigUtils.addIfNot(FreezerConfig.socketAppConfig, packageName)
+                    } else {
+                        ConfigUtils.delIfExist(FreezerConfig.socketAppConfig, packageName)
+                    }
+                }, dataBindingRecv = binding.getRecv(if (appInfo.system) 1 else 2))
+
                 for (proc in appInfo.processSet) {
                     TextWithSpinner(TextV(proc, textSize = 15f), SpinnerV(if (appInfo.killProcessSet.contains(proc)) "杀死" else (if (appInfo.whiteProcessSet.contains(proc)) "白名单" else "冻结")) {
                         add("冻结") {

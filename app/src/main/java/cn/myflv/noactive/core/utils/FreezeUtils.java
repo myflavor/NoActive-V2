@@ -5,12 +5,8 @@ package cn.myflv.noactive.core.utils;
 
 import android.os.Process;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.myflv.noactive.core.entity.ClassEnum;
@@ -24,7 +20,7 @@ public class FreezeUtils {
 
     private static final int FREEZE_ACTION = 1;
     private static final int UNFREEZE_ACTION = 0;
-
+    public static final String CGROUP_PATH="/sys/fs/cgroup";
     private static final String V1_FREEZER_FROZEN_PORCS = "/sys/fs/cgroup/freezer/perf/frozen/cgroup.procs";
     private static final String V1_FREEZER_THAWED_PORCS = "/sys/fs/cgroup/freezer/perf/thawed/cgroup.procs";
 
@@ -61,31 +57,6 @@ public class FreezeUtils {
         }
     }
 
-
-    public static List<Integer> getFrozenPids() {
-        List<Integer> pids = new ArrayList<>();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(V1_FREEZER_FROZEN_PORCS));
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                try {
-                    pids.add(Integer.parseInt(line));
-                } catch (NumberFormatException ignored) {
-                }
-            }
-            reader.close();
-        } catch (IOException ignored) {
-        }
-        return pids;
-    }
-
-    public static boolean isFrozonPid(int pid) {
-        return getFrozenPids().contains(pid);
-    }
-
     public static void freezePid(int pid) {
         writeNode(V1_FREEZER_FROZEN_PORCS, pid);
     }
@@ -100,9 +71,13 @@ public class FreezeUtils {
             writer.write(Integer.toString(val));
             writer.close();
         } catch (FileNotFoundException e) {
-            Log.e("Freezer V1 not supported");
+            if (val == FREEZE_ACTION) {
+                Log.e("Freezer V1 not supported");
+            }
         } catch (Exception e) {
-            Log.e("Freezer V1 failed: " + e.getMessage());
+            if (val == FREEZE_ACTION) {
+                Log.e("Freezer V1 failed: " + e.getMessage());
+            }
         }
     }
 
@@ -117,9 +92,13 @@ public class FreezeUtils {
             }
             writer.close();
         } catch (FileNotFoundException e) {
-            Log.e("Freezer V2 not supported");
+            if (action) {
+                Log.e("Freezer V2 not supported");
+            }
         } catch (Exception e) {
-            Log.e("Freezer V2 failed: " + e.getMessage());
+            if (action) {
+                Log.e("Freezer V2 failed: " + e.getMessage());
+            }
         }
     }
 
@@ -162,7 +141,7 @@ public class FreezeUtils {
                 freezePid(processRecord.getPid());
             }
         }
-        Log.d(processRecord.getProcessName() + " freezer");
+        Log.d(processRecord.getProcessName() + " freeze");
     }
 
     public void unFreezer(List<ProcessRecord> processRecords) {
@@ -191,7 +170,7 @@ public class FreezeUtils {
                 thawPid(processRecord.getPid());
             }
         }
-        Log.d(processRecord.getProcessName() + " unFreezer");
+        Log.d(processRecord.getProcessName() + " unfreeze");
     }
 
     public void setProcessFrozen(int pid, int uid, boolean frozen) {

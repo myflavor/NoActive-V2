@@ -3,32 +3,25 @@ package cn.myflv.noactive.core.hook;
 import cn.myflv.noactive.core.entity.ClassEnum;
 import cn.myflv.noactive.core.entity.MemData;
 import cn.myflv.noactive.core.entity.MethodEnum;
-import cn.myflv.noactive.core.server.PowerManagerService;
+import cn.myflv.noactive.core.server.NetworkManagementService;
 import de.robv.android.xposed.XC_MethodHook;
 
-/**
- * PMS启动Hook.
- */
-public class PowerManagerHook extends MethodHook {
-
-    /**
-     * 数据类.
-     */
+public class NetworkManagerHook extends MethodHook {
     private final MemData memData;
 
-    public PowerManagerHook(ClassLoader classLoader, MemData memData) {
+    public NetworkManagerHook(ClassLoader classLoader, MemData memData) {
         super(classLoader);
         this.memData = memData;
     }
 
     @Override
     public String getTargetClass() {
-        return ClassEnum.PowerManagerService;
+        return ClassEnum.NetworkManagementService;
     }
 
     @Override
     public String getTargetMethod() {
-        return MethodEnum.onStart;
+        return MethodEnum.systemReady;
     }
 
     @Override
@@ -42,9 +35,8 @@ public class PowerManagerHook extends MethodHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                PowerManagerService powerManagerService = new PowerManagerService(param.thisObject);
-                // 存进数据类
-                memData.setPowerManagerService(powerManagerService);
+                NetworkManagementService networkManagementService = new NetworkManagementService(classLoader, param.thisObject);
+                memData.setNetworkManagementService(networkManagementService);
             }
         };
     }
@@ -56,7 +48,6 @@ public class PowerManagerHook extends MethodHook {
 
     @Override
     public String successLog() {
-        return "Auto Wakelock";
+        return "Auto block network";
     }
-
 }

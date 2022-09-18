@@ -53,4 +53,6 @@ public interface MethodEnum {
     String forceIdleState = "forceIdleState";
     String setUidOnMeteredNetworkList = "setUidOnMeteredNetworkList";
     String systemReady = "systemReady";
+    String socketDestroy = "socketDestroy";
+    String reportNet = "reportNet";
 }

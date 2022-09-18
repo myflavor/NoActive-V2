@@ -14,6 +14,7 @@ import java.util.Set;
 
 import cn.myflv.noactive.core.server.ActivityManagerService;
 import cn.myflv.noactive.core.server.AppStandbyController;
+import cn.myflv.noactive.core.server.NetworkManagementService;
 import cn.myflv.noactive.core.server.PowerManagerService;
 import cn.myflv.noactive.core.server.ProcessList;
 import cn.myflv.noactive.core.server.ProcessRecord;
@@ -58,6 +59,10 @@ public class MemData {
      */
     private Set<String> killProcessList = new HashSet<>();
     /**
+     * 保持连接.
+     */
+    private Set<String> socketApps = new HashSet<>();
+    /**
      * 已冻结APP.
      */
     private final Set<String> freezerAppSet = Collections.synchronizedSet(FreezerConfig.isScheduledOn() ? new LinkedHashSet<>() : new HashSet<>());
@@ -76,6 +81,8 @@ public class MemData {
     private ActivityManagerService activityManagerService = null;
 
     private AppStandbyController appStandbyController = null;
+
+    private NetworkManagementService networkManagementService = null;
 
     /**
      * 配置文件监听.

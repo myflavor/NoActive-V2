@@ -108,16 +108,16 @@ public class ProcessAddHook extends MethodHook {
         if (processList.isEmpty()) {
             return;
         }
+        // 冻结APP添加
+        memData.getFreezerAppSet().add(packageName);
+        // 等待广播休眠
+        memData.waitBroadcastIdle(packageName);
         // 锁包名
         synchronized (ThreadUtils.getAppLock(packageName)) {
             // 再次确定不在前台
             if (memData.getForegroundAppSet().contains(packageName)) {
                 return;
             }
-            // 冻结APP添加
-            memData.getFreezerAppSet().add(packageName);
-            // 等待广播休眠
-            memData.waitBroadcastIdle(packageName);
             // 遍历
             for (ProcessRecord processRecord : processList) {
                 // 冻结

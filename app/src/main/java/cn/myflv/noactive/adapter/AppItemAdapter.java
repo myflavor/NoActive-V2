@@ -43,7 +43,7 @@ public class AppItemAdapter extends ArrayAdapter<AppItem> {
         direct_app.setVisibility((!appItem.isWhite() && appItem.isDirect()) ? View.VISIBLE : View.GONE);
 
         TextView other_config = convertView.findViewById(R.id.other_config);
-        boolean otherConfig = appItem.getWhiteProcCount() + appItem.getKillProcCount() > 0;
+        boolean otherConfig = (appItem.getWhiteProcCount() + appItem.getKillProcCount() > 0) || appItem.isSocket();
         other_config.setVisibility(otherConfig ? View.VISIBLE : View.GONE);
         /*
         TextView kill_proc = convertView.findViewById(R.id.kill_proc);

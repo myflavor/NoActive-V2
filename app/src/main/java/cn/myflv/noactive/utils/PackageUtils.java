@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import cn.myflv.noactive.core.utils.FreezerConfig;
 import cn.myflv.noactive.entity.AppInfo;
 import cn.myflv.noactive.entity.AppItem;
-import lombok.val;
 
 public class PackageUtils {
 
@@ -41,6 +40,7 @@ public class PackageUtils {
         Set<String> blackAppSet = ConfigUtils.get(FreezerConfig.blackSystemAppConfig);
         Set<String> whiteAppSet = ConfigUtils.get(FreezerConfig.whiteAppConfig);
         Set<String> directAppSet = ConfigUtils.get(FreezerConfig.directAppConfig);
+        Set<String> socketAppSet = ConfigUtils.get(FreezerConfig.socketAppConfig);
         Set<String> killProcessSet = ConfigUtils.get(FreezerConfig.killProcessConfig);
         Set<String> whiteProcessSet = ConfigUtils.get(FreezerConfig.whiteProcessConfig);
         Map<String, List<String>> killProcessMap = killProcessSet.stream().collect(Collectors.groupingBy(proc -> proc.split(":")[0]));
@@ -70,14 +70,15 @@ public class PackageUtils {
             boolean isWhite = whiteAppSet.contains(packageName);
             boolean isBlack = blackAppSet.contains(packageName);
             boolean isDirect = directAppSet.contains(packageName);
+            boolean isSocket = socketAppSet.contains(packageName);
             int killProcCount = killProcessMap.computeIfAbsent(packageName, k -> new ArrayList<>()).size();
             int whiteProcCount = whiteProcessMap.computeIfAbsent(packageName, k -> new ArrayList<>()).size();
-            AppItem appItem = new AppItem(appName, packageName, appIcon, installedPackage, isWhite, isBlack, isDirect, killProcCount, whiteProcCount);
+            AppItem appItem = new AppItem(appName, packageName, appIcon, installedPackage, isWhite, isBlack, isDirect, isSocket, killProcCount, whiteProcCount);
             appItemList.add(appItem);
         }
         if (appItemList.size() > 0) {
             appItemList = appItemList.stream()
-                    .sorted(Comparator.comparing(AppItem::isWhite).thenComparing(AppItem::isDirect).thenComparing(AppItem::isBlack).thenComparing(AppItem::getWhiteProcCount).thenComparing(AppItem::getKillProcCount).reversed())
+                    .sorted(Comparator.comparing(AppItem::isWhite).thenComparing(AppItem::isDirect).thenComparing(AppItem::isBlack).thenComparing(AppItem::isSocket).thenComparing(AppItem::getWhiteProcCount).thenComparing(AppItem::getKillProcCount).reversed())
                     .collect(Collectors.toList());
         }
         return appItemList;
@@ -118,8 +119,10 @@ public class PackageUtils {
             }
             Set<String> whiteAppConfig = ConfigUtils.get(FreezerConfig.whiteAppConfig);
             Set<String> directAppConfig = ConfigUtils.get(FreezerConfig.directAppConfig);
+            Set<String> socketAppConfig = ConfigUtils.get(FreezerConfig.socketAppConfig);
             appInfo.setWhite(whiteAppConfig.contains(packageName));
             appInfo.setDirect(directAppConfig.contains(packageName));
+            appInfo.setSocket(socketAppConfig.contains(packageName));
             Set<String> whiteProcessConfig = ConfigUtils.get(FreezerConfig.whiteProcessConfig);
             appInfo.setWhiteProcessSet(whiteProcessConfig);
             Set<String> killProcessConfig = ConfigUtils.get(FreezerConfig.killProcessConfig);

@@ -10,22 +10,21 @@ import cn.myflv.noactive.core.utils.ThreadUtils;
 import de.robv.android.xposed.XC_MethodHook;
 
 /**
- * Binder通信Hook.
+ * 网络接收Hook.
  */
-public class BinderTransHook extends MethodHook {
-
-    private final static String REASON = "received sync binder";
+public class NetReceiveHook extends MethodHook {
+    private final static String REASON = "received socket data";
     /**
      * 正在Binder通信
      */
-    private final Set<Integer> binderTransSet = Collections.synchronizedSet(new HashSet<>());
+    private final Set<Integer> netReceiveSet = Collections.synchronizedSet(new HashSet<>());
 
     /**
      * 应用切换Hook
      */
     private final ActivitySwitchHook activitySwitchHook;
 
-    public BinderTransHook(ClassLoader classLoader, ActivitySwitchHook activitySwitchHook) {
+    public NetReceiveHook(ClassLoader classLoader, ActivitySwitchHook activitySwitchHook) {
         super(classLoader);
         this.activitySwitchHook = activitySwitchHook;
     }
@@ -37,12 +36,12 @@ public class BinderTransHook extends MethodHook {
 
     @Override
     public String getTargetMethod() {
-        return MethodEnum.reportBinderTrans;
+        return MethodEnum.reportNet;
     }
 
     @Override
     public Object[] getTargetParam() {
-        return new Object[]{int.class, int.class, int.class, int.class, int.class, boolean.class, long.class, int.class};
+        return new Object[]{int.class, long.class};
     }
 
     @Override
@@ -53,20 +52,14 @@ public class BinderTransHook extends MethodHook {
                 super.beforeHookedMethod(param);
                 Object[] args = param.args;
                 int uid = (int) args[0];
-                // 是否异步
-                boolean isOneway = (boolean) args[5];
-                if (isOneway) {
-                    // 异步不处理
-                    return;
-                }
                 // 新开线程，冻结需要3s，会ANR
                 ThreadUtils.newThread(() -> {
                     // 尝试添加UID，如果添加成功则说明没有正在Binder解冻
-                    if (binderTransSet.add(uid)) {
+                    if (netReceiveSet.add(uid)) {
                         // 通知应用切换收到Binder
                         activitySwitchHook.temporaryUnfreeze(uid, REASON);
                         // 执行完毕移除
-                        binderTransSet.remove(uid);
+                        netReceiveSet.remove(uid);
                     }
                 });
             }
@@ -80,7 +73,7 @@ public class BinderTransHook extends MethodHook {
 
     @Override
     public String successLog() {
-        return "Perfect Freezer";
+        return "Network Awake";
     }
 
     @Override
