@@ -16,15 +16,15 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            app:titleTextAppearance="@style/Toolbar.TitleText"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/Theme.NoActive.PopupOverlay"
             app:theme="@style/Theme.NoActive.MenuColor"
             app:title="@string/app_name"
+            app:titleTextAppearance="@style/Toolbar.TitleText"
             app:titleTextColor="?attr/colorSecondary" />
 
         <include layout="@layout/activity_filter" />

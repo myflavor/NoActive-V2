@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import cn.myflv.noactive.constant.CommonConstants;
 import cn.myflv.noactive.core.utils.FreezerConfig;
 import cn.myflv.noactive.entity.AppInfo;
 import cn.myflv.noactive.entity.AppItem;
@@ -66,6 +67,9 @@ public class PackageUtils {
                 continue;
             }
             String packageName = installedPackage.packageName;
+            if (CommonConstants.NOACTIVE_PACKAGE_NAME.equals(packageName)) {
+                continue;
+            }
             Drawable appIcon = applicationInfo.loadIcon(packageManager);
             boolean isWhite = whiteAppSet.contains(packageName);
             boolean isBlack = blackAppSet.contains(packageName);

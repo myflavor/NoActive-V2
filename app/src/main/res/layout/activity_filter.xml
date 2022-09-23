@@ -22,9 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:entries="@array/app_filter"
+        android:popupBackground="@drawable/shape_for_custom_spinner"
         android:textAlignment="textStart"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:popupBackground="@drawable/shape_for_custom_spinner"
         app:layout_constraintTop_toBottomOf="@id/search_txt" />
 
 

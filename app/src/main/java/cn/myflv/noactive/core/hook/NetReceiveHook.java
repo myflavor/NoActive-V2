@@ -6,7 +6,7 @@ import java.util.Set;
 
 import cn.myflv.noactive.core.entity.ClassEnum;
 import cn.myflv.noactive.core.entity.MethodEnum;
-import cn.myflv.noactive.core.utils.ThreadUtils;
+import cn.myflv.noactive.core.handler.FreezerHandler;
 import de.robv.android.xposed.XC_MethodHook;
 
 /**
@@ -22,11 +22,11 @@ public class NetReceiveHook extends MethodHook {
     /**
      * 应用切换Hook
      */
-    private final ActivitySwitchHook activitySwitchHook;
+    private final FreezerHandler freezerHandler;
 
-    public NetReceiveHook(ClassLoader classLoader, ActivitySwitchHook activitySwitchHook) {
+    public NetReceiveHook(ClassLoader classLoader, FreezerHandler freezerHandler) {
         super(classLoader);
-        this.activitySwitchHook = activitySwitchHook;
+        this.freezerHandler = freezerHandler;
     }
 
     @Override
@@ -52,16 +52,7 @@ public class NetReceiveHook extends MethodHook {
                 super.beforeHookedMethod(param);
                 Object[] args = param.args;
                 int uid = (int) args[0];
-                // 新开线程，冻结需要3s，会ANR
-                ThreadUtils.newThread(() -> {
-                    // 尝试添加UID，如果添加成功则说明没有正在Binder解冻
-                    if (netReceiveSet.add(uid)) {
-                        // 通知应用切换收到Binder
-                        activitySwitchHook.temporaryUnfreeze(uid, REASON);
-                        // 执行完毕移除
-                        netReceiveSet.remove(uid);
-                    }
-                });
+                freezerHandler.temporaryUnfreezeIfNeed(uid, REASON);
             }
         };
     }

@@ -1,6 +1,7 @@
 package cn.myflv.noactive.core.app;
 
 import cn.myflv.noactive.core.entity.MemData;
+import cn.myflv.noactive.core.handler.FreezerHandler;
 import cn.myflv.noactive.core.hook.ANRHook;
 import cn.myflv.noactive.core.hook.ActivitySwitchHook;
 import cn.myflv.noactive.core.hook.AppStandbyHook;
@@ -8,16 +9,15 @@ import cn.myflv.noactive.core.hook.BinderTransHook;
 import cn.myflv.noactive.core.hook.BroadcastDeliverHook;
 import cn.myflv.noactive.core.hook.CacheFreezerHook;
 import cn.myflv.noactive.core.hook.FreezerSupportHook;
+import cn.myflv.noactive.core.hook.GreezeHook;
 import cn.myflv.noactive.core.hook.NetReceiveHook;
 import cn.myflv.noactive.core.hook.NetworkManagerHook;
 import cn.myflv.noactive.core.hook.PowerManagerHook;
-import cn.myflv.noactive.core.hook.ProcessAddHook;
 import cn.myflv.noactive.core.hook.ProcessRemoveHook;
 import cn.myflv.noactive.core.hook.TaskTrimHook;
 import cn.myflv.noactive.core.utils.FreezeUtils;
 import cn.myflv.noactive.core.utils.Log;
 import cn.myflv.noactive.core.utils.ThreadUtils;
-import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 /**
@@ -47,14 +47,17 @@ public class AndroidHook extends AppHook {
 
             // 加载内存配置
             MemData memData = new MemData();
-            FreezeUtils freezeUtils = new FreezeUtils(classLoader);
 
             new PowerManagerHook(classLoader, memData);
             new AppStandbyHook(classLoader, memData);
             new NetworkManagerHook(classLoader, memData);
+            // new ActivityManagerHook(classLoader, memData);
+
+            FreezeUtils freezeUtils = new FreezeUtils(classLoader, memData);
+            FreezerHandler freezerHandler = new FreezerHandler(classLoader, memData, freezeUtils);
 
             // Hook 切换事件
-            ActivitySwitchHook activitySwitchHook = new ActivitySwitchHook(classLoader, memData, freezeUtils);
+            new ActivitySwitchHook(classLoader, memData, freezerHandler, freezeUtils);
 
             // Hook 广播分发
             new BroadcastDeliverHook(classLoader, memData);
@@ -64,14 +67,16 @@ public class AndroidHook extends AppHook {
 
             new TaskTrimHook(classLoader);
 
-            new BinderTransHook(classLoader, activitySwitchHook);
+            new BinderTransHook(classLoader, freezerHandler);
 
-            new NetReceiveHook(classLoader, activitySwitchHook);
+            new GreezeHook(classLoader, memData);
+
+            new NetReceiveHook(classLoader, freezerHandler);
 
             // 进程移除监听
-            new ProcessRemoveHook(classLoader, memData, freezeUtils);
+            // new ProcessRemoveHook(classLoader, memData, freezeUtils);
             // 进程新增监听
-            new ProcessAddHook(classLoader, memData, freezeUtils);
+            // new ProcessAddHook(classLoader, memData, freezeUtils);
 
             // Hook 禁用暂停执行
             new CacheFreezerHook(classLoader);

@@ -8,6 +8,7 @@ import cn.myflv.noactive.core.entity.MethodEnum;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.utils.FreezeUtils;
 import cn.myflv.noactive.core.utils.Log;
+import cn.myflv.noactive.utils.BaseFreezeUtils;
 import de.robv.android.xposed.XC_MethodHook;
 
 /**
@@ -69,9 +70,11 @@ public class ProcessRemoveHook extends MethodHook {
                 if (!memData.getFreezerAppSet().contains(processRecord.getPackageName())) {
                     return;
                 }
-                Log.d(processRecord.getProcessName() + " process removed");
-                // 解冻
-                freezeUtils.unFreezer(processRecord);
+                Log.i(processRecord.getProcessName() + " process removed");
+                if (freezeUtils.isUseV1()) {
+                    // 解冻
+                    freezeUtils.unFreezer(processRecord);
+                }
             }
         };
     }

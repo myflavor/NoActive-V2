@@ -1,6 +1,8 @@
 package cn.myflv.noactive.core.entity;
 
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.os.FileObserver;
 
 import java.util.ArrayList;
@@ -12,8 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.myflv.noactive.constant.CommonConstants;
 import cn.myflv.noactive.core.server.ActivityManagerService;
 import cn.myflv.noactive.core.server.AppStandbyController;
+import cn.myflv.noactive.core.server.GreezeManagerService;
 import cn.myflv.noactive.core.server.NetworkManagementService;
 import cn.myflv.noactive.core.server.PowerManagerService;
 import cn.myflv.noactive.core.server.ProcessList;
@@ -31,13 +35,17 @@ import lombok.Data;
 public class MemData {
 
     /**
-     * 冻结Token.
-     */
-    private final Map<String, Long> freezerTokenMap = Collections.synchronizedMap(new HashMap<>());
-    /**
      * 正在执行广播的APP.
      */
     private final Map<String, Integer> broadcastAppMap = new HashMap<>();
+    /**
+     * 已冻结APP.
+     */
+    private final Set<String> freezerAppSet = Collections.synchronizedSet(FreezerConfig.isScheduledOn() ? new LinkedHashSet<>() : new HashSet<>());
+    /**
+     * 配置文件监听.
+     */
+    private final FileObserver fileObserver;
     /**
      * 白名单APP.
      */
@@ -63,15 +71,6 @@ public class MemData {
      */
     private Set<String> socketApps = new HashSet<>();
     /**
-     * 已冻结APP.
-     */
-    private final Set<String> freezerAppSet = Collections.synchronizedSet(FreezerConfig.isScheduledOn() ? new LinkedHashSet<>() : new HashSet<>());
-    /**
-     * 前台应用.
-     */
-    private final Set<String> foregroundAppSet = Collections.synchronizedSet(new HashSet<>());
-
-    /**
      * PMS.
      */
     private PowerManagerService powerManagerService = null;
@@ -79,15 +78,10 @@ public class MemData {
      * AMS.
      */
     private ActivityManagerService activityManagerService = null;
-
     private AppStandbyController appStandbyController = null;
-
     private NetworkManagementService networkManagementService = null;
-
-    /**
-     * 配置文件监听.
-     */
-    private final FileObserver fileObserver;
+    private GreezeManagerService greezeManagerService = null;
+    private Context context = null;
 
     public MemData() {
         // 初始化监听
@@ -163,7 +157,7 @@ public class MemData {
             return false;
         }
         // 系统框架
-        if (packageName.equals("android")) {
+        if (CommonConstants.ANDROID.equals(packageName) || CommonConstants.NOACTIVE_PACKAGE_NAME.equals(packageName)) {
             return false;
         }
         // 重要系统APP
@@ -257,26 +251,18 @@ public class MemData {
     }
 
 
-    /**
-     * 设置冻结Token.
-     *
-     * @param packageName 应用包名
-     * @param token       token
-     */
-    public void setToken(String packageName, long token) {
-        freezerTokenMap.put(packageName, token);
+    public void monitorNet(ApplicationInfo applicationInfo) {
+        if (greezeManagerService == null) {
+            return;
+        }
+        greezeManagerService.monitorNet(applicationInfo);
     }
 
-    /**
-     * 校验Token.
-     *
-     * @param packageName 应用包名
-     * @param value       值
-     * @return 是否正确
-     */
-    public boolean isInCorrectToken(String packageName, long value) {
-        Long token = freezerTokenMap.get(packageName);
-        return token == null || value != token;
+    public void clearMonitorNet(ApplicationInfo applicationInfo) {
+        if (greezeManagerService == null) {
+            return;
+        }
+        greezeManagerService.clearMonitorNet(applicationInfo);
     }
 
 }

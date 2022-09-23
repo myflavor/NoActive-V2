@@ -6,15 +6,21 @@ apply plugin: 'kotlin-android'
 android {
     compileSdk 32
 
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
     defaultConfig {
         applicationId "cn.myflv.noactive"
         minSdk 26
         targetSdk 32
-        versionCode 199
-        versionName "2.0"
+        versionCode 215
+        versionName "2.2-Beta"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
 
     buildTypes {
         release {
@@ -51,6 +57,18 @@ dependencies {
     implementation "androidx.core:core-ktx:1.8.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    api 'com.github.topjohnwu.libsu:core:3.2.1'
-    api "com.github.topjohnwu.libsu:io:3.2.1"
+    // api 'com.github.topjohnwu.libsu:core:3.2.1'
+    // api "com.github.topjohnwu.libsu:io:3.2.1"
+
+    def libsuVersion = '5.0.3'
+
+    // The core module that provides APIs to a shell
+    implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
+
+    // Optional: APIs for creating root services. Depends on ":core"
+    // implementation "com.github.topjohnwu.libsu:service:${libsuVersion}"
+
+    // Optional: Provides remote file system support
+    // implementation "com.github.topjohnwu.libsu:nio:${libsuVersion}"
+    implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
 }

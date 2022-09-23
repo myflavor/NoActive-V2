@@ -99,11 +99,14 @@ public class ProcessAddHook extends MethodHook {
         // 等待3s处理
         ThreadUtils.sleep(3000);
         // 前台就不处理
-        if (memData.getForegroundAppSet().contains(packageName)) {
+        if (!memData.getFreezerAppSet().contains(packageName)) {
+            return;
+        }
+        if (!memData.isTargetApp(packageName)) {
             return;
         }
         // 包名查找进程
-        List<ProcessRecord> processList = memData.getActivityManagerService().getProcessList().getProcessList(packageName);
+        List<ProcessRecord> processList = memData.getTargetProcessRecords(packageName);
         // 空不处理
         if (processList.isEmpty()) {
             return;
@@ -115,12 +118,10 @@ public class ProcessAddHook extends MethodHook {
         // 锁包名
         synchronized (ThreadUtils.getAppLock(packageName)) {
             // 再次确定不在前台
-            if (memData.getForegroundAppSet().contains(packageName)) {
+            if (!memData.getFreezerAppSet().contains(packageName)) {
                 return;
             }
-            // 遍历
             for (ProcessRecord processRecord : processList) {
-                // 冻结
                 freezeUtils.freezer(processRecord);
             }
         }

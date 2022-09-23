@@ -16,9 +16,9 @@ import lombok.Data;
 
 @Data
 public class ActivityManagerService {
+    public final static int MAIN_USER = 0;
     private static final int STANDBY_BUCKET_RARE = 40;
     private static final int STANDBY_BUCKET_NEVER = 50;
-    public final static int MAIN_USER = 0;
     private final Object activityManagerService;
     private final ProcessList processList;
     private final ActiveServices activeServices;

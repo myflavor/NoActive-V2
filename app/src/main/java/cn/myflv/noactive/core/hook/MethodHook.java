@@ -80,7 +80,12 @@ public abstract class MethodHook {
         if (minVersion == ANY_VERSION || Build.VERSION.SDK_INT >= minVersion) {
             ArrayList<Object> param = new ArrayList<>(Arrays.asList(getTargetParam()));
             param.add(getTargetHook());
-            XposedHelpers.findAndHookMethod(getTargetClass(), classLoader, getTargetMethod(), param.toArray());
+            String targetMethod = getTargetMethod();
+            if (targetMethod == null) {
+                XposedHelpers.findAndHookConstructor(getTargetClass(), classLoader, param.toArray());
+            } else {
+                XposedHelpers.findAndHookMethod(getTargetClass(), classLoader, getTargetMethod(), param.toArray());
+            }
             onSuccess();
         }
     }

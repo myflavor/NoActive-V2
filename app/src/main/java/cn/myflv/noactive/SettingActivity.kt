@@ -13,7 +13,6 @@ import cn.fkj233.ui.activity.view.SpinnerV
 import cn.fkj233.ui.activity.view.SwitchV
 import cn.fkj233.ui.activity.view.TextV
 import cn.myflv.noactive.core.utils.FreezerConfig
-import cn.myflv.noactive.utils.PackageUtils
 import com.topjohnwu.superuser.io.SuFile
 
 
@@ -35,8 +34,14 @@ class SettingActivity : MIUIActivity() {
                     add("SIGSTOP") { setMode(FreezerConfig.kill19) }
                     add("SIGTSTP") { setMode(FreezerConfig.kill20) }
                 })
-                TextWithSwitch(TextV("定时解冻"), SwitchV("binding", defValue = isConfigOn(FreezerConfig.Scheduled)) {
-                    setConfig(FreezerConfig.Scheduled, it)
+                TextWithSwitch(TextV("提权模式"), SwitchV("binding", defValue = isConfigOn(FreezerConfig.SuExcute)) {
+                    setConfig(FreezerConfig.SuExcute, it)
+                })
+                TextWithSwitch(TextV("定时冻结"), SwitchV("binding", defValue = isConfigOn(FreezerConfig.IntervalFreeze)) {
+                    setConfig(FreezerConfig.IntervalFreeze, it)
+                })
+                TextWithSwitch(TextV("轮番解冻"), SwitchV("binding", defValue = isConfigOn(FreezerConfig.IntervalUnfreeze)) {
+                    setConfig(FreezerConfig.IntervalUnfreeze, it)
                 })
                 TextWithSwitch(TextV("详细日志"), SwitchV("binding", defValue = isConfigOn(FreezerConfig.Debug)) {
                     setConfig(FreezerConfig.Debug, it)
@@ -63,6 +68,7 @@ class SettingActivity : MIUIActivity() {
         intent.data = content_url
         startActivity(intent)
     }
+
 
     fun setConfig(name: String, on: Boolean) {
         val config = SuFile(FreezerConfig.ConfigDir, name)

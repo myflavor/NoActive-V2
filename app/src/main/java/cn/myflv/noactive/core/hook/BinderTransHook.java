@@ -6,7 +6,7 @@ import java.util.Set;
 
 import cn.myflv.noactive.core.entity.ClassEnum;
 import cn.myflv.noactive.core.entity.MethodEnum;
-import cn.myflv.noactive.core.utils.ThreadUtils;
+import cn.myflv.noactive.core.handler.FreezerHandler;
 import de.robv.android.xposed.XC_MethodHook;
 
 /**
@@ -23,11 +23,11 @@ public class BinderTransHook extends MethodHook {
     /**
      * 应用切换Hook
      */
-    private final ActivitySwitchHook activitySwitchHook;
+    private final FreezerHandler freezerHandler;
 
-    public BinderTransHook(ClassLoader classLoader, ActivitySwitchHook activitySwitchHook) {
+    public BinderTransHook(ClassLoader classLoader, FreezerHandler freezerHandler) {
         super(classLoader);
-        this.activitySwitchHook = activitySwitchHook;
+        this.freezerHandler = freezerHandler;
     }
 
     @Override
@@ -59,16 +59,7 @@ public class BinderTransHook extends MethodHook {
                     // 异步不处理
                     return;
                 }
-                // 新开线程，冻结需要3s，会ANR
-                ThreadUtils.newThread(() -> {
-                    // 尝试添加UID，如果添加成功则说明没有正在Binder解冻
-                    if (binderTransSet.add(uid)) {
-                        // 通知应用切换收到Binder
-                        activitySwitchHook.temporaryUnfreeze(uid, REASON);
-                        // 执行完毕移除
-                        binderTransSet.remove(uid);
-                    }
-                });
+                freezerHandler.temporaryUnfreezeIfNeed(uid, REASON);
             }
         };
     }

@@ -55,4 +55,8 @@ public interface MethodEnum {
     String systemReady = "systemReady";
     String socketDestroy = "socketDestroy";
     String reportNet = "reportNet";
+    String monitorNet = "monitorNet";
+
+    String clearMonitorNet = "clearMonitorNet";
+    String start = "start";
 }

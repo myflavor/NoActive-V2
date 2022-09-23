@@ -2,132 +2,134 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingVertical="8dp"
-    android:paddingHorizontal="28dp">
+    android:paddingHorizontal="28dp"
+    android:paddingVertical="8dp">
 
     <ImageView
-        android:src="@mipmap/ic_logo"
         android:id="@+id/app_icon"
         android:layout_width="52dp"
-        android:layout_height="52dp" />
+        android:layout_height="52dp"
+        android:src="@mipmap/ic_logo" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
-                android:maxWidth="128dp"
-                android:text="@string/app_name"
                 android:id="@+id/app_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start"
+                android:maxWidth="128dp"
+                android:text="@string/app_name"
                 android:textColor="?attr/colorSecondary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/white_app"
-                android:textStyle="bold"
-                android:textColor="#0C82FD"
-                android:layout_marginStart="5dp"
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
                 android:background="@drawable/textview_white"
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="3dp"
                 android:text="@string/white_app"
-                android:textSize="11sp" />
+                android:textColor="#0C82FD"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
 
             <TextView
                 android:id="@+id/direct_app"
-                android:textStyle="bold"
-                android:textColor="#FF8C00"
-                android:layout_marginStart="5dp"
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
                 android:background="@drawable/textview_direct"
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="3dp"
                 android:text="@string/direct_app"
-                android:textSize="11sp" />
+                android:textColor="#FF8C00"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
 
             <TextView
                 android:id="@+id/black_app"
-                android:textStyle="bold"
-                android:textColor="#FF0000"
-                android:layout_marginStart="5dp"
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
                 android:background="@drawable/textview_black"
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="3dp"
                 android:text="@string/black_app"
-                android:textSize="11sp" />
-
+                android:textColor="#FF0000"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
 
             <TextView
                 android:id="@+id/other_config"
-                android:textStyle="bold"
-                android:textColor="#3CB371"
-                android:layout_marginStart="5dp"
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
                 android:background="@drawable/textview_green"
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="3dp"
                 android:text="@string/other_config"
-                android:textSize="11sp" />
+                android:textColor="#3CB371"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
-<!--
-            <TextView
-                android:id="@+id/white_proc"
-                android:textStyle="bold"
-                android:textColor="#0C82FD"
-                android:layout_marginStart="5dp"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:background="@drawable/textview_white"
-                android:paddingHorizontal="6dp"
-                android:paddingVertical="3dp"
-                android:textSize="11sp" />
+            <!--
+                        <TextView
+                            android:id="@+id/white_proc"
+                            android:textStyle="bold"
+                            android:textColor="#0C82FD"
+                            android:layout_marginStart="5dp"
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:background="@drawable/textview_white"
+                            android:paddingHorizontal="6dp"
+                            android:paddingVertical="3dp"
+                            android:textSize="11sp" />
 
-            <TextView
-                android:id="@+id/kill_proc"
-                android:textStyle="bold"
-                android:textColor="#FF0000"
-                android:layout_marginStart="5dp"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:background="@drawable/textview_black"
-                android:paddingHorizontal="6dp"
-                android:paddingVertical="3dp"
-                android:textSize="11sp" />
--->
+                        <TextView
+                            android:id="@+id/kill_proc"
+                            android:textStyle="bold"
+                            android:textColor="#FF0000"
+                            android:layout_marginStart="5dp"
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:background="@drawable/textview_black"
+                            android:paddingHorizontal="6dp"
+                            android:paddingVertical="3dp"
+                            android:textSize="11sp" />
+            -->
 
         </LinearLayout>
 
 
         <TextView
-            android:text="@string/app_name"
             android:id="@+id/package_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:gravity="start" />
+            android:gravity="start"
+            android:text="@string/app_name" />
     </LinearLayout>
 </LinearLayout>

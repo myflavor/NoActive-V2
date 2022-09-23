@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,13 +38,12 @@ public class MainActivity extends AppCompatActivity {
     private AppItemAdapter appItemAdapter;
     private String text = null;
     private int type = 1;
-    private Integer index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        boolean rootAccess = Shell.rootAccess();
+        boolean rootAccess = Shell.getShell().isRoot();
         if (!rootAccess) {
             Toast.makeText(this, "Root权限获取失败", Toast.LENGTH_LONG).show();
         }
@@ -124,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                index = position;
                 TextView appName = view.findViewById(R.id.app_name);
                 TextView packageName = view.findViewById(R.id.package_name);
                 Intent intent = new Intent();

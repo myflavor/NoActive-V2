@@ -35,15 +35,15 @@ public class FreezerConfig {
     public final static String lastLog = "last.log";
     public final static String currentLog = "current.log";
     public final static String Debug = "debug";
-    public final static String Scheduled = "scheduled";
-
-    public static boolean isScheduledOn() {
-        return isConfigOn(Scheduled);
-    }
-
+    public final static String IntervalUnfreeze = "interval.unfreeze";
+    public final static String IntervalFreeze = "interval.freeze";
+    public final static String SuExcute = "su.excute";
     public final static String[] listenConfig = {whiteAppConfig, whiteProcessConfig,
             killProcessConfig, blackSystemAppConfig, directAppConfig, socketAppConfig};
 
+    public static boolean isScheduledOn() {
+        return isConfigOn(IntervalUnfreeze);
+    }
 
     public static boolean isConfigOn(String configName) {
         File config = new File(ConfigDir, configName);
@@ -65,20 +65,28 @@ public class FreezerConfig {
         if (isConfigOn(freezerV2)) {
             return V2;
         }
-        if (isConfigOn(freezerV1)) {
-            return V1;
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (isConfigOn(freezerApi)) {
                 return API;
             }
-            Class<?> CachedAppOptimizer = XposedHelpers.findClass(ClassEnum.CachedAppOptimizer, classLoader);
-            boolean isSupportV2 = (boolean) XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodEnum.isFreezerSupported);
-            if (isSupportV2) {
+            if (isAndroidApi(classLoader)){
                 return V2;
             }
         }
         return V1;
+    }
+
+    public static boolean isAndroidApi(ClassLoader classLoader) {
+        Class<?> CachedAppOptimizer = XposedHelpers.findClass(ClassEnum.CachedAppOptimizer, classLoader);
+        return (boolean) XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodEnum.isFreezerSupported);
+    }
+
+    public static boolean isXiaoMiV1(ClassLoader classLoader) {
+        try {
+            return XposedHelpers.findClassIfExists(ClassEnum.GreezeManagerService, classLoader) != null;
+        } catch (Throwable ignored) {
+        }
+        return false;
     }
 
 

@@ -14,6 +14,16 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NoActive">
+        <service
+            android:name=".provide.FreezerService"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="cn.myflv.noactive.action.FREEZE" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".SettingActivity"
             android:exported="false"

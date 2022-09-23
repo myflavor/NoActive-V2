@@ -1,38 +1,52 @@
-//
-// Decompiled by Jadx - 917ms
-//
 package cn.myflv.noactive.core.utils;
 
-import android.os.Process;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.List;
 
+import cn.myflv.noactive.FreezerInterface;
 import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.core.entity.MemData;
 import cn.myflv.noactive.core.entity.MethodEnum;
 import cn.myflv.noactive.core.server.ProcessRecord;
+import cn.myflv.noactive.utils.BaseFreezeUtils;
 import de.robv.android.xposed.XposedHelpers;
 
 public class FreezeUtils {
-
-    private final static int CONT = 18;
-
-    private static final int FREEZE_ACTION = 1;
-    private static final int UNFREEZE_ACTION = 0;
-    public static final String CGROUP_PATH="/sys/fs/cgroup";
-    private static final String V1_FREEZER_FROZEN_PORCS = "/sys/fs/cgroup/freezer/perf/frozen/cgroup.procs";
-    private static final String V1_FREEZER_THAWED_PORCS = "/sys/fs/cgroup/freezer/perf/thawed/cgroup.procs";
-
     private final boolean freezerApi;
     private final int freezerVersion;
     private final int stopSignal;
     private final boolean useKill;
     private final ClassLoader classLoader;
+    private final MemData memData;
+    private final boolean suExecute;
+    private FreezerInterface freezerInterface = null;
 
+    public boolean isUseV1() {
+        return !useKill && freezerVersion == 1;
+    }
 
-    public FreezeUtils(ClassLoader classLoader) {
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            freezerInterface = FreezerInterface.Stub.asInterface(service);
+            Log.i("su connected");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            freezerInterface = null;
+            Log.w("su disconnected");
+        }
+    };
+
+    public FreezeUtils(ClassLoader classLoader, MemData memData) {
         this.classLoader = classLoader;
+        this.memData = memData;
         String freezerVersion = FreezerConfig.getFreezerVersion(classLoader);
         switch (freezerVersion) {
             case FreezerConfig.API:
@@ -48,66 +62,22 @@ public class FreezeUtils {
                 this.freezerApi = false;
                 this.freezerVersion = 1;
         }
+        boolean useKill = FreezerConfig.isUseKill();
+        if (!useKill && FreezerConfig.V1.equals(freezerVersion)) {
+            this.useKill = !FreezerConfig.isXiaoMiV1(classLoader) && !FreezerConfig.isConfigOn(FreezerConfig.freezerV1);
+        } else {
+            this.useKill = useKill;
+        }
         this.stopSignal = FreezerConfig.getKillSignal();
-        this.useKill = FreezerConfig.isUseKill();
-        if (useKill) {
+        if (this.useKill) {
             Log.i("Kill -" + stopSignal);
         } else {
             Log.i("Freezer " + freezerVersion);
         }
-    }
-
-    public static void freezePid(int pid) {
-        writeNode(V1_FREEZER_FROZEN_PORCS, pid);
-    }
-
-    public static void thawPid(int pid) {
-        writeNode(V1_FREEZER_THAWED_PORCS, pid);
-    }
-
-    private static void writeNode(String path, int val) {
-        try {
-            PrintWriter writer = new PrintWriter(path);
-            writer.write(Integer.toString(val));
-            writer.close();
-        } catch (FileNotFoundException e) {
-            if (val == FREEZE_ACTION) {
-                Log.e("Freezer V1 not supported");
-            }
-        } catch (Exception e) {
-            if (val == FREEZE_ACTION) {
-                Log.e("Freezer V1 failed: " + e.getMessage());
-            }
+        this.suExecute = FreezerConfig.isConfigOn(FreezerConfig.SuExcute);
+        if (suExecute) {
+            Log.i("Su Execute");
         }
-    }
-
-    private static void setFreezeAction(int pid, int uid, boolean action) {
-        String path = "/sys/fs/cgroup/uid_" + uid + "/pid_" + pid + "/cgroup.freeze";
-        try {
-            PrintWriter writer = new PrintWriter(path);
-            if (action) {
-                writer.write(Integer.toString(FREEZE_ACTION));
-            } else {
-                writer.write(Integer.toString(UNFREEZE_ACTION));
-            }
-            writer.close();
-        } catch (FileNotFoundException e) {
-            if (action) {
-                Log.e("Freezer V2 not supported");
-            }
-        } catch (Exception e) {
-            if (action) {
-                Log.e("Freezer V2 failed: " + e.getMessage());
-            }
-        }
-    }
-
-    public static void thawPid(int pid, int uid) {
-        setFreezeAction(pid, uid, false);
-    }
-
-    public static void freezePid(int pid, int uid) {
-        setFreezeAction(pid, uid, true);
     }
 
     public static void kill(List<ProcessRecord> processRecords) {
@@ -120,25 +90,25 @@ public class FreezeUtils {
     }
 
     public static void kill(ProcessRecord processRecord) {
-        Process.killProcess(processRecord.getPid());
+        BaseFreezeUtils.kill(false, BaseFreezeUtils.SIG_KILL, processRecord.getPid());
         Log.d(processRecord.getProcessName() + " kill");
     }
 
     public void freezer(ProcessRecord processRecord) {
         if (useKill) {
-            Process.sendSignal(processRecord.getPid(), stopSignal);
+            execute(() -> kill(stopSignal, processRecord));
         } else {
             if (freezerVersion == 2) {
                 if (freezerApi) {
                     setProcessFrozen(processRecord.getPid(), processRecord.getUid(), true);
                 } else {
-                    freezePid(processRecord.getPid(), processRecord.getUid());
+                    execute(() -> freezeV2(processRecord));
                 }
             } else {
                 if (processRecord.isSandboxProcess()) {
                     return;
                 }
-                freezePid(processRecord.getPid());
+                execute(() -> freezeV1(processRecord));
             }
         }
         Log.d(processRecord.getProcessName() + " freeze");
@@ -155,19 +125,19 @@ public class FreezeUtils {
 
     public void unFreezer(ProcessRecord processRecord) {
         if (useKill) {
-            Process.sendSignal(processRecord.getPid(), CONT);
+            execute(() -> kill(BaseFreezeUtils.SIG_CONT, processRecord));
         } else {
             if (freezerVersion == 2) {
                 if (freezerApi) {
                     setProcessFrozen(processRecord.getPid(), processRecord.getUid(), false);
                 } else {
-                    thawPid(processRecord.getPid(), processRecord.getUid());
+                    execute(() -> thawV2(processRecord));
                 }
             } else {
                 if (processRecord.isSandboxProcess()) {
                     return;
                 }
-                thawPid(processRecord.getPid());
+                execute(() -> thawV1(processRecord));
             }
         }
         Log.d(processRecord.getProcessName() + " unfreeze");
@@ -178,4 +148,124 @@ public class FreezeUtils {
         XposedHelpers.callStaticMethod(Process, MethodEnum.setProcessFrozen, pid, uid, frozen);
     }
 
+    public synchronized void connectIfNeed() {
+        if (freezerInterface != null) {
+            return;
+        }
+        try {
+            Intent intent = new Intent();
+            intent.setPackage("cn.myflv.noactive");
+            intent.setAction("cn.myflv.noactive.action.FREEZE");
+            if (memData.getActivityManagerService().getContext() == null) {
+                return;
+            }
+            // RootService.bind(intent,serviceConnection);
+            Context context = memData.getActivityManagerService().getContext();
+            memData.getActivityManagerService().getContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        } catch (Throwable throwable) {
+            Log.e("su connect", throwable);
+        }
+    }
+
+    public void execute(Runnable runnable) {
+        if (suExecute) {
+            connectIfNeed();
+        }
+        boolean su = suExecute && freezerInterface != null;
+        if (su || !suExecute) {
+            runnable.run();
+        }
+    }
+
+
+    public void thawV2(ProcessRecord processRecord) {
+        try {
+            boolean result;
+            if (suExecute) {
+                result = freezerInterface.thawV2(processRecord.getPid(), processRecord.getUid());
+            } else {
+                result = BaseFreezeUtils.thawPid(false, processRecord.getPid(), processRecord.getUid());
+            }
+            if (result) {
+                Log.d("thaw " + processRecord.getProcessName());
+            } else {
+                throw new Exception("process died or not supported");
+            }
+        } catch (Throwable throwable) {
+            Log.e("thawV2", throwable);
+        }
+    }
+
+    public void freezeV2(ProcessRecord processRecord) {
+        try {
+            boolean result;
+            if (suExecute) {
+                result = freezerInterface.freezeV2(processRecord.getPid(), processRecord.getUid());
+            } else {
+                result = BaseFreezeUtils.freezePid(false, processRecord.getPid(), processRecord.getUid());
+            }
+            if (result) {
+                Log.d("freeze " + processRecord.getProcessName());
+            } else {
+                throw new Exception("not supported");
+            }
+        } catch (Throwable throwable) {
+            Log.e("freezeV2", throwable);
+        }
+    }
+
+    public void thawV1(ProcessRecord processRecord) {
+        try {
+            boolean result;
+            if (suExecute) {
+                result = freezerInterface.thawV1(processRecord.getPid());
+            } else {
+                result = BaseFreezeUtils.thawPid(false, processRecord.getPid());
+            }
+            if (result) {
+                Log.d("thaw " + processRecord.getProcessName());
+            } else {
+                throw new Exception("process died or not supported");
+            }
+        } catch (Throwable throwable) {
+            Log.e("thawV1", throwable);
+        }
+    }
+
+    public void freezeV1(ProcessRecord processRecord) {
+        try {
+            boolean result;
+            if (suExecute) {
+                result = freezerInterface.freezeV1(processRecord.getPid());
+            } else {
+                result = BaseFreezeUtils.freezePid(false, processRecord.getPid());
+            }
+            if (result) {
+                Log.d("freeze " + processRecord.getProcessName());
+
+            } else {
+                throw new Exception("not supported");
+            }
+        } catch (Throwable throwable) {
+            Log.e("freezeV1", throwable);
+        }
+    }
+
+    public void kill(int sig, ProcessRecord processRecord) {
+        try {
+            boolean result;
+            if (suExecute) {
+                result = freezerInterface.kill(sig, processRecord.getPid());
+            } else {
+                result = BaseFreezeUtils.kill(false, sig, processRecord.getPid());
+            }
+            if (result) {
+                Log.d("kill " + processRecord.getProcessName());
+            } else {
+                throw new Exception("unknown");
+            }
+        } catch (Throwable throwable) {
+            Log.e("kill", throwable);
+        }
+    }
 }
