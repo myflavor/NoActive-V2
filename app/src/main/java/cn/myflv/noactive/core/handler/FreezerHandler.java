@@ -224,9 +224,6 @@ public class FreezerHandler {
         if (uid < 10000) {
             return;
         }
-        if (!temporaryUnfreezeUidSet.add(uid)) {
-            return;
-        }
         String packageName = memData.getActivityManagerService().getNameForUid(uid);
         if (packageName == null) {
             Log.w("uid  " + uid + "  not found");
