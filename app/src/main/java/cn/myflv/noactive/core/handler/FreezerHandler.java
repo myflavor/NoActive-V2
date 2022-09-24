@@ -58,8 +58,6 @@ public class FreezerHandler {
             Map<String, List<ProcessRecord>> processMap = memData.getActivityManagerService().getProcessList().getProcessMap();
             // 遍历被冻结的APP
             for (String packageName : memData.getFreezerAppSet()) {
-                // 通过包名锁
-                synchronized (ThreadUtils.getAppLock(packageName)) {
                     // 再次检查是否被冻结
                     if (!memData.getFreezerAppSet().contains(packageName)) {
                         // 获取应用进程
@@ -70,7 +68,6 @@ public class FreezerHandler {
                         // 冻结
                         processRecords.forEach(freezeUtils::freezer);
                     }
-                }
             }
         }, 1);
         Log.i("Interval freeze");

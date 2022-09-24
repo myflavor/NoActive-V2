@@ -116,14 +116,12 @@ public class ProcessAddHook extends MethodHook {
         // 等待广播休眠
         memData.waitBroadcastIdle(packageName);
         // 锁包名
-        synchronized (ThreadUtils.getAppLock(packageName)) {
             // 再次确定不在前台
-            if (!memData.getFreezerAppSet().contains(packageName)) {
-                return;
-            }
-            for (ProcessRecord processRecord : processList) {
-                freezeUtils.freezer(processRecord);
-            }
+        if (!memData.getFreezerAppSet().contains(packageName)) {
+            return;
+        }
+        for (ProcessRecord processRecord : processList) {
+            freezeUtils.freezer(processRecord);
         }
     }
 

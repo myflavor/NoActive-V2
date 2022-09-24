@@ -82,7 +82,13 @@ public class PackageUtils {
         }
         if (appItemList.size() > 0) {
             appItemList = appItemList.stream()
-                    .sorted(Comparator.comparing(AppItem::isWhite).thenComparing(AppItem::isDirect).thenComparing(AppItem::isBlack).thenComparing(AppItem::isSocket).thenComparing(AppItem::getWhiteProcCount).thenComparing(AppItem::getKillProcCount).reversed())
+                    .sorted(Comparator.comparing(AppItem::isWhite)
+                            .thenComparing(AppItem::isDirect)
+                            .thenComparing(AppItem::isBlack)
+                            .thenComparing(AppItem::isSocket)
+                            .thenComparing(AppItem::getWhiteProcCount)
+                            .thenComparing(AppItem::getKillProcCount)
+                            .reversed())
                     .collect(Collectors.toList());
         }
         return appItemList;
