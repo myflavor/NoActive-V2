@@ -57,4 +57,10 @@ public class GreezeHook extends MethodHook {
     public boolean isIgnoreError() {
         return true;
     }
+
+    @Override
+    public void onSuccess() {
+        super.onSuccess();
+        StaticHook.disableMillet(classLoader);
+    }
 }

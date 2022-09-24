@@ -34,4 +34,5 @@ public interface FieldEnum {
     String start = "start";
     String stop = "stop";
     String mCgroupV1Flag = "mCgroupV1Flag";
+    String sEnable = "sEnable";
 }
