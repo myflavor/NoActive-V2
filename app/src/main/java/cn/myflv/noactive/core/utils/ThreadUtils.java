@@ -51,7 +51,6 @@ public class ThreadUtils {
     public synchronized static void newThread(String key, Runnable runnable, long delay) {
         // 生成Token
         long currentToken = System.currentTimeMillis();
-        Log.i(String.valueOf(currentToken));
         // 新开线程
         newThread(() -> {
             // 锁线程Map
