@@ -15,7 +15,7 @@ android {
         applicationId "cn.myflv.noactive"
         minSdk 26
         targetSdk 32
-        versionCode 215
+        versionCode 216
         versionName "2.2-Beta"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
