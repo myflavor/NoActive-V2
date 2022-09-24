@@ -59,7 +59,7 @@ public class ThreadUtils {
                 threadTokenMap.put(key, currentToken);
             }
             if (delay == NO_DELAY) {
-                newThread(() -> runWirthLock(key, runnable));
+                newThread(() -> runWithLock(key, runnable));
                 return;
             } else {
                 // 延迟
@@ -75,7 +75,7 @@ public class ThreadUtils {
                     return;
                 }
             }
-            newThread(() -> runWirthLock(key, runnable));
+            newThread(() -> runWithLock(key, runnable));
         });
     }
 
@@ -95,7 +95,7 @@ public class ThreadUtils {
      * @param key      线程Key
      * @param runnable 执行方法
      */
-    public static void runWirthLock(String key, Runnable runnable) {
+    public static void runWithLock(String key, Runnable runnable) {
         synchronized (getLockKey(key)) {
             runnable.run();
         }

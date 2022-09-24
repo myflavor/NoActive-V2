@@ -58,7 +58,7 @@ public class FreezerHandler {
             Map<String, List<ProcessRecord>> processMap = memData.getActivityManagerService().getProcessList().getProcessMap();
             // 遍历被冻结的APP
             for (String packageName : memData.getFreezerAppSet()) {
-                ThreadUtils.runWirthLock(packageName, () -> {
+                ThreadUtils.runWithLock(packageName, () -> {
                     // 再次检查是否被冻结
                     if (!memData.getFreezerAppSet().contains(packageName)) {
                         // 获取应用进程
