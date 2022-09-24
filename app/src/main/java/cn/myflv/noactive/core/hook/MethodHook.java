@@ -90,19 +90,6 @@ public abstract class MethodHook {
         }
     }
 
-    /**
-     * 打印调用堆栈.
-     */
-    public void printStackTrace() {
-        Throwable throwable = new Throwable();
-        Log.i("---------------> " + getTargetMethod());
-        StackTraceElement[] stackElements = throwable.getStackTrace();
-        for (StackTraceElement element : stackElements) {
-            Log.i("at " + element.getClassName() + "." + element.getMethodName() +
-                    "(" + element.getFileName() + ":" + element.getLineNumber() + ")");
-        }
-        Log.i(getTargetMethod() + " <---------------");
-    }
 
     /**
      * @return 是否Hook

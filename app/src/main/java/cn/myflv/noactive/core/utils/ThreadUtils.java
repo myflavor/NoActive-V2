@@ -136,4 +136,18 @@ public class ThreadUtils {
             Log.w("Thread sleep failed");
         }
     }
+
+
+    /**
+     * 打印调用堆栈.
+     */
+    public static void printStackTrace(Throwable throwable) {
+        Log.e("---------------> ");
+        StackTraceElement[] stackElements = throwable.getStackTrace();
+        for (StackTraceElement element : stackElements) {
+            Log.e("at " + element.getClassName() + "." + element.getMethodName() +
+                    "(" + element.getFileName() + ":" + element.getLineNumber() + ")");
+        }
+        Log.e(" <---------------");
+    }
 }
