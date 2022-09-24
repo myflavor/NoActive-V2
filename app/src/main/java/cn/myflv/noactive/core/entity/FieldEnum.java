@@ -35,4 +35,5 @@ public interface FieldEnum {
     String stop = "stop";
     String mCgroupV1Flag = "mCgroupV1Flag";
     String sEnable = "sEnable";
+    String mPowerMilletEnable = "mPowerMilletEnable";
 }

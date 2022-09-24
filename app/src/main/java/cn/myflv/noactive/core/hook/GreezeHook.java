@@ -3,9 +3,12 @@ package cn.myflv.noactive.core.hook;
 import android.content.Context;
 
 import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.core.entity.FieldEnum;
 import cn.myflv.noactive.core.entity.MemData;
 import cn.myflv.noactive.core.server.GreezeManagerService;
+import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
 
 public class GreezeHook extends MethodHook {
 
@@ -39,6 +42,13 @@ public class GreezeHook extends MethodHook {
                 super.afterHookedMethod(param);
                 GreezeManagerService greezeManagerService = new GreezeManagerService(param.thisObject);
                 memData.setGreezeManagerService(greezeManagerService);
+                try {
+                    XposedHelpers.setStaticBooleanField(param.thisObject.getClass(), FieldEnum.sEnable, false);
+                    XposedHelpers.setBooleanField(param.thisObject, FieldEnum.mPowerMilletEnable, false);
+                    Log.i("Disable Millet");
+                } catch (Throwable throwable) {
+                    Log.e("Disable Millet", throwable);
+                }
             }
         };
     }
@@ -56,11 +66,5 @@ public class GreezeHook extends MethodHook {
     @Override
     public boolean isIgnoreError() {
         return true;
-    }
-
-    @Override
-    public void onSuccess() {
-        super.onSuccess();
-        StaticHook.disableMillet(classLoader);
     }
 }
