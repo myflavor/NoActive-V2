@@ -1,10 +1,11 @@
-package cn.myflv.noactive.core.hook;
+package cn.myflv.noactive.core.hook.miui;
 
 import android.content.Context;
 
 import cn.myflv.noactive.core.entity.ClassEnum;
 import cn.myflv.noactive.core.entity.FieldEnum;
 import cn.myflv.noactive.core.entity.MemData;
+import cn.myflv.noactive.core.hook.MethodHook;
 import cn.myflv.noactive.core.server.GreezeManagerService;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;

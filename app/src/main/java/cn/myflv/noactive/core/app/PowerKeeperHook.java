@@ -3,6 +3,7 @@ package cn.myflv.noactive.core.app;
 import android.content.Context;
 
 import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.core.entity.FieldEnum;
 import cn.myflv.noactive.core.entity.MethodEnum;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
@@ -30,20 +31,21 @@ public class PowerKeeperHook extends AppHook {
     @Override
     public void hook() {
         // 禁用Millet
-        try {
+        runNoThrow(() -> {
             XposedHelpers.findAndHookMethod(ClassEnum.MilletConfig, packageParam.classLoader, MethodEnum.getEnable, Context.class, XC_MethodReplacement.returnConstant(false));
-            log("Disable millet");
-        } catch (XposedHelpers.ClassNotFoundError | NoSuchMethodError e) {
-            log("Not supported millet");
-        } catch (Throwable throwable) {
-            log("Disable millet failed: " + throwable.getMessage());
-        }
-        // 阻止杀进程
-        try {
+        }, "Disable Millet");
+        runNoThrow(() -> {
             XposedHelpers.findAndHookMethod(ClassEnum.ProcessManager, packageParam.classLoader, MethodEnum.kill, ClassEnum.ProcessConfig, XC_MethodReplacement.returnConstant(false));
-            log("Disable kill process");
+        }, "Disable kill process");
+    }
+
+    public void runNoThrow(Runnable runnable, String msg) {
+        try {
+            runnable.run();
+            log(msg);
+        } catch (XposedHelpers.ClassNotFoundError | NoSuchMethodError ignored) {
         } catch (Throwable throwable) {
-            log("Disable kill process failed: " + throwable.getMessage());
+            log(msg + " failed: " + throwable.getMessage());
         }
     }
 }

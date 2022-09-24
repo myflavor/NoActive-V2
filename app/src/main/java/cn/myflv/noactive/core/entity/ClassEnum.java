@@ -48,4 +48,5 @@ public interface ClassEnum {
     String AppStandbyController = "com.android.server.usage.AppStandbyController";
     String NetworkManagementService = "com.android.server.NetworkManagementService";
     String UidRangeParcel = "android.net.UidRangeParcel";
+    String FreezeBinder = "com.miui.powerkeeper.millet.FreezeBinder";
 }

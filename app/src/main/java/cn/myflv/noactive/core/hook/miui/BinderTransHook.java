@@ -1,4 +1,4 @@
-package cn.myflv.noactive.core.hook;
+package cn.myflv.noactive.core.hook.miui;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -7,6 +7,7 @@ import java.util.Set;
 import cn.myflv.noactive.core.entity.ClassEnum;
 import cn.myflv.noactive.core.entity.MethodEnum;
 import cn.myflv.noactive.core.handler.FreezerHandler;
+import cn.myflv.noactive.core.hook.MethodHook;
 import de.robv.android.xposed.XC_MethodHook;
 
 /**
