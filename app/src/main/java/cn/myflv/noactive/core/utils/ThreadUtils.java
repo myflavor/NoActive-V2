@@ -12,6 +12,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class ThreadUtils {
 
+    public final static long NO_DELAY = 0L;
+
     private final static String LOCK_KEY_PREFIX = "lock:key:";
     // 缓存线程池
     private final static ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
@@ -56,8 +58,13 @@ public class ThreadUtils {
                 // 存放Token
                 threadTokenMap.put(key, currentToken);
             }
-            // 延迟
-            sleep(delay);
+            if (delay == NO_DELAY) {
+                newThread(() -> runWirthLock(key, runnable));
+                return;
+            } else {
+                // 延迟
+                sleep(delay);
+            }
             // 锁线程Map
             synchronized (threadTokenMap) {
                 // 获取Token
@@ -79,12 +86,7 @@ public class ThreadUtils {
      * @param runnable 执行方法
      */
     public static void newThread(String key, Runnable runnable) {
-        newThread(() -> {
-            synchronized (threadTokenMap) {
-                threadTokenMap.put(key, System.currentTimeMillis());
-            }
-            newThread(() -> runWirthLock(key, runnable));
-        });
+        newThread(key, runnable, NO_DELAY);
     }
 
     /**
