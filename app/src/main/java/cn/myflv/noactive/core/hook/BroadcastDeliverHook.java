@@ -101,8 +101,9 @@ public class BroadcastDeliverHook extends MethodHook {
      * @param packageName 包名
      */
     private void broadcastStart(XC_MethodHook.MethodHookParam param, String packageName) {
-        memData.broadcastStart(packageName);
+        memData.setBroadcastApp(packageName);
         param.setObjectExtra(FieldEnum.packageName, packageName);
+        Log.d(packageName + " broadcast executing start");
     }
 
     /**
@@ -113,8 +114,9 @@ public class BroadcastDeliverHook extends MethodHook {
         if (obj == null) {
             return;
         }
+        memData.setBroadcastApp(null);
         String packageName = (String) obj;
-        memData.broadcastFinish(packageName);
+        Log.d(packageName + " broadcast executing finish");
     }
 
     /**

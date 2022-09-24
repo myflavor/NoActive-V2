@@ -80,7 +80,7 @@ public class FreezeUtils {
         }
     }
 
-    public static void kill(List<ProcessRecord> processRecords) {
+    public void kill(List<ProcessRecord> processRecords) {
         if (processRecords == null || processRecords.isEmpty()) {
             return;
         }
@@ -89,8 +89,8 @@ public class FreezeUtils {
         }
     }
 
-    public static void kill(ProcessRecord processRecord) {
-        BaseFreezeUtils.kill(false, BaseFreezeUtils.SIG_KILL, processRecord.getPid());
+    public void kill(ProcessRecord processRecord) {
+        execute(() -> kill(BaseFreezeUtils.SIG_KILL, processRecord));
         Log.d(processRecord.getProcessName() + " kill");
     }
 

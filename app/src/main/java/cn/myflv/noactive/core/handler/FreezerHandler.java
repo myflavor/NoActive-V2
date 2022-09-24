@@ -147,49 +147,33 @@ public class FreezerHandler {
         if (!handle) {
             return;
         }
-
-        // 设置冻结Token
-        long token = System.currentTimeMillis();
-        setToken(packageName, token);
-
-        // 休眠3s
-        ThreadUtils.sleep(delay);
-        // 校验冻结Token
-        if (isInCorrectToken(packageName, token)) {
-            Log.d(packageName + " event is updated");
-            return;
-        }
-
-        // 如果是前台应用就不处理
-        if (isAppForeground(packageName)) {
-            Log.d(packageName + " is in foreground");
-            return;
-        }
-
-        // 获取目标进程
-        List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(packageName);
-        // 如果目标进程为空就不处理
-        if (targetProcessRecords.isEmpty()) {
-            return;
-        }
-        // 后台应用添加包名
-        memData.getFreezerAppSet().add(packageName);
-        // 等待应用未执行广播
-        memData.waitBroadcastIdle(packageName);
-        // 等待 Binder 休眠
-        waitBinderIdle(packageName);
-        ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
-        // 存放杀死进程
-        List<ProcessRecord> killProcessList = new ArrayList<>();
-        // 防止同时解冻冻结
-        synchronized (ThreadUtils.getAppLock(packageName)) {
-            // 再次校验冻结Token
-            if (isInCorrectToken(packageName, token)) {
-                Log.d(packageName + " event is updated");
+        ThreadUtils.newThread(packageName, () -> {
+            // 如果是前台应用就不处理
+            if (isAppForeground(packageName)) {
+                Log.d(packageName + " is in foreground");
                 return;
             }
+            // 获取目标进程
+            List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(packageName);
+            // 如果目标进程为空就不处理
+            if (targetProcessRecords.isEmpty()) {
+                return;
+            }
+            // 后台应用添加包名
+            memData.getFreezerAppSet().add(packageName);
+            // 等待应用未执行广播
+            memData.waitBroadcastIdle(packageName);
+            // 等待 Binder 休眠
+            waitBinderIdle(packageName);
+            ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
+            // 存放杀死进程
+            List<ProcessRecord> killProcessList = new ArrayList<>();
             // 遍历目标进程
             for (ProcessRecord targetProcessRecord : targetProcessRecords) {
+                // 线程被取消
+                if (!memData.getFreezerAppSet().contains(packageName)) {
+                    return;
+                }
                 // 目标进程名
                 String processName = targetProcessRecord.getProcessName();
                 if (memData.getKillProcessList().contains(processName)) {
@@ -199,7 +183,6 @@ public class FreezerHandler {
                     freezeUtils.freezer(targetProcessRecord);
                 }
             }
-            FreezeUtils.kill(killProcessList);
             // 如果白名单进程不包含主进程就释放唤醒锁
             if (memData.getWhiteProcessList().contains(packageName)) {
                 return;
@@ -211,8 +194,8 @@ public class FreezerHandler {
             } else {
                 memData.monitorNet(applicationInfo);
             }
-
-        }
+            freezeUtils.kill(killProcessList);
+        }, delay);
     }
 
     /**

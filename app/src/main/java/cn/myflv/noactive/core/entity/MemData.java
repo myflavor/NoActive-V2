@@ -7,11 +7,9 @@ import android.os.FileObserver;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import cn.myflv.noactive.constant.CommonConstants;
@@ -37,7 +35,7 @@ public class MemData {
     /**
      * 正在执行广播的APP.
      */
-    private final Map<String, Integer> broadcastAppMap = new HashMap<>();
+    private String broadcastApp = null;
     /**
      * 已冻结APP.
      */
@@ -109,42 +107,7 @@ public class MemData {
      * @param packageName 包名
      */
     public boolean isBroadcastApp(String packageName) {
-        synchronized (broadcastAppMap) {
-            return broadcastAppMap.containsKey(packageName);
-        }
-    }
-
-    /**
-     * 应用广播开始.
-     *
-     * @param packageName 包名
-     */
-    public void broadcastStart(String packageName) {
-        Log.d(packageName + " broadcast executing start");
-        synchronized (broadcastAppMap) {
-            int count = broadcastAppMap.computeIfAbsent(packageName, k -> 0);
-            count++;
-            broadcastAppMap.put(packageName, count);
-        }
-    }
-
-    /**
-     * 应用广播结束.
-     *
-     * @param packageName 包名
-     */
-    public void broadcastFinish(String packageName) {
-        Log.d(packageName + " broadcast executing finish");
-        synchronized (broadcastAppMap) {
-            int count = broadcastAppMap.computeIfAbsent(packageName, k -> 0);
-            count--;
-            if (count > 0) {
-                broadcastAppMap.put(packageName, count);
-            } else {
-                Log.d(packageName + " broadcast state idle");
-                broadcastAppMap.remove(packageName);
-            }
-        }
+        return packageName.equals(broadcastApp);
     }
 
     /**
