@@ -79,7 +79,7 @@ public class BroadcastDeliverHook extends MethodHook {
                 // 暂存
                 Object app = processRecord.getProcessRecord();
                 param.setObjectExtra(FieldEnum.app, app);
-                Log.d(processRecord.getProcessName() + " clear broadcast");
+                // Log.d(processRecord.getProcessName() + " clear broadcast");
                 // 清楚广播
                 receiverList.clear();
             }
@@ -103,7 +103,7 @@ public class BroadcastDeliverHook extends MethodHook {
     private void broadcastStart(XC_MethodHook.MethodHookParam param, String packageName) {
         memData.setBroadcastApp(packageName);
         param.setObjectExtra(FieldEnum.packageName, packageName);
-        Log.d(packageName + " broadcast executing start");
+        // Log.d(packageName + " broadcast executing start");
     }
 
     /**
@@ -116,7 +116,7 @@ public class BroadcastDeliverHook extends MethodHook {
         }
         memData.setBroadcastApp(null);
         String packageName = (String) obj;
-        Log.d(packageName + " broadcast executing finish");
+        // Log.d(packageName + " broadcast executing finish");
     }
 
     /**

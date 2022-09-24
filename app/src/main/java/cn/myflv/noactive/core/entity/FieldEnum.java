@@ -37,4 +37,5 @@ public interface FieldEnum {
     String sEnable = "sEnable";
     String mPowerMilletEnable = "mPowerMilletEnable";
     String IGreeze = "IGreeze";
+    String milletEnable = "milletEnable";
 }

@@ -91,7 +91,6 @@ public class FreezeUtils {
 
     public void kill(ProcessRecord processRecord) {
         execute(() -> kill(BaseFreezeUtils.SIG_KILL, processRecord));
-        Log.d(processRecord.getProcessName() + " kill");
     }
 
     public void freezer(ProcessRecord processRecord) {
@@ -111,7 +110,6 @@ public class FreezeUtils {
                 execute(() -> freezeV1(processRecord));
             }
         }
-        Log.d(processRecord.getProcessName() + " freeze");
     }
 
     public void unFreezer(List<ProcessRecord> processRecords) {
@@ -140,7 +138,6 @@ public class FreezeUtils {
                 execute(() -> thawV1(processRecord));
             }
         }
-        Log.d(processRecord.getProcessName() + " unfreeze");
     }
 
     public void setProcessFrozen(int pid, int uid, boolean frozen) {
@@ -258,7 +255,7 @@ public class FreezeUtils {
                 result = BaseFreezeUtils.kill(false, sig, processRecord.getPid());
             }
             if (result) {
-                Log.d("kill " + processRecord.getProcessName());
+                Log.d("kill -" + sig + " " + processRecord.getProcessName());
             } else {
                 throw new Exception("unknown");
             }

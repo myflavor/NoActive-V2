@@ -10,9 +10,7 @@ import cn.myflv.noactive.core.entity.MemData;
 import cn.myflv.noactive.core.entity.MethodEnum;
 import cn.myflv.noactive.core.handler.FreezerHandler;
 import cn.myflv.noactive.core.server.ActivityManagerService;
-import cn.myflv.noactive.core.utils.FreezeUtils;
 import cn.myflv.noactive.core.utils.Log;
-import cn.myflv.noactive.core.utils.ThreadUtils;
 import de.robv.android.xposed.XC_MethodHook;
 
 /**
@@ -128,17 +126,15 @@ public class ActivitySwitchHook extends MethodHook {
                 if (memData.getActivityManagerService() == null) {
                     memData.setActivityManagerService(new ActivityManagerService(param.thisObject));
                 }
-                ThreadUtils.newThread(() -> {
-                    // 是否解冻
-                    boolean handleTo = memData.isTargetApp(toPackageName) || memData.getFreezerAppSet().contains(toPackageName);
-                    // 是否冻结
-                    boolean handleFrom = memData.isTargetApp(fromPackageName);
-                    Log.d(fromPackageName + covertHandle(handleFrom) + " -> " + toPackageName + covertHandle(handleTo));
-                    // 执行进入前台
-                    freezerHandler.onResume(handleTo, toPackageName);
-                    // 执行进入后台
-                    freezerHandler.onPause(handleFrom, fromPackageName, 3000);
-                });
+                // 是否解冻
+                boolean handleTo = memData.isTargetApp(toPackageName) || memData.getFreezerAppSet().contains(toPackageName);
+                // 是否冻结
+                boolean handleFrom = memData.isTargetApp(fromPackageName);
+                Log.d(fromPackageName + covertHandle(handleFrom) + " -> " + toPackageName + covertHandle(handleTo));
+                // 执行进入前台
+                freezerHandler.onResume(handleTo, toPackageName);
+                // 执行进入后台
+                freezerHandler.onPause(handleFrom, fromPackageName, 3000);
             }
         };
     }

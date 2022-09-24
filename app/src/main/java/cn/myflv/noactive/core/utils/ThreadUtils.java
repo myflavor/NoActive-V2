@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class ThreadUtils {
 
-
+    private final static String LOCK_KEY_PREFIX = "lock:key:";
     // 缓存线程池
     private final static ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
     // 单线程定时线程池
@@ -53,6 +53,7 @@ public class ThreadUtils {
         newThread(() -> {
             // 锁线程Map
             synchronized (threadTokenMap) {
+                // 存放Token
                 threadTokenMap.put(key, currentToken);
             }
             // 延迟
@@ -61,17 +62,51 @@ public class ThreadUtils {
             synchronized (threadTokenMap) {
                 // 获取Token
                 Long token = threadTokenMap.get(key);
-                // 比较Token
+                // 校验Token
                 if (token != null && !token.equals(currentToken)) {
+                    Log.d(key + " thread updated");
                     return;
                 }
-                cachedThreadPool.submit(runnable);
             }
+            newThread(() -> runWirthLock(key, runnable));
         });
     }
 
-    public static String getAppLock(String packageName) {
-        return ("lock:app:" + packageName).intern();
+    /**
+     * 无延迟新开线程执行方法.
+     *
+     * @param key      线程Key
+     * @param runnable 执行方法
+     */
+    public static void newThread(String key, Runnable runnable) {
+        newThread(() -> {
+            synchronized (threadTokenMap) {
+                threadTokenMap.put(key, System.currentTimeMillis());
+            }
+            newThread(() -> runWirthLock(key, runnable));
+        });
+    }
+
+    /**
+     * 锁key执行.
+     *
+     * @param key      线程Key
+     * @param runnable 执行方法
+     */
+    public static void runWirthLock(String key, Runnable runnable) {
+        synchronized (getLockKey(key)) {
+            runnable.run();
+        }
+    }
+
+    /**
+     * 获取锁Key.
+     *
+     * @param key 线程Key
+     * @return 锁Key
+     */
+    public static String getLockKey(String key) {
+        return (LOCK_KEY_PREFIX + key).intern();
     }
 
     /**
