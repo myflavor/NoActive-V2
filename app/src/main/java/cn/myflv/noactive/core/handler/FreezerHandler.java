@@ -28,11 +28,6 @@ public class FreezerHandler {
     private final MemData memData;
     private final FreezeUtils freezeUtils;
 
-    /**
-     * 临时解冻Uid
-     */
-    private final Set<Integer> temporaryUnfreezeUidSet = Collections.synchronizedSet(new HashSet<>());
-
     public FreezerHandler(ClassLoader classLoader, MemData memData, FreezeUtils freezeUtils) {
         this.classLoader = classLoader;
         this.memData = memData;
@@ -234,9 +229,7 @@ public class FreezerHandler {
         }
         Log.i(packageName + " " + reason);
         onResume(true, packageName, () -> {
-            onPause(true, packageName, 3000, () -> {
-                temporaryUnfreezeUidSet.remove(uid);
-            });
+            onPause(true, packageName, 3000);
         });
     }
 
