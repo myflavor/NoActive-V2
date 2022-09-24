@@ -43,13 +43,11 @@ public class GreezeHook extends MethodHook {
                 super.afterHookedMethod(param);
                 GreezeManagerService greezeManagerService = new GreezeManagerService(param.thisObject);
                 memData.setGreezeManagerService(greezeManagerService);
-                try {
+                boolean success = runNoThrow(() -> {
                     XposedHelpers.setStaticBooleanField(param.thisObject.getClass(), FieldEnum.sEnable, false);
                     XposedHelpers.setBooleanField(param.thisObject, FieldEnum.mPowerMilletEnable, false);
-                    Log.i("Disable Millet");
-                } catch (Throwable throwable) {
-                    Log.e("Disable Millet", throwable);
-                }
+                });
+                Log.i(success, "Disable Millet");
             }
         };
     }

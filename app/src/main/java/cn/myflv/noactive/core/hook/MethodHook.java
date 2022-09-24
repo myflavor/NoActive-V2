@@ -171,4 +171,13 @@ public abstract class MethodHook {
     public XC_MethodReplacement constantResult(final Object result) {
         return XC_MethodReplacement.returnConstant(result);
     }
+
+    public boolean runNoThrow(Runnable runnable) {
+        try {
+            runnable.run();
+            return true;
+        } catch (Throwable throwable) {
+            return false;
+        }
+    }
 }

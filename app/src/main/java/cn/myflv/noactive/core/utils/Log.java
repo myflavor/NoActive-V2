@@ -42,6 +42,12 @@ public class Log {
         }
     }
 
+    public static void i(boolean condition, String msg) {
+        if (condition) {
+            i(msg);
+        }
+    }
+
     public static void i(String msg) {
         unify(INFO, msg);
     }
