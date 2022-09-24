@@ -117,6 +117,9 @@ public class FreezerHandler {
             return;
         }
         ThreadUtils.newThread(packageName, () -> {
+            if (!memData.getFreezerAppSet().contains(packageName)) {
+                return;
+            }
             // 获取目标进程
             List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(packageName);
             ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);

@@ -127,7 +127,7 @@ public class ActivitySwitchHook extends MethodHook {
                     memData.setActivityManagerService(new ActivityManagerService(param.thisObject));
                 }
                 // 是否解冻
-                boolean handleTo = memData.getFreezerAppSet().contains(toPackageName);
+                boolean handleTo = memData.isTargetApp(toPackageName) || memData.getFreezerAppSet().contains(toPackageName);
                 // 是否冻结
                 boolean handleFrom = memData.isTargetApp(fromPackageName);
                 Log.d(fromPackageName + covertHandle(handleFrom) + " -> " + toPackageName + covertHandle(handleTo));
