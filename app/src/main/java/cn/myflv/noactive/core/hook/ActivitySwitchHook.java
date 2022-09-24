@@ -34,17 +34,15 @@ public class ActivitySwitchHook extends MethodHook {
     private final MemData memData;
 
     private final FreezerHandler freezerHandler;
-    private final FreezeUtils freezeUtils;
     /**
      * 上一次事件包名.
      */
     private String lastPackageName = "android";
 
-    public ActivitySwitchHook(ClassLoader classLoader, MemData memData, FreezerHandler freezerHandler, FreezeUtils freezeUtils) {
+    public ActivitySwitchHook(ClassLoader classLoader, MemData memData, FreezerHandler freezerHandler) {
         super(classLoader);
         this.memData = memData;
         this.freezerHandler = freezerHandler;
-        this.freezeUtils = freezeUtils;
     }
 
 

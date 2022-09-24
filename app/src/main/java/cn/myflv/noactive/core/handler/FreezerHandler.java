@@ -4,7 +4,6 @@ import android.content.pm.ApplicationInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,11 +32,6 @@ public class FreezerHandler {
      * 临时解冻Uid
      */
     private final Set<Integer> temporaryUnfreezeUidSet = Collections.synchronizedSet(new HashSet<>());
-
-    /**
-     * 冻结Token.
-     */
-    private final Map<String, Long> freezerTokenMap = Collections.synchronizedMap(new HashMap<>());
 
     public FreezerHandler(ClassLoader classLoader, MemData memData, FreezeUtils freezeUtils) {
         this.classLoader = classLoader;
@@ -122,19 +116,14 @@ public class FreezerHandler {
         // 获取目标进程
         List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(packageName);
         ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
-        // 防止同时解冻冻结
-        synchronized (ThreadUtils.getAppLock(packageName)) {
-            // 去除冻结Token
-            freezerTokenMap.remove(packageName);
-            // 移除被冻结APP
-            memData.getFreezerAppSet().remove(packageName);
-            if (!memData.getWhiteProcessList().contains(packageName)) {
-                memData.getAppStandbyController().forceIdleState(packageName, false);
-                memData.clearMonitorNet(applicationInfo);
-            }
-            // 解冻
-            freezeUtils.unFreezer(targetProcessRecords);
+        // 移除被冻结APP
+        memData.getFreezerAppSet().remove(packageName);
+        if (!memData.getWhiteProcessList().contains(packageName)) {
+            memData.getAppStandbyController().forceIdleState(packageName, false);
+            memData.clearMonitorNet(applicationInfo);
         }
+        // 解冻
+        freezeUtils.unFreezer(targetProcessRecords);
     }
 
     /**
@@ -280,29 +269,6 @@ public class FreezerHandler {
             retry++;
         }
         Log.d(packageName + " binder idle");
-    }
-
-
-    /**
-     * 设置冻结Token.
-     *
-     * @param packageName 应用包名
-     * @param token       token
-     */
-    public void setToken(String packageName, long token) {
-        freezerTokenMap.put(packageName, token);
-    }
-
-    /**
-     * 校验Token.
-     *
-     * @param packageName 应用包名
-     * @param value       值
-     * @return 是否正确
-     */
-    public boolean isInCorrectToken(String packageName, long value) {
-        Long token = freezerTokenMap.get(packageName);
-        return token == null || value != token;
     }
 
 }

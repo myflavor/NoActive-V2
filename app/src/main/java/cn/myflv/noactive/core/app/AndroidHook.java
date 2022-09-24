@@ -13,7 +13,6 @@ import cn.myflv.noactive.core.hook.GreezeHook;
 import cn.myflv.noactive.core.hook.NetReceiveHook;
 import cn.myflv.noactive.core.hook.NetworkManagerHook;
 import cn.myflv.noactive.core.hook.PowerManagerHook;
-import cn.myflv.noactive.core.hook.ProcessRemoveHook;
 import cn.myflv.noactive.core.hook.TaskTrimHook;
 import cn.myflv.noactive.core.utils.FreezeUtils;
 import cn.myflv.noactive.core.utils.Log;
@@ -57,7 +56,7 @@ public class AndroidHook extends AppHook {
             FreezerHandler freezerHandler = new FreezerHandler(classLoader, memData, freezeUtils);
 
             // Hook 切换事件
-            new ActivitySwitchHook(classLoader, memData, freezerHandler, freezeUtils);
+            new ActivitySwitchHook(classLoader, memData, freezerHandler);
 
             // Hook 广播分发
             new BroadcastDeliverHook(classLoader, memData);
