@@ -159,8 +159,6 @@ public class FreezeUtils {
             if (memData.getActivityManagerService().getContext() == null) {
                 return;
             }
-            // RootService.bind(intent,serviceConnection);
-            Context context = memData.getActivityManagerService().getContext();
             memData.getActivityManagerService().getContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         } catch (Throwable throwable) {
             Log.e("su connect", throwable);
