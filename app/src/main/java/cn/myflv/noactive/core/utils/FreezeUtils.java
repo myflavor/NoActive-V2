@@ -157,7 +157,10 @@ public class FreezeUtils {
         int pid = processRecord.getPid();
         ThreadUtils.runNoThrow(() -> {
             Class<?> CachedAppOptimizer = XposedHelpers.findClass(ClassEnum.CachedAppOptimizer, classLoader);
-            XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodEnum.freezeBinder, pid, frozen);
+            int result = (int) XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodEnum.freezeBinder, pid, frozen);
+            if (result != 0) {
+                return;
+            }
             Log.d((frozen ? "freeze" : "unfreeze") + " binder " + processRecord.getProcessName());
         });
     }
