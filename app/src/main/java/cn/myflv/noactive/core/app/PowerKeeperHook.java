@@ -3,7 +3,6 @@ package cn.myflv.noactive.core.app;
 import android.content.Context;
 
 import cn.myflv.noactive.core.entity.ClassEnum;
-import cn.myflv.noactive.core.entity.FieldEnum;
 import cn.myflv.noactive.core.entity.MethodEnum;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;

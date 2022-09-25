@@ -33,10 +33,6 @@ import lombok.Data;
 public class MemData {
 
     /**
-     * 正在执行广播的APP.
-     */
-    private String broadcastApp = null;
-    /**
      * 已冻结APP.
      */
     private final Set<String> freezerAppSet = Collections.synchronizedSet(FreezerConfig.isScheduledOn() ? new LinkedHashSet<>() : new HashSet<>());
@@ -44,6 +40,10 @@ public class MemData {
      * 配置文件监听.
      */
     private final FileObserver fileObserver;
+    /**
+     * 正在执行广播的APP.
+     */
+    private String broadcastApp = null;
     /**
      * 白名单APP.
      */

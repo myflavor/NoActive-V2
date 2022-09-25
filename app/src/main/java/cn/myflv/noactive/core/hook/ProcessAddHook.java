@@ -116,7 +116,7 @@ public class ProcessAddHook extends MethodHook {
         // 等待广播休眠
         memData.waitBroadcastIdle(packageName);
         // 锁包名
-            // 再次确定不在前台
+        // 再次确定不在前台
         if (!memData.getFreezerAppSet().contains(packageName)) {
             return;
         }

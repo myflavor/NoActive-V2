@@ -14,13 +14,11 @@ import java.io.PrintWriter;
 
 public class BaseFreezeUtils {
 
-    private final static String TAG = "NoActive";
-
     public final static int SIG_CONT = 18;
     public final static int SIG_STOP = 19;
     public final static int SIG_TSTP = 20;
     public final static int SIG_KILL = 9;
-
+    private final static String TAG = "NoActive";
     private static final int FREEZE_ACTION = 1;
     private static final int UNFREEZE_ACTION = 0;
 

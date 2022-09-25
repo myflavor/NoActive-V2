@@ -25,11 +25,6 @@ public class FreezeUtils {
     private final MemData memData;
     private final boolean suExecute;
     private FreezerInterface freezerInterface = null;
-
-    public boolean isUseV1() {
-        return !useKill && freezerVersion == 1;
-    }
-
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -78,6 +73,10 @@ public class FreezeUtils {
         if (suExecute) {
             Log.i("Su Execute");
         }
+    }
+
+    public boolean isUseV1() {
+        return !useKill && freezerVersion == 1;
     }
 
     public void kill(List<ProcessRecord> processRecords) {

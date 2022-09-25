@@ -69,7 +69,7 @@ public class FreezerConfig {
             if (isConfigOn(freezerApi)) {
                 return API;
             }
-            if (isAndroidApi(classLoader)){
+            if (isAndroidApi(classLoader)) {
                 return V2;
             }
         }

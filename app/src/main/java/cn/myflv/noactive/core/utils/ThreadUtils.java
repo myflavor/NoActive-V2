@@ -179,10 +179,10 @@ public class ThreadUtils {
         runnable.run();
     }
 
-    public static void runNoThrow(Runnable runnable){
-        try{
+    public static void runNoThrow(Runnable runnable) {
+        try {
             runnable.run();
-        }catch (Throwable ignored){
+        } catch (Throwable ignored) {
         }
     }
 }
