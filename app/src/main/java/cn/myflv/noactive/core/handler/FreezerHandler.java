@@ -119,6 +119,10 @@ public class FreezerHandler {
             freezeUtils.unFreezer(targetProcessRecords);
             // 移除被冻结APP
             memData.getFreezerAppSet().remove(packageName);
+            if (Thread.currentThread().isInterrupted()) {
+                Log.d(packageName + " event updated");
+                return;
+            }
             ThreadUtils.run(() -> {
                 // 获取应用信息
                 ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
@@ -133,6 +137,10 @@ public class FreezerHandler {
                     memData.getAppStandbyController().forceIdleState(packageName, false);
                 }
             });
+            if (Thread.currentThread().isInterrupted()) {
+                Log.d(packageName + " event updated");
+                return;
+            }
             if (runnable != null) {
                 runnable.run();
             }
@@ -184,6 +192,7 @@ public class FreezerHandler {
             for (ProcessRecord targetProcessRecord : targetProcessRecords) {
                 if (Thread.currentThread().isInterrupted()) {
                     Log.d(packageName + " event updated");
+                    return;
                 }
                 // 目标进程名
                 String processName = targetProcessRecord.getProcessName();
@@ -193,6 +202,10 @@ public class FreezerHandler {
                     // 冻结
                     freezeUtils.freezer(targetProcessRecord);
                 }
+            }
+            if (Thread.currentThread().isInterrupted()) {
+                Log.d(packageName + " event updated");
+                return;
             }
             ThreadUtils.run(() -> {
                 // 如果白名单进程不包含主进程就释放唤醒锁
@@ -208,10 +221,13 @@ public class FreezerHandler {
                     memData.monitorNet(applicationInfo);
                 }
             });
+            if (Thread.currentThread().isInterrupted()) {
+                Log.d(packageName + " event updated");
+                return;
+            }
             ThreadUtils.run(() -> {
                 freezeUtils.kill(killProcessList);
             });
-
             if (runnable != null) {
                 runnable.run();
             }
