@@ -20,6 +20,7 @@ public class ThreadUtils {
     // 单线程定时线程池
     private final static ScheduledExecutorService scheduledThreadPool = Executors.newSingleThreadScheduledExecutor();
     private final static Map<String, Long> threadTokenMap = new HashMap<>();
+    private final static Map<String, Thread> threadMap = new HashMap<>();
 
 
     /**
@@ -96,8 +97,31 @@ public class ThreadUtils {
      * @param runnable 执行方法
      */
     public static void runWithLock(String key, Runnable runnable) {
+        // 锁线程Map
+        synchronized (threadMap) {
+            // 移除线程并获取被移除的线程
+            Thread remove = threadMap.remove(key);
+            if (remove != null) {
+                // 中断线程
+                remove.interrupt();
+            }
+            // 放入当前线程
+            threadMap.put(key, Thread.currentThread());
+        }
+        // 带锁运行
         synchronized (getLockKey(key)) {
+            // 运行
             runnable.run();
+        }
+        // 锁线程Map
+        synchronized (threadMap) {
+            // 获取存放的线程
+            Thread thread = threadMap.get(key);
+            // 如果还是当前线程
+            if (Thread.currentThread().equals(thread)) {
+                // 执行移除
+                threadMap.remove(key);
+            }
         }
     }
 
@@ -116,11 +140,12 @@ public class ThreadUtils {
      *
      * @param ms 毫秒
      */
-    public static void sleep(int ms) {
+    public static boolean sleep(int ms) {
         try {
             Thread.sleep(ms);
+            return true;
         } catch (InterruptedException ignored) {
-            Log.w("Thread sleep failed");
+            return false;
         }
     }
 
@@ -133,7 +158,6 @@ public class ThreadUtils {
         try {
             Thread.sleep(ms);
         } catch (InterruptedException ignored) {
-            Log.w("Thread sleep failed");
         }
     }
 

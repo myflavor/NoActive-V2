@@ -93,12 +93,17 @@ public class MemData {
      *
      * @param packageName 包名
      */
-    public void waitBroadcastIdle(String packageName) {
+    public boolean waitBroadcastIdle(String packageName) {
         while (isBroadcastApp(packageName)) {
             Log.d(packageName + " is executing broadcast");
-            ThreadUtils.sleep(100);
+            boolean sleep = ThreadUtils.sleep(100);
+            if (!sleep) {
+                Log.i(packageName + " broadcast idle wait canceled ");
+                return false;
+            }
         }
         Log.d(packageName + " broadcast state idle");
+        return true;
     }
 
     /**

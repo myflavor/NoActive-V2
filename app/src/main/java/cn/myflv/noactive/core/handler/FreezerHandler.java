@@ -168,14 +168,23 @@ public class FreezerHandler {
             // 后台应用添加包名
             memData.getFreezerAppSet().add(packageName);
             // 等待应用未执行广播
-            memData.waitBroadcastIdle(packageName);
+            boolean broadcastIdle = memData.waitBroadcastIdle(packageName);
+            if (!broadcastIdle) {
+                return;
+            }
             // 等待 Binder 休眠
-            waitBinderIdle(packageName);
+            boolean binderIdle = waitBinderIdle(packageName);
+            if (!binderIdle) {
+                return;
+            }
             ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
             // 存放杀死进程
             List<ProcessRecord> killProcessList = new ArrayList<>();
             // 遍历目标进程
             for (ProcessRecord targetProcessRecord : targetProcessRecords) {
+                if (Thread.currentThread().isInterrupted()) {
+                    Log.d(packageName + " event updated");
+                }
                 // 目标进程名
                 String processName = targetProcessRecord.getProcessName();
                 if (memData.getKillProcessList().contains(processName)) {
@@ -269,21 +278,26 @@ public class FreezerHandler {
      *
      * @param packageName 包名
      */
-    public void waitBinderIdle(String packageName) {
+    public boolean waitBinderIdle(String packageName) {
         // 获取应用信息
         ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
         if (applicationInfo == null) {
-            return;
+            return true;
         }
         // 重试次数
         int retry = 0;
         // 3次重试，如果不进休眠就直接冻结了
         while (binderState(applicationInfo.uid) != BINDER_IDLE && retry < 3) {
             Log.w(packageName + " binder busy");
-            ThreadUtils.sleep(1000);
+            boolean sleep = ThreadUtils.sleep(1000);
+            if (!sleep) {
+                Log.d(packageName + " binder idle wait canceled");
+                return false;
+            }
             retry++;
         }
         Log.d(packageName + " binder idle");
+        return true;
     }
 
 }
