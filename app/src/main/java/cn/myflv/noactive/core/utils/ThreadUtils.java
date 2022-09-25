@@ -150,4 +150,8 @@ public class ThreadUtils {
         }
         Log.e(" <---------------");
     }
+
+    public static void run(Runnable runnable) {
+        runnable.run();
+    }
 }

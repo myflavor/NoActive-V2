@@ -3,11 +3,8 @@ package cn.myflv.noactive.core.handler;
 import android.content.pm.ApplicationInfo;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import cn.myflv.noactive.core.entity.ClassEnum;
 import cn.myflv.noactive.core.entity.MemData;
@@ -56,16 +53,17 @@ public class FreezerHandler {
                 ThreadUtils.runWithLock(packageName, () -> {
                     // 再次检查是否被冻结
                     if (!memData.getFreezerAppSet().contains(packageName)) {
-                        // 获取应用进程
-                        List<ProcessRecord> processRecords = processMap.get(packageName);
-                        if (processRecords == null) {
-                            return;
-                        }
-                        // 冻结
-                        for (ProcessRecord processRecord : processRecords) {
-                            if (memData.isTargetProcess(true, processRecord)) {
-                                freezeUtils.freezer(processRecord);
-                            }
+                        return;
+                    }
+                    // 获取应用进程
+                    List<ProcessRecord> processRecords = processMap.get(packageName);
+                    if (processRecords == null) {
+                        return;
+                    }
+                    // 冻结
+                    for (ProcessRecord processRecord : processRecords) {
+                        if (memData.isTargetProcess(true, processRecord)) {
+                            freezeUtils.freezer(processRecord);
                         }
                     }
                 });
@@ -117,15 +115,24 @@ public class FreezerHandler {
             }
             // 获取目标进程
             List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(packageName);
-            ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
-            if (!memData.getWhiteProcessList().contains(packageName)) {
-                memData.getAppStandbyController().forceIdleState(packageName, false);
-                memData.clearMonitorNet(applicationInfo);
-            }
-            // 移除被冻结APP
-            memData.getFreezerAppSet().remove(packageName);
             // 解冻
             freezeUtils.unFreezer(targetProcessRecords);
+            // 移除被冻结APP
+            memData.getFreezerAppSet().remove(packageName);
+            ThreadUtils.run(() -> {
+                // 获取应用信息
+                ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
+                if (memData.getWhiteProcessList().contains(packageName)) {
+                    return;
+                }
+                if (memData.getSocketApps().contains(packageName)) {
+                    // 清除网络监控
+                    memData.clearMonitorNet(applicationInfo);
+                } else {
+                    // 恢复StandBy
+                    memData.getAppStandbyController().forceIdleState(packageName, false);
+                }
+            });
             if (runnable != null) {
                 runnable.run();
             }
@@ -178,18 +185,24 @@ public class FreezerHandler {
                     freezeUtils.freezer(targetProcessRecord);
                 }
             }
-            // 如果白名单进程不包含主进程就释放唤醒锁
-            if (memData.getWhiteProcessList().contains(packageName)) {
-                return;
-            }
-            memData.getPowerManagerService().release(packageName);
-            if (!memData.getSocketApps().contains(packageName)) {
-                memData.getAppStandbyController().forceIdleState(packageName, true);
-                memData.getNetworkManagementService().socketDestroy(applicationInfo);
-            } else {
-                memData.monitorNet(applicationInfo);
-            }
-            freezeUtils.kill(killProcessList);
+            ThreadUtils.run(() -> {
+                // 如果白名单进程不包含主进程就释放唤醒锁
+                if (memData.getWhiteProcessList().contains(packageName)) {
+                    return;
+                }
+                // 是否唤醒锁
+                memData.getPowerManagerService().release(packageName);
+                if (!memData.getSocketApps().contains(packageName)) {
+                    memData.getAppStandbyController().forceIdleState(packageName, true);
+                    memData.getNetworkManagementService().socketDestroy(applicationInfo);
+                } else {
+                    memData.monitorNet(applicationInfo);
+                }
+            });
+            ThreadUtils.run(() -> {
+                freezeUtils.kill(killProcessList);
+            });
+
             if (runnable != null) {
                 runnable.run();
             }
