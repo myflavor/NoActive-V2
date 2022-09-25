@@ -154,4 +154,11 @@ public class ThreadUtils {
     public static void run(Runnable runnable) {
         runnable.run();
     }
+
+    public static void runNoThrow(Runnable runnable){
+        try{
+            runnable.run();
+        }catch (Throwable ignored){
+        }
+    }
 }

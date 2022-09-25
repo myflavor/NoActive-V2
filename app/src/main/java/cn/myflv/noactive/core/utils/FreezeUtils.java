@@ -99,7 +99,7 @@ public class FreezeUtils {
         } else {
             if (freezerVersion == 2) {
                 if (freezerApi) {
-                    setProcessFrozen(processRecord.getPid(), processRecord.getUid(), true);
+                    setProcessFrozen(processRecord, true);
                 } else {
                     execute(() -> freezeV2(processRecord));
                 }
@@ -109,6 +109,7 @@ public class FreezeUtils {
                 }
                 execute(() -> freezeV1(processRecord));
             }
+            freezeBinder(processRecord, true);
         }
     }
 
@@ -127,7 +128,7 @@ public class FreezeUtils {
         } else {
             if (freezerVersion == 2) {
                 if (freezerApi) {
-                    setProcessFrozen(processRecord.getPid(), processRecord.getUid(), false);
+                    setProcessFrozen(processRecord, false);
                 } else {
                     execute(() -> thawV2(processRecord));
                 }
@@ -137,12 +138,29 @@ public class FreezeUtils {
                 }
                 execute(() -> thawV1(processRecord));
             }
+            freezeBinder(processRecord, false);
         }
     }
 
-    public void setProcessFrozen(int pid, int uid, boolean frozen) {
-        Class<?> Process = XposedHelpers.findClass(ClassEnum.Process, classLoader);
-        XposedHelpers.callStaticMethod(Process, MethodEnum.setProcessFrozen, pid, uid, frozen);
+    public void setProcessFrozen(ProcessRecord processRecord, boolean frozen) {
+        int pid = processRecord.getPid();
+        int uid = processRecord.getUid();
+        ThreadUtils.runNoThrow(() -> {
+            Class<?> Process = XposedHelpers.findClass(ClassEnum.Process, classLoader);
+            XposedHelpers.callStaticMethod(Process, MethodEnum.setProcessFrozen, pid, uid, frozen);
+            Log.d((frozen ? "freeze" : "unfreeze") + " " + processRecord.getProcessName());
+        });
+
+    }
+
+
+    public void freezeBinder(ProcessRecord processRecord, boolean frozen) {
+        int pid = processRecord.getPid();
+        ThreadUtils.runNoThrow(() -> {
+            Class<?> CachedAppOptimizer = XposedHelpers.findClass(ClassEnum.CachedAppOptimizer, classLoader);
+            XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodEnum.freezeBinder, pid, frozen);
+            Log.d((frozen ? "freeze" : "unfreeze") + " binder " + processRecord.getProcessName());
+        });
     }
 
     public synchronized void connectIfNeed() {

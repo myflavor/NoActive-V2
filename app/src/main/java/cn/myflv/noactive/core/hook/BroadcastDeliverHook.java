@@ -7,7 +7,6 @@ import cn.myflv.noactive.core.entity.MethodEnum;
 import cn.myflv.noactive.core.server.BroadcastFilter;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.server.ReceiverList;
-import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 
@@ -67,7 +66,7 @@ public class BroadcastDeliverHook extends MethodHook {
                     return;
                 }
 
-                String packageName = processRecord.getApplicationInfo().getPackageName();
+                String packageName = processRecord.getPackageName();
 
                 // 不是冻结APP就不处理
                 if (!memData.getFreezerAppSet().contains(packageName)) {

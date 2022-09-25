@@ -31,7 +31,7 @@ public class ProcessList {
                 List<?> processRecordList = (List<?>) XposedHelpers.getObjectField(processList, FieldEnum.mLruProcesses);
                 for (Object proc : processRecordList) {
                     ProcessRecord processRecord = new ProcessRecord(proc);
-                    String packageName = processRecord.getApplicationInfo().getPackageName();
+                    String packageName = processRecord.getPackageName();
                     List<ProcessRecord> list = processMap.computeIfAbsent(packageName, k -> new ArrayList<>());
                     list.add(processRecord);
                 }

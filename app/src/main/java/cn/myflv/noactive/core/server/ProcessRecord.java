@@ -1,5 +1,6 @@
 package cn.myflv.noactive.core.server;
 
+import android.content.pm.ApplicationInfo;
 import android.os.Build;
 
 import cn.myflv.noactive.core.entity.FieldEnum;
@@ -28,8 +29,8 @@ public class ProcessRecord {
         this.uid = XposedHelpers.getIntField(processRecord, FieldEnum.uid);
 
         this.userId = XposedHelpers.getIntField(processRecord, FieldEnum.userId);
-        this.applicationInfo = new ApplicationInfo(XposedHelpers.getObjectField(processRecord, FieldEnum.info));
-        this.packageName = applicationInfo.getPackageName();
+        this.applicationInfo = (ApplicationInfo) XposedHelpers.getObjectField(processRecord, FieldEnum.info);
+        this.packageName = applicationInfo.packageName;
         String processName = (String) XposedHelpers.getObjectField(processRecord, FieldEnum.processName);
         this.processName = PackageUtils.absoluteProcessName(packageName, processName);
     }

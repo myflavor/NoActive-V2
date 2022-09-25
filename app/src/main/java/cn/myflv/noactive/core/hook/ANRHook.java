@@ -72,7 +72,7 @@ public class ANRHook extends MethodHook {
                     // ANR进程
                     ProcessRecord processRecord = new ProcessRecord(args[0]);
                     // 进程对应包名
-                    String packageName = processRecord.getApplicationInfo().getPackageName();
+                    String packageName = processRecord.getPackageName();
                     // 不是目标APP就调用原方法
                     if (!memData.isTargetApp(packageName)) {
                         return invokeOriginalMethod(param);

@@ -164,7 +164,7 @@ public class MemData {
         }
         // 获取进程名
         String processName = processRecord.getProcessName();
-        String packageName = processRecord.getApplicationInfo().getPackageName();
+        String packageName = processRecord.getPackageName();
 
         // 系统进程可能没有包名
         if (packageName == null) {
