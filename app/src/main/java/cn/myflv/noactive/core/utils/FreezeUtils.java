@@ -17,6 +17,7 @@ import cn.myflv.noactive.utils.BaseFreezeUtils;
 import de.robv.android.xposed.XposedHelpers;
 
 public class FreezeUtils {
+    private final static int BINDER_FREEZE_TRY = 3;
     private final boolean freezerApi;
     private final int freezerVersion;
     private final int stopSignal;
@@ -157,8 +158,13 @@ public class FreezeUtils {
         int pid = processRecord.getPid();
         ThreadUtils.runNoThrow(() -> {
             Class<?> CachedAppOptimizer = XposedHelpers.findClass(ClassEnum.CachedAppOptimizer, classLoader);
-            XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodEnum.freezeBinder, pid, frozen);
-            Log.d((frozen ? "freeze" : "unfreeze") + " binder " + processRecord.getProcessName());
+            for (int i = 0; i < BINDER_FREEZE_TRY; i++) {
+                int result = (int) XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodEnum.freezeBinder, pid, frozen);
+                if (result == 0) {
+                    Log.d((frozen ? "freeze" : "unfreeze") + " binder " + processRecord.getProcessName());
+                    return;
+                }
+            }
         });
     }
 
