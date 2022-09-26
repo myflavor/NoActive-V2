@@ -65,10 +65,17 @@ public class FreezerConfig {
         if (isConfigOn(freezerV2)) {
             return V2;
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (isConfigOn(freezerApi)) {
                 return API;
             }
+
+        }
+        if (isConfigOn(freezerV1)) {
+            return V1;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (isAndroidApi(classLoader)) {
                 return V2;
             }
