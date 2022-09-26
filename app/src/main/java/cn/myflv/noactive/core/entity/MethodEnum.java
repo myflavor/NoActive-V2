@@ -59,4 +59,7 @@ public interface MethodEnum {
 
     String clearMonitorNet = "clearMonitorNet";
     String start = "start";
+    String get = "get";
+    String isIdle = "isIdle";
+    String getCurProcState = "getCurProcState";
 }

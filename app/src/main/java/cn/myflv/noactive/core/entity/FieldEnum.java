@@ -38,4 +38,8 @@ public interface FieldEnum {
     String mPowerMilletEnable = "mPowerMilletEnable";
     String IGreeze = "IGreeze";
     String milletEnable = "milletEnable";
+    String mProcLock = "mProcLock";
+    String mActiveUids = "mActiveUids";
+    String PROCESS_STATE_BOUND_TOP = "PROCESS_STATE_BOUND_TOP";
+    String idle = "idle";
 }

@@ -1,9 +1,11 @@
 package cn.myflv.noactive.core.server;
 
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -52,6 +54,49 @@ public class ActivityManagerService {
         }
         return true;
     }
+
+
+    public boolean isAppTop(String packageName) {
+        try {
+            ApplicationInfo applicationInfo = getApplicationInfo(packageName);
+            if (applicationInfo == null) {
+                return true;
+            }
+            int uid = applicationInfo.uid;
+            synchronized (getLock()) {
+                Object mProcessList = XposedHelpers.getObjectField(activityManagerService, FieldEnum.mProcessList);
+                Object mActiveUids = XposedHelpers.getObjectField(mProcessList, FieldEnum.mActiveUids);
+                Object uidRec = XposedHelpers.callMethod(mActiveUids, MethodEnum.get, uid);
+                if (uidRec == null) {
+                    return false;
+                }
+                boolean idle;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    idle = (boolean) XposedHelpers.callMethod(uidRec, MethodEnum.isIdle);
+                } else {
+                    idle = XposedHelpers.getBooleanField(uidRec, FieldEnum.idle);
+                }
+                if (idle) {
+                    return false;
+                }
+                int curProcState = (int) XposedHelpers.callMethod(uidRec, MethodEnum.getCurProcState);
+                int PROCESS_STATE_BOUND_TOP = XposedHelpers.getStaticIntField(ActivityManager.class, FieldEnum.PROCESS_STATE_BOUND_TOP);
+                return curProcState <= PROCESS_STATE_BOUND_TOP;
+            }
+        } catch (Throwable throwable) {
+            Log.e("isAppTop", throwable);
+        }
+        return true;
+    }
+
+    public Object getLock() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return XposedHelpers.getObjectField(activityManagerService, FieldEnum.mProcLock);
+        } else {
+            return activityManagerService;
+        }
+    }
+
 
     public boolean isSystem(String packageName) {
         ApplicationInfo applicationInfo = getApplicationInfo(packageName);
