@@ -109,7 +109,7 @@ public class FreezeUtils {
                 }
                 execute(() -> freezeV1(processRecord));
             }
-            freezeBinder(processRecord, true);
+            // freezeBinder(processRecord, true);
         }
     }
 
@@ -138,7 +138,7 @@ public class FreezeUtils {
                 }
                 execute(() -> thawV1(processRecord));
             }
-            freezeBinder(processRecord, false);
+            // freezeBinder(processRecord, false);
         }
     }
 
