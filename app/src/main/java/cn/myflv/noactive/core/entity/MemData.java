@@ -98,7 +98,7 @@ public class MemData {
             Log.d(packageName + " is executing broadcast");
             boolean sleep = ThreadUtils.sleep(100);
             if (!sleep) {
-                Log.i(packageName + " broadcast idle wait canceled ");
+                Log.d(packageName + " broadcast idle wait canceled ");
                 return false;
             }
         }
