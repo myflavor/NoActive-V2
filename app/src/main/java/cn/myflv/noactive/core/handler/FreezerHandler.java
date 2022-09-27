@@ -83,8 +83,9 @@ public class FreezerHandler {
                 // 解冻
                 onResume(true, packageName, () -> {
                     // 冻结
-                    onPause(true, packageName, 3000);
-                    Log.d(packageName + " interval unfreeze finish");
+                    onPause(true, packageName, 3000, () -> {
+                        Log.d(packageName + " interval unfreeze finish");
+                    });
                 });
                 // 结束循环
                 // 相当于只解冻没有最久没有打开的 APP
