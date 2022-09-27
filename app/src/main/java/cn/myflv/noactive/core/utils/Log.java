@@ -66,7 +66,6 @@ public class Log {
     }
 
     public static void unify(String level, String msg) {
-        xposedLog(TAG + "(" + level + ") -> " + msg);
         executorService.submit(() -> {
             fileLog(simpleDateFormat.format(new Date()) + " " + level.toUpperCase() + " -> " + msg);
         });
