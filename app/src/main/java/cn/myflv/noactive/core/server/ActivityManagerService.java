@@ -33,7 +33,7 @@ public class ActivityManagerService {
         this.context = (Context) XposedHelpers.getObjectField(activityManagerService, FieldEnum.mContext);
     }
 
-    public boolean isAppForeground(String packageName) {
+    public boolean isForegroundApp(String packageName) {
         ApplicationInfo applicationInfo = getApplicationInfo(packageName);
         if (applicationInfo == null) {
             return true;
@@ -56,7 +56,7 @@ public class ActivityManagerService {
     }
 
 
-    public boolean isAppTop(String packageName) {
+    public boolean isTopApp(String packageName) {
         try {
             ApplicationInfo applicationInfo = getApplicationInfo(packageName);
             if (applicationInfo == null) {
