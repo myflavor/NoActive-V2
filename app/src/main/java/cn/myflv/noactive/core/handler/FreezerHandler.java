@@ -111,7 +111,7 @@ public class FreezerHandler {
             return;
         }
         ThreadUtils.newThread(packageName, () -> {
-            ThreadUtils.run(() -> {
+            ThreadUtils.safeRun(() -> {
                 // 获取应用信息
                 ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
                 if (memData.getWhiteProcessList().contains(packageName)) {
@@ -201,7 +201,7 @@ public class FreezerHandler {
                 Log.d(packageName + " event updated");
                 return;
             }
-            ThreadUtils.run(() -> {
+            ThreadUtils.safeRun(() -> {
                 // 如果白名单进程不包含主进程就释放唤醒锁
                 if (memData.getWhiteProcessList().contains(packageName)) {
                     return;
@@ -219,7 +219,7 @@ public class FreezerHandler {
                 Log.d(packageName + " event updated");
                 return;
             }
-            ThreadUtils.run(() -> {
+            ThreadUtils.safeRun(() -> {
                 freezeUtils.kill(killProcessList);
             });
             if (runnable != null) {

@@ -24,20 +24,24 @@ public class PowerManagerService {
 
     public Map<String, List<WakeLock>> getWakeLockMap() {
         Map<String, List<WakeLock>> wakeLockMap = new HashMap<>();
-        synchronized (wakeLocks) {
-            List<?> wakeLockList = (List<?>) wakeLocks;
-            for (Object item : wakeLockList) {
-                WakeLock wakeLock = new WakeLock(item);
-                List<WakeLock> list = wakeLockMap.computeIfAbsent(wakeLock.getPackageName(), k -> new ArrayList<>());
-                list.add(wakeLock);
+        try {
+            synchronized (wakeLocks) {
+                List<?> wakeLockList = (List<?>) wakeLocks;
+                for (Object item : wakeLockList) {
+                    WakeLock wakeLock = new WakeLock(item);
+                    List<WakeLock> list = wakeLockMap.computeIfAbsent(wakeLock.getPackageName(), k -> new ArrayList<>());
+                    list.add(wakeLock);
+                }
             }
+        } catch (Throwable throwable) {
+            Log.e("getWakeLockMap", throwable);
         }
         return wakeLockMap;
     }
 
     public void release(String packageName) {
         List<WakeLock> wakeLocks = getWakeLockMap().get(packageName);
-        if (wakeLocks == null) {
+        if (wakeLocks == null || wakeLocks.isEmpty()) {
             return;
         }
         for (WakeLock wakeLock : wakeLocks) {
@@ -47,9 +51,13 @@ public class PowerManagerService {
 
 
     public void release(WakeLock wakeLock) {
-        XposedHelpers.callMethod(powerManagerService, MethodConstants.releaseWakeLockInternal, wakeLock.getLock(), wakeLock.getFlags());
-        Log.d(wakeLock.getPackageName() + "(" + wakeLock.getTag() + ") wakelock released");
-    }
+        try {
+            XposedHelpers.callMethod(powerManagerService, MethodConstants.releaseWakeLockInternal, wakeLock.getLock(), wakeLock.getFlags());
+            Log.d(wakeLock.getPackageName() + "(" + wakeLock.getTag() + ") wakelock released");
+        } catch (Throwable throwable) {
+            Log.e("wakeLock release", throwable);
+        }
 
+    }
 
 }
