@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.myflv.noactive.core.entity.FieldEnum;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.constant.FieldConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class PowerManagerService {
 
     public PowerManagerService(Object powerManagerService) {
         this.powerManagerService = powerManagerService;
-        this.wakeLocks = XposedHelpers.getObjectField(powerManagerService, FieldEnum.mWakeLocks);
+        this.wakeLocks = XposedHelpers.getObjectField(powerManagerService, FieldConstants.mWakeLocks);
     }
 
 
@@ -47,7 +47,7 @@ public class PowerManagerService {
 
 
     public void release(WakeLock wakeLock) {
-        XposedHelpers.callMethod(powerManagerService, MethodEnum.releaseWakeLockInternal, wakeLock.getLock(), wakeLock.getFlags());
+        XposedHelpers.callMethod(powerManagerService, MethodConstants.releaseWakeLockInternal, wakeLock.getLock(), wakeLock.getFlags());
         Log.d(wakeLock.getPackageName() + "(" + wakeLock.getTag() + ") wakelock released");
     }
 

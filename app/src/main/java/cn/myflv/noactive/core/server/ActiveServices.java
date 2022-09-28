@@ -1,6 +1,6 @@
 package cn.myflv.noactive.core.server;
 
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.constant.MethodConstants;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
 
@@ -13,6 +13,6 @@ public class ActiveServices {
     }
 
     public void killServicesLocked(ProcessRecord processRecord) {
-        XposedHelpers.callMethod(activeServices, MethodEnum.killServicesLocked, processRecord.getProcessRecord(), false);
+        XposedHelpers.callMethod(activeServices, MethodConstants.killServicesLocked, processRecord.getProcessRecord(), false);
     }
 }

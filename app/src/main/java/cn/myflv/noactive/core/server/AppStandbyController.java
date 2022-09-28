@@ -1,6 +1,6 @@
 package cn.myflv.noactive.core.server;
 
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class AppStandbyController {
 
     public void forceIdleState(String packageName, boolean idle) {
         try {
-            XposedHelpers.callMethod(appStandbyController, MethodEnum.forceIdleState, packageName, ActivityManagerService.MAIN_USER, idle);
+            XposedHelpers.callMethod(appStandbyController, MethodConstants.forceIdleState, packageName, ActivityManagerService.MAIN_USER, idle);
             Log.d(packageName + " " + (idle ? "idle" : "active"));
         } catch (Throwable throwable) {
             Log.e("forceIdleState", throwable);

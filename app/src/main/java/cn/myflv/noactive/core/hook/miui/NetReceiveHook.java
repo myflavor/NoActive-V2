@@ -4,10 +4,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.handler.FreezerHandler;
-import cn.myflv.noactive.core.hook.MethodHook;
+import cn.myflv.noactive.core.hook.base.AbstractMethodHook;
+import cn.myflv.noactive.core.hook.base.MethodHook;
 import de.robv.android.xposed.XC_MethodHook;
 
 /**
@@ -32,12 +33,12 @@ public class NetReceiveHook extends MethodHook {
 
     @Override
     public String getTargetClass() {
-        return ClassEnum.GreezeManagerService;
+        return ClassConstants.GreezeManagerService;
     }
 
     @Override
     public String getTargetMethod() {
-        return MethodEnum.reportNet;
+        return MethodConstants.reportNet;
     }
 
     @Override
@@ -47,10 +48,9 @@ public class NetReceiveHook extends MethodHook {
 
     @Override
     public XC_MethodHook getTargetHook() {
-        return new XC_MethodHook() {
+        return new AbstractMethodHook() {
             @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
+            protected void beforeMethod(MethodHookParam param) throws Throwable {
                 Object[] args = param.args;
                 int uid = (int) args[0];
                 freezerHandler.temporaryUnfreezeIfNeed(uid, REASON);

@@ -1,6 +1,6 @@
 package cn.myflv.noactive.core.server;
 
-import cn.myflv.noactive.core.entity.FieldEnum;
+import cn.myflv.noactive.constant.FieldConstants;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
 
@@ -11,6 +11,6 @@ public class BroadcastQueue {
 
     public BroadcastQueue(Object broadcastQueue) {
         this.broadcastQueue = broadcastQueue;
-        this.activityManagerService = new ActivityManagerService(XposedHelpers.getObjectField(broadcastQueue, FieldEnum.mService));
+        this.activityManagerService = new ActivityManagerService(XposedHelpers.getObjectField(broadcastQueue, FieldConstants.mService));
     }
 }

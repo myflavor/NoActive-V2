@@ -1,8 +1,10 @@
 package cn.myflv.noactive.core.hook;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.entity.MemData;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.core.hook.base.AbstractMethodHook;
+import cn.myflv.noactive.core.hook.base.MethodHook;
 import cn.myflv.noactive.core.server.NetworkManagementService;
 import de.robv.android.xposed.XC_MethodHook;
 
@@ -16,12 +18,12 @@ public class NetworkManagerHook extends MethodHook {
 
     @Override
     public String getTargetClass() {
-        return ClassEnum.NetworkManagementService;
+        return ClassConstants.NetworkManagementService;
     }
 
     @Override
     public String getTargetMethod() {
-        return MethodEnum.systemReady;
+        return MethodConstants.systemReady;
     }
 
     @Override
@@ -31,10 +33,9 @@ public class NetworkManagerHook extends MethodHook {
 
     @Override
     public XC_MethodHook getTargetHook() {
-        return new XC_MethodHook() {
+        return new AbstractMethodHook() {
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
+            protected void afterMethod(MethodHookParam param) throws Throwable {
                 NetworkManagementService networkManagementService = new NetworkManagementService(classLoader, param.thisObject);
                 memData.setNetworkManagementService(networkManagementService);
             }

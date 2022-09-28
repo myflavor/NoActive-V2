@@ -1,9 +1,11 @@
 package cn.myflv.noactive.core.hook;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
-import cn.myflv.noactive.core.entity.FieldEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.FieldConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.entity.MemData;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.core.hook.base.AbstractMethodHook;
+import cn.myflv.noactive.core.hook.base.MethodHook;
 import cn.myflv.noactive.core.server.BroadcastFilter;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.server.ReceiverList;
@@ -26,25 +28,24 @@ public class BroadcastDeliverHook extends MethodHook {
 
     @Override
     public String getTargetClass() {
-        return ClassEnum.BroadcastQueue;
+        return ClassConstants.BroadcastQueue;
     }
 
     @Override
     public String getTargetMethod() {
-        return MethodEnum.deliverToRegisteredReceiverLocked;
+        return MethodConstants.deliverToRegisteredReceiverLocked;
     }
 
     @Override
     public Object[] getTargetParam() {
-        return new Object[]{ClassEnum.BroadcastRecord, ClassEnum.BroadcastFilter, boolean.class, int.class};
+        return new Object[]{ClassConstants.BroadcastRecord, ClassConstants.BroadcastFilter, boolean.class, int.class};
     }
 
     @Override
     public XC_MethodHook getTargetHook() {
-        return new XC_MethodHook() {
+        return new AbstractMethodHook() {
             @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
+            protected void beforeMethod(MethodHookParam param) throws Throwable {
                 Object[] args = param.args;
                 if (args[1] == null) {
                     return;
@@ -77,15 +78,14 @@ public class BroadcastDeliverHook extends MethodHook {
 
                 // 暂存
                 Object app = processRecord.getProcessRecord();
-                param.setObjectExtra(FieldEnum.app, app);
+                param.setObjectExtra(FieldConstants.app, app);
                 // Log.d(processRecord.getProcessName() + " clear broadcast");
                 // 清楚广播
                 receiverList.clear();
             }
 
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
+            protected void afterMethod(MethodHookParam param) throws Throwable {
                 // 恢复被修改的参数
                 restore(param);
                 // 广播结束
@@ -101,7 +101,7 @@ public class BroadcastDeliverHook extends MethodHook {
      */
     private void broadcastStart(XC_MethodHook.MethodHookParam param, String packageName) {
         memData.setBroadcastApp(packageName);
-        param.setObjectExtra(FieldEnum.packageName, packageName);
+        param.setObjectExtra(FieldConstants.packageName, packageName);
         // Log.d(packageName + " broadcast executing start");
     }
 
@@ -109,7 +109,7 @@ public class BroadcastDeliverHook extends MethodHook {
      * 广播结束执行
      */
     private void broadcastFinish(XC_MethodHook.MethodHookParam param) {
-        Object obj = param.getObjectExtra(FieldEnum.packageName);
+        Object obj = param.getObjectExtra(FieldConstants.packageName);
         if (obj == null) {
             return;
         }
@@ -123,7 +123,7 @@ public class BroadcastDeliverHook extends MethodHook {
      */
     private void restore(XC_MethodHook.MethodHookParam param) {
         // 获取进程
-        Object app = param.getObjectExtra(FieldEnum.app);
+        Object app = param.getObjectExtra(FieldConstants.app);
         if (app == null) {
             return;
         }
@@ -132,12 +132,12 @@ public class BroadcastDeliverHook extends MethodHook {
         if (args[1] == null) {
             return;
         }
-        Object receiverList = XposedHelpers.getObjectField(args[1], FieldEnum.receiverList);
+        Object receiverList = XposedHelpers.getObjectField(args[1], FieldConstants.receiverList);
         if (receiverList == null) {
             return;
         }
         // 还原修改
-        XposedHelpers.setObjectField(receiverList, FieldEnum.app, app);
+        XposedHelpers.setObjectField(receiverList, FieldConstants.app, app);
     }
 
     @Override

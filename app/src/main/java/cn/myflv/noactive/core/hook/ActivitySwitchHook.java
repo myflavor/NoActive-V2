@@ -5,10 +5,12 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.entity.MemData;
-import cn.myflv.noactive.core.entity.MethodEnum;
 import cn.myflv.noactive.core.handler.FreezerHandler;
+import cn.myflv.noactive.core.hook.base.AbstractMethodHook;
+import cn.myflv.noactive.core.hook.base.MethodHook;
 import cn.myflv.noactive.core.server.ActivityManagerService;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
@@ -46,12 +48,12 @@ public class ActivitySwitchHook extends MethodHook {
 
     @Override
     public String getTargetClass() {
-        return ClassEnum.ActivityManagerService;
+        return ClassConstants.ActivityManagerService;
     }
 
     @Override
     public String getTargetMethod() {
-        return MethodEnum.updateActivityUsageStats;
+        return MethodConstants.updateActivityUsageStats;
     }
 
     @Override
@@ -59,11 +61,11 @@ public class ActivitySwitchHook extends MethodHook {
         // Hook 切换事件
         if (Build.MANUFACTURER.equals("samsung")) {
             return new Object[]{
-                    ClassEnum.ComponentName, int.class, int.class,
-                    ClassEnum.IBinder, ClassEnum.ComponentName, Intent.class};
+                    ClassConstants.ComponentName, int.class, int.class,
+                    ClassConstants.IBinder, ClassConstants.ComponentName, Intent.class};
         } else {
-            return new Object[]{ClassEnum.ComponentName, int.class, int.class,
-                    ClassEnum.IBinder, ClassEnum.ComponentName};
+            return new Object[]{ClassConstants.ComponentName, int.class, int.class,
+                    ClassConstants.IBinder, ClassConstants.ComponentName};
         }
     }
 
@@ -80,8 +82,9 @@ public class ActivitySwitchHook extends MethodHook {
 
     @Override
     public XC_MethodHook getTargetHook() {
-        return new XC_MethodHook() {
-            public void beforeHookedMethod(MethodHookParam param) throws Throwable {
+        return new AbstractMethodHook() {
+            @Override
+            protected void beforeMethod(MethodHookParam param) throws Throwable {
                 // 获取方法参数
                 Object[] args = param.args;
 

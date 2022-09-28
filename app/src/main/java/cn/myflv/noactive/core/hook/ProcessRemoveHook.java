@@ -2,9 +2,11 @@ package cn.myflv.noactive.core.hook;
 
 import android.os.Build;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.entity.MemData;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.core.hook.base.AbstractMethodHook;
+import cn.myflv.noactive.core.hook.base.MethodHook;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.utils.FreezeUtils;
 import cn.myflv.noactive.core.utils.Log;
@@ -31,33 +33,32 @@ public class ProcessRemoveHook extends MethodHook {
 
     @Override
     public String getTargetClass() {
-        return ClassEnum.PidMap;
+        return ClassConstants.PidMap;
     }
 
     @Override
     public String getTargetMethod() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return MethodEnum.doRemoveInternal;
+            return MethodConstants.doRemoveInternal;
         } else {
-            return MethodEnum.remove;
+            return MethodConstants.remove;
         }
     }
 
     @Override
     public Object[] getTargetParam() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            return new Object[]{int.class, ClassEnum.ProcessRecord};
+            return new Object[]{int.class, ClassConstants.ProcessRecord};
         } else {
-            return new Object[]{ClassEnum.ProcessRecord};
+            return new Object[]{ClassConstants.ProcessRecord};
         }
     }
 
     @Override
     public XC_MethodHook getTargetHook() {
-        return new XC_MethodHook() {
+        return new AbstractMethodHook() {
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
+            protected void afterMethod(MethodHookParam param) throws Throwable {
                 int position;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     position = 1;

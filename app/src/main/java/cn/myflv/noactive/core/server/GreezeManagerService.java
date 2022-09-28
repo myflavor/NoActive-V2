@@ -2,7 +2,7 @@ package cn.myflv.noactive.core.server;
 
 import android.content.pm.ApplicationInfo;
 
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
@@ -20,7 +20,7 @@ public class GreezeManagerService {
             return;
         }
         try {
-            XposedHelpers.callMethod(greezeManagerService, MethodEnum.monitorNet, applicationInfo.uid);
+            XposedHelpers.callMethod(greezeManagerService, MethodConstants.monitorNet, applicationInfo.uid);
             Log.d(applicationInfo.packageName + " monitorNet");
         } catch (Throwable throwable) {
             Log.e("monitorNet", throwable);
@@ -33,7 +33,7 @@ public class GreezeManagerService {
             return;
         }
         try {
-            XposedHelpers.callMethod(greezeManagerService, MethodEnum.clearMonitorNet, applicationInfo.uid);
+            XposedHelpers.callMethod(greezeManagerService, MethodConstants.clearMonitorNet, applicationInfo.uid);
             Log.d(applicationInfo.packageName + " clearMonitorNet");
         } catch (Throwable throwable) {
             Log.e("clearMonitorNet", throwable);

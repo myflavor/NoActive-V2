@@ -1,9 +1,9 @@
-package cn.myflv.noactive.core.entity;
+package cn.myflv.noactive.constant;
 
 /**
  * 类枚举.
  */
-public interface ClassEnum {
+public interface ClassConstants {
     String ActivityManagerService = "com.android.server.am.ActivityManagerService";
     String ComponentName = "android.content.ComponentName";
     String IBinder = "android.os.IBinder";

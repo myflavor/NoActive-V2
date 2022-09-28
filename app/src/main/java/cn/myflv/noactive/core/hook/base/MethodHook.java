@@ -1,4 +1,4 @@
-package cn.myflv.noactive.core.hook;
+package cn.myflv.noactive.core.hook.base;
 
 import android.os.Build;
 

@@ -9,9 +9,9 @@ import android.os.Build;
 
 import java.lang.reflect.InvocationTargetException;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
-import cn.myflv.noactive.core.entity.FieldEnum;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.FieldConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
@@ -28,9 +28,9 @@ public class ActivityManagerService {
 
     public ActivityManagerService(Object activityManagerService) {
         this.activityManagerService = activityManagerService;
-        this.processList = new ProcessList(XposedHelpers.getObjectField(activityManagerService, FieldEnum.mProcessList));
-        this.activeServices = new ActiveServices(XposedHelpers.getObjectField(activityManagerService, FieldEnum.mServices));
-        this.context = (Context) XposedHelpers.getObjectField(activityManagerService, FieldEnum.mContext);
+        this.processList = new ProcessList(XposedHelpers.getObjectField(activityManagerService, FieldConstants.mProcessList));
+        this.activeServices = new ActiveServices(XposedHelpers.getObjectField(activityManagerService, FieldConstants.mServices));
+        this.context = (Context) XposedHelpers.getObjectField(activityManagerService, FieldConstants.mContext);
     }
 
     public boolean isForegroundApp(String packageName) {
@@ -40,15 +40,15 @@ public class ActivityManagerService {
         }
         int uid = applicationInfo.uid;
         Class<?> clazz = activityManagerService.getClass();
-        while (clazz != null && !clazz.getName().equals(Object.class.getName()) && !clazz.getName().equals(ClassEnum.ActivityManagerService)) {
+        while (clazz != null && !clazz.getName().equals(Object.class.getName()) && !clazz.getName().equals(ClassConstants.ActivityManagerService)) {
             clazz = clazz.getSuperclass();
         }
-        if (clazz == null || !clazz.getName().equals(ClassEnum.ActivityManagerService)) {
+        if (clazz == null || !clazz.getName().equals(ClassConstants.ActivityManagerService)) {
             Log.e("super activityManagerService is not found");
             return true;
         }
         try {
-            return (boolean) XposedHelpers.findMethodBestMatch(clazz, MethodEnum.isAppForeground, uid).invoke(activityManagerService, uid);
+            return (boolean) XposedHelpers.findMethodBestMatch(clazz, MethodConstants.isAppForeground, uid).invoke(activityManagerService, uid);
         } catch (IllegalAccessException | InvocationTargetException e) {
             Log.e("call isAppForeground method error");
         }
@@ -64,23 +64,23 @@ public class ActivityManagerService {
             }
             int uid = applicationInfo.uid;
             synchronized (getLock()) {
-                Object mProcessList = XposedHelpers.getObjectField(activityManagerService, FieldEnum.mProcessList);
-                Object mActiveUids = XposedHelpers.getObjectField(mProcessList, FieldEnum.mActiveUids);
-                Object uidRec = XposedHelpers.callMethod(mActiveUids, MethodEnum.get, uid);
+                Object mProcessList = XposedHelpers.getObjectField(activityManagerService, FieldConstants.mProcessList);
+                Object mActiveUids = XposedHelpers.getObjectField(mProcessList, FieldConstants.mActiveUids);
+                Object uidRec = XposedHelpers.callMethod(mActiveUids, MethodConstants.get, uid);
                 if (uidRec == null) {
                     return false;
                 }
                 boolean idle;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    idle = (boolean) XposedHelpers.callMethod(uidRec, MethodEnum.isIdle);
+                    idle = (boolean) XposedHelpers.callMethod(uidRec, MethodConstants.isIdle);
                 } else {
-                    idle = XposedHelpers.getBooleanField(uidRec, FieldEnum.idle);
+                    idle = XposedHelpers.getBooleanField(uidRec, FieldConstants.idle);
                 }
                 if (idle) {
                     return false;
                 }
-                int curProcState = (int) XposedHelpers.callMethod(uidRec, MethodEnum.getCurProcState);
-                int PROCESS_STATE_BOUND_TOP = XposedHelpers.getStaticIntField(ActivityManager.class, FieldEnum.PROCESS_STATE_BOUND_TOP);
+                int curProcState = (int) XposedHelpers.callMethod(uidRec, MethodConstants.getCurProcState);
+                int PROCESS_STATE_BOUND_TOP = XposedHelpers.getStaticIntField(ActivityManager.class, FieldConstants.PROCESS_STATE_BOUND_TOP);
                 return curProcState <= PROCESS_STATE_BOUND_TOP;
             }
         } catch (Throwable throwable) {
@@ -91,7 +91,7 @@ public class ActivityManagerService {
 
     public Object getLock() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            return XposedHelpers.getObjectField(activityManagerService, FieldEnum.mProcLock);
+            return XposedHelpers.getObjectField(activityManagerService, FieldConstants.mProcLock);
         } else {
             return activityManagerService;
         }
@@ -125,7 +125,7 @@ public class ActivityManagerService {
     }
 
     public void killApp(String packageName) {
-        XposedHelpers.callMethod(activityManagerService, MethodEnum.forceStopPackage, packageName, MAIN_USER);
+        XposedHelpers.callMethod(activityManagerService, MethodConstants.forceStopPackage, packageName, MAIN_USER);
         Log.d(packageName + " was killed");
     }
 

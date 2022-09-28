@@ -2,9 +2,11 @@ package cn.myflv.noactive.core.hook;
 
 import android.os.Build;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.entity.MemData;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.core.hook.base.AbstractMethodHook;
+import cn.myflv.noactive.core.hook.base.MethodHook;
 import cn.myflv.noactive.core.server.AppStandbyController;
 import de.robv.android.xposed.XC_MethodHook;
 
@@ -18,12 +20,12 @@ public class AppStandbyHook extends MethodHook {
 
     @Override
     public String getTargetClass() {
-        return ClassEnum.AppStandbyController;
+        return ClassConstants.AppStandbyController;
     }
 
     @Override
     public String getTargetMethod() {
-        return MethodEnum.onBootPhase;
+        return MethodConstants.onBootPhase;
     }
 
     @Override
@@ -33,10 +35,9 @@ public class AppStandbyHook extends MethodHook {
 
     @Override
     public XC_MethodHook getTargetHook() {
-        return new XC_MethodHook() {
+        return new AbstractMethodHook() {
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
+            protected void afterMethod(MethodHookParam param) throws Throwable {
                 AppStandbyController appStandbyController = new AppStandbyController(param.thisObject);
                 memData.setAppStandbyController(appStandbyController);
             }

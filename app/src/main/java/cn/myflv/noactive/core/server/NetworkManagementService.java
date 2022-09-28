@@ -5,9 +5,9 @@ import android.os.Build;
 
 import java.lang.reflect.Array;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
-import cn.myflv.noactive.core.entity.FieldEnum;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.FieldConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
@@ -26,8 +26,8 @@ public class NetworkManagementService {
     public NetworkManagementService(ClassLoader classLoader, Object networkManagementService) {
         this.classLoader = classLoader;
         this.networkManagementService = networkManagementService;
-        this.mNetdService = XposedHelpers.getObjectField(networkManagementService, FieldEnum.mNetdService);
-        this.UidRangeParcel = XposedHelpers.findClass(ClassEnum.UidRangeParcel, classLoader);
+        this.mNetdService = XposedHelpers.getObjectField(networkManagementService, FieldConstants.mNetdService);
+        this.UidRangeParcel = XposedHelpers.findClass(ClassConstants.UidRangeParcel, classLoader);
     }
 
     /**
@@ -42,7 +42,7 @@ public class NetworkManagementService {
             Object uidRangeParcel = makeUidRangeParcel(uid, uid);
             Object uidRangeParcels = Array.newInstance(UidRangeParcel, 1);
             Array.set(uidRangeParcels, 0, uidRangeParcel);
-            XposedHelpers.callMethod(mNetdService, MethodEnum.socketDestroy, uidRangeParcels, new int[0]);
+            XposedHelpers.callMethod(mNetdService, MethodConstants.socketDestroy, uidRangeParcels, new int[0]);
             Log.d(applicationInfo.packageName + " socket destroyed");
         } catch (Throwable throwable) {
             Log.e("socketDestroy", throwable);
@@ -55,8 +55,8 @@ public class NetworkManagementService {
             uidRangeParcel = XposedHelpers.newInstance(UidRangeParcel, start, stop);
         } else {
             uidRangeParcel = XposedHelpers.newInstance(UidRangeParcel);
-            XposedHelpers.setObjectField(uidRangeParcel, FieldEnum.start, start);
-            XposedHelpers.setObjectField(uidRangeParcel, FieldEnum.stop, stop);
+            XposedHelpers.setObjectField(uidRangeParcel, FieldConstants.start, start);
+            XposedHelpers.setObjectField(uidRangeParcel, FieldConstants.stop, stop);
         }
         return uidRangeParcel;
     }

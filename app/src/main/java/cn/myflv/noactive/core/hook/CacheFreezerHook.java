@@ -2,8 +2,9 @@ package cn.myflv.noactive.core.hook;
 
 import android.os.Build;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.MethodConstants;
+import cn.myflv.noactive.core.hook.base.MethodHook;
 import de.robv.android.xposed.XC_MethodHook;
 
 /**
@@ -18,12 +19,12 @@ public class CacheFreezerHook extends MethodHook {
 
     @Override
     public String getTargetClass() {
-        return ClassEnum.CachedAppOptimizer;
+        return ClassConstants.CachedAppOptimizer;
     }
 
     @Override
     public String getTargetMethod() {
-        return MethodEnum.useFreezer;
+        return MethodConstants.useFreezer;
     }
 
     @Override

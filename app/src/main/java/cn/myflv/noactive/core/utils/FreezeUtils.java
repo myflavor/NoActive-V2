@@ -9,9 +9,9 @@ import android.os.IBinder;
 import java.util.List;
 
 import cn.myflv.noactive.FreezerInterface;
-import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.entity.MemData;
-import cn.myflv.noactive.core.entity.MethodEnum;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.utils.BaseFreezeUtils;
 import de.robv.android.xposed.XposedHelpers;
@@ -146,8 +146,8 @@ public class FreezeUtils {
         int pid = processRecord.getPid();
         int uid = processRecord.getUid();
         ThreadUtils.runNoThrow(() -> {
-            Class<?> Process = XposedHelpers.findClass(ClassEnum.Process, classLoader);
-            XposedHelpers.callStaticMethod(Process, MethodEnum.setProcessFrozen, pid, uid, frozen);
+            Class<?> Process = XposedHelpers.findClass(ClassConstants.Process, classLoader);
+            XposedHelpers.callStaticMethod(Process, MethodConstants.setProcessFrozen, pid, uid, frozen);
             Log.d((frozen ? "freeze" : "unfreeze") + " " + processRecord.getProcessName());
         });
 
@@ -157,9 +157,9 @@ public class FreezeUtils {
     public void freezeBinder(ProcessRecord processRecord, boolean frozen) {
         int pid = processRecord.getPid();
         ThreadUtils.runNoThrow(() -> {
-            Class<?> CachedAppOptimizer = XposedHelpers.findClass(ClassEnum.CachedAppOptimizer, classLoader);
+            Class<?> CachedAppOptimizer = XposedHelpers.findClass(ClassConstants.CachedAppOptimizer, classLoader);
             for (int i = 0; i < BINDER_FREEZE_TRY; i++) {
-                int result = (int) XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodEnum.freezeBinder, pid, frozen);
+                int result = (int) XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodConstants.freezeBinder, pid, frozen);
                 if (result == 0) {
                     Log.d((frozen ? "freeze" : "unfreeze") + " binder " + processRecord.getProcessName());
                     return;

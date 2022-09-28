@@ -1,9 +1,9 @@
-package cn.myflv.noactive.core.entity;
+package cn.myflv.noactive.constant;
 
 /**
  * 字段枚举.
  */
-public interface FieldEnum {
+public interface FieldConstants {
     String packageName = "packageName";
     String uid = "uid";
     String pid = "pid";

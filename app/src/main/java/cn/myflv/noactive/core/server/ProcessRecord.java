@@ -3,7 +3,7 @@ package cn.myflv.noactive.core.server;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
 
-import cn.myflv.noactive.core.entity.FieldEnum;
+import cn.myflv.noactive.constant.FieldConstants;
 import cn.myflv.noactive.utils.PackageUtils;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
@@ -22,21 +22,21 @@ public class ProcessRecord {
     public ProcessRecord(Object processRecord) {
         this.processRecord = processRecord;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            this.pid = XposedHelpers.getIntField(processRecord, FieldEnum.mPid);
+            this.pid = XposedHelpers.getIntField(processRecord, FieldConstants.mPid);
         } else {
-            this.pid = XposedHelpers.getIntField(processRecord, FieldEnum.pid);
+            this.pid = XposedHelpers.getIntField(processRecord, FieldConstants.pid);
         }
-        this.uid = XposedHelpers.getIntField(processRecord, FieldEnum.uid);
+        this.uid = XposedHelpers.getIntField(processRecord, FieldConstants.uid);
 
-        this.userId = XposedHelpers.getIntField(processRecord, FieldEnum.userId);
-        this.applicationInfo = (ApplicationInfo) XposedHelpers.getObjectField(processRecord, FieldEnum.info);
+        this.userId = XposedHelpers.getIntField(processRecord, FieldConstants.userId);
+        this.applicationInfo = (ApplicationInfo) XposedHelpers.getObjectField(processRecord, FieldConstants.info);
         this.packageName = applicationInfo.packageName;
-        String processName = (String) XposedHelpers.getObjectField(processRecord, FieldEnum.processName);
+        String processName = (String) XposedHelpers.getObjectField(processRecord, FieldConstants.processName);
         this.processName = PackageUtils.absoluteProcessName(packageName, processName);
     }
 
     public void setCurAdj(int curAdj) {
-        XposedHelpers.setIntField(processRecord, FieldEnum.curAdj, curAdj);
+        XposedHelpers.setIntField(processRecord, FieldConstants.curAdj, curAdj);
     }
 
     public boolean isSandboxProcess() {

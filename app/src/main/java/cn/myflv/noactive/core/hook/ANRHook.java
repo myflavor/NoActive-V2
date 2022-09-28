@@ -2,9 +2,11 @@ package cn.myflv.noactive.core.hook;
 
 import android.os.Build;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.entity.MemData;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.core.hook.base.AbstractReplaceHook;
+import cn.myflv.noactive.core.hook.base.MethodHook;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
@@ -28,43 +30,43 @@ public class ANRHook extends MethodHook {
     @Override
     public String getTargetClass() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            return ClassEnum.AnrHelper;
+            return ClassConstants.AnrHelper;
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            return ClassEnum.ProcessRecord;
+            return ClassConstants.ProcessRecord;
         } else {
-            return ClassEnum.AppErrors;
+            return ClassConstants.AppErrors;
         }
     }
 
     @Override
     public String getTargetMethod() {
-        return MethodEnum.appNotResponding;
+        return MethodConstants.appNotResponding;
     }
 
     @Override
     public Object[] getTargetParam() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
             return new Object[]{
-                    ClassEnum.ProcessRecord, String.class, ClassEnum.ApplicationInfo,
-                    String.class, ClassEnum.WindowProcessController,
+                    ClassConstants.ProcessRecord, String.class, ClassConstants.ApplicationInfo,
+                    String.class, ClassConstants.WindowProcessController,
                     boolean.class, String.class};
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             return new Object[]{
-                    String.class, ClassEnum.ApplicationInfo, String.class,
-                    ClassEnum.WindowProcessController, boolean.class, String.class};
+                    String.class, ClassConstants.ApplicationInfo, String.class,
+                    ClassConstants.WindowProcessController, boolean.class, String.class};
         } else {
             return new Object[]{
-                    ClassEnum.ProcessRecord, ClassEnum.ActivityRecord_P,
-                    ClassEnum.ActivityRecord_P, boolean.class, String.class};
+                    ClassConstants.ProcessRecord, ClassConstants.ActivityRecord_P,
+                    ClassConstants.ActivityRecord_P, boolean.class, String.class};
         }
     }
 
     @Override
     public XC_MethodHook getTargetHook() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            return new XC_MethodReplacement() {
+            return new AbstractReplaceHook() {
                 @Override
-                protected Object replaceHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+                protected Object replaceMethod(MethodHookParam param) throws Throwable {
                     // 获取方法参数
                     Object[] args = param.args;
                     // ANR进程为空就不处理

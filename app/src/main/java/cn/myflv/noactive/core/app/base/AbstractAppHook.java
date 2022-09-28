@@ -1,4 +1,4 @@
-package cn.myflv.noactive.core.app;
+package cn.myflv.noactive.core.app.base;
 
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -6,7 +6,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 /**
  * APP抽象Hook
  */
-public abstract class AppHook {
+public abstract class AbstractAppHook {
 
     /**
      * 载入应用参数.
@@ -18,7 +18,7 @@ public abstract class AppHook {
      *
      * @param packageParam 载入应用参数
      */
-    public AppHook(XC_LoadPackage.LoadPackageParam packageParam) {
+    public AbstractAppHook(XC_LoadPackage.LoadPackageParam packageParam) {
         String targetPackageName = getTargetPackageName();
         if (targetPackageName == null) {
             log("Target packageName is null");

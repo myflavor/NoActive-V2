@@ -1,9 +1,9 @@
-package cn.myflv.noactive.core.entity;
+package cn.myflv.noactive.constant;
 
 /**
  * 方法枚举.
  */
-public interface MethodEnum {
+public interface MethodConstants {
     String updateActivityUsageStats = "updateActivityUsageStats";
     String deliverToRegisteredReceiverLocked = "deliverToRegisteredReceiverLocked";
     String appNotResponding = "appNotResponding";

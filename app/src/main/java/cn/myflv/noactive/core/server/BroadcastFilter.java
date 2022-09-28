@@ -1,6 +1,6 @@
 package cn.myflv.noactive.core.server;
 
-import cn.myflv.noactive.core.entity.FieldEnum;
+import cn.myflv.noactive.constant.FieldConstants;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
 
@@ -12,7 +12,7 @@ public class BroadcastFilter {
 
     public BroadcastFilter(Object broadcastFilter) {
         this.broadcastFilter = broadcastFilter;
-        this.receiverList = new ReceiverList(XposedHelpers.getObjectField(broadcastFilter, FieldEnum.receiverList));
+        this.receiverList = new ReceiverList(XposedHelpers.getObjectField(broadcastFilter, FieldConstants.receiverList));
     }
 
 }

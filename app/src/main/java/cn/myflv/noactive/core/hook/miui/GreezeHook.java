@@ -2,9 +2,10 @@ package cn.myflv.noactive.core.hook.miui;
 
 import android.content.Context;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.constant.ClassConstants;
 import cn.myflv.noactive.core.entity.MemData;
-import cn.myflv.noactive.core.hook.MethodHook;
+import cn.myflv.noactive.core.hook.base.AbstractMethodHook;
+import cn.myflv.noactive.core.hook.base.MethodHook;
 import cn.myflv.noactive.core.server.GreezeManagerService;
 import de.robv.android.xposed.XC_MethodHook;
 
@@ -19,7 +20,7 @@ public class GreezeHook extends MethodHook {
 
     @Override
     public String getTargetClass() {
-        return ClassEnum.GreezeManagerService;
+        return ClassConstants.GreezeManagerService;
     }
 
     @Override
@@ -34,10 +35,9 @@ public class GreezeHook extends MethodHook {
 
     @Override
     public XC_MethodHook getTargetHook() {
-        return new XC_MethodHook() {
+        return new AbstractMethodHook() {
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
+            protected void afterMethod(MethodHookParam param) throws Throwable {
                 GreezeManagerService greezeManagerService = new GreezeManagerService(param.thisObject);
                 memData.setGreezeManagerService(greezeManagerService);
             }

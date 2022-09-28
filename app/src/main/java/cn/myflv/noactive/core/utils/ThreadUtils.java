@@ -39,7 +39,13 @@ public class ThreadUtils {
      * @param runnable 执行内容
      */
     public static void newThread(Runnable runnable) {
-        cachedThreadPool.execute(runnable);
+        cachedThreadPool.execute(() -> {
+            try {
+                runnable.run();
+            } catch (Throwable throwable) {
+                printStackTrace(throwable);
+            }
+        });
     }
 
     /**
@@ -167,6 +173,7 @@ public class ThreadUtils {
      */
     public static void printStackTrace(Throwable throwable) {
         Log.e("---------------> ");
+        Log.e(throwable.getMessage());
         StackTraceElement[] stackElements = throwable.getStackTrace();
         for (StackTraceElement element : stackElements) {
             Log.e("at " + element.getClassName() + "." + element.getMethodName() +
@@ -177,6 +184,14 @@ public class ThreadUtils {
 
     public static void run(Runnable runnable) {
         runnable.run();
+    }
+
+    public static void safeRun(Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (Throwable throwable) {
+            printStackTrace(throwable);
+        }
     }
 
     public static void runNoThrow(Runnable runnable) {

@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.entity.MemData;
-import cn.myflv.noactive.core.entity.MethodEnum;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.utils.FreezeUtils;
 import cn.myflv.noactive.core.utils.FreezerConfig;
@@ -274,8 +274,8 @@ public class FreezerHandler {
      */
     public int binderState(int uid) {
         try {
-            Class<?> GreezeManagerService = XposedHelpers.findClass(ClassEnum.GreezeManagerService, classLoader);
-            return (int) XposedHelpers.callStaticMethod(GreezeManagerService, MethodEnum.nQueryBinder, uid);
+            Class<?> GreezeManagerService = XposedHelpers.findClass(ClassConstants.GreezeManagerService, classLoader);
+            return (int) XposedHelpers.callStaticMethod(GreezeManagerService, MethodConstants.nQueryBinder, uid);
         } catch (Throwable ignored) {
         }
         // 报错就返回已休眠，相当于这个功能不存在

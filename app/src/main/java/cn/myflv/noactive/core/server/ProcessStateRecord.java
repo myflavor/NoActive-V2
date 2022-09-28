@@ -1,6 +1,6 @@
 package cn.myflv.noactive.core.server;
 
-import cn.myflv.noactive.core.entity.FieldEnum;
+import cn.myflv.noactive.constant.FieldConstants;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
 
@@ -11,6 +11,6 @@ public class ProcessStateRecord {
 
     public ProcessStateRecord(Object processStateRecord) {
         this.processStateRecord = processStateRecord;
-        this.processRecord = new ProcessRecord(XposedHelpers.getObjectField(processStateRecord, FieldEnum.mApp));
+        this.processRecord = new ProcessRecord(XposedHelpers.getObjectField(processStateRecord, FieldConstants.mApp));
     }
 }

@@ -1,10 +1,11 @@
 package cn.myflv.noactive.core.hook;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.MethodConstants;
+import cn.myflv.noactive.core.hook.base.AbstractReplaceHook;
+import cn.myflv.noactive.core.hook.base.MethodHook;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 
 public class TaskTrimHook extends MethodHook {
 
@@ -14,12 +15,12 @@ public class TaskTrimHook extends MethodHook {
 
     @Override
     public String getTargetClass() {
-        return ClassEnum.RecentTasks;
+        return ClassConstants.RecentTasks;
     }
 
     @Override
     public String getTargetMethod() {
-        return MethodEnum.trimInactiveRecentTasks;
+        return MethodConstants.trimInactiveRecentTasks;
     }
 
     @Override
@@ -29,9 +30,9 @@ public class TaskTrimHook extends MethodHook {
 
     @Override
     public XC_MethodHook getTargetHook() {
-        return new XC_MethodReplacement() {
+        return new AbstractReplaceHook() {
             @Override
-            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+            protected Object replaceMethod(MethodHookParam param) throws Throwable {
                 Log.d("Avoid trimInactiveRecentTasks");
                 return null;
             }

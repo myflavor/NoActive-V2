@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
-import cn.myflv.noactive.core.entity.FieldEnum;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.FieldConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
 
@@ -20,15 +20,15 @@ public class ProcessList {
     }
 
     public static void setOomAdj(ClassLoader classLoader, int pid, int uid, int oomAdj) {
-        Class<?> ProcessList = XposedHelpers.findClass(ClassEnum.ProcessList, classLoader);
-        XposedHelpers.callStaticMethod(ProcessList, MethodEnum.setOomAdj, pid, uid, oomAdj);
+        Class<?> ProcessList = XposedHelpers.findClass(ClassConstants.ProcessList, classLoader);
+        XposedHelpers.callStaticMethod(ProcessList, MethodConstants.setOomAdj, pid, uid, oomAdj);
     }
 
     public Map<String, List<ProcessRecord>> getProcessMap() {
         Map<String, List<ProcessRecord>> processMap = new HashMap<>();
         synchronized (processList) {
             try {
-                List<?> processRecordList = (List<?>) XposedHelpers.getObjectField(processList, FieldEnum.mLruProcesses);
+                List<?> processRecordList = (List<?>) XposedHelpers.getObjectField(processList, FieldConstants.mLruProcesses);
                 for (Object proc : processRecordList) {
                     ProcessRecord processRecord = new ProcessRecord(proc);
                     String packageName = processRecord.getPackageName();

@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import cn.myflv.noactive.core.entity.ClassEnum;
-import cn.myflv.noactive.core.entity.MethodEnum;
+import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import de.robv.android.xposed.XposedHelpers;
 
 public class FreezerConfig {
@@ -84,13 +84,13 @@ public class FreezerConfig {
     }
 
     public static boolean isAndroidApi(ClassLoader classLoader) {
-        Class<?> CachedAppOptimizer = XposedHelpers.findClass(ClassEnum.CachedAppOptimizer, classLoader);
-        return (boolean) XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodEnum.isFreezerSupported);
+        Class<?> CachedAppOptimizer = XposedHelpers.findClass(ClassConstants.CachedAppOptimizer, classLoader);
+        return (boolean) XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodConstants.isFreezerSupported);
     }
 
     public static boolean isXiaoMiV1(ClassLoader classLoader) {
         try {
-            return XposedHelpers.findClassIfExists(ClassEnum.GreezeManagerService, classLoader) != null;
+            return XposedHelpers.findClassIfExists(ClassConstants.GreezeManagerService, classLoader) != null;
         } catch (Throwable ignored) {
         }
         return false;
