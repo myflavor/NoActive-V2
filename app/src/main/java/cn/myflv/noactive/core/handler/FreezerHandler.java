@@ -111,16 +111,6 @@ public class FreezerHandler {
             return;
         }
         ThreadUtils.newThread(packageName, () -> {
-            // 获取目标进程
-            List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(packageName);
-            // 解冻
-            freezeUtils.unFreezer(targetProcessRecords);
-            // 移除被冻结APP
-            memData.getFreezerAppSet().remove(packageName);
-            if (Thread.currentThread().isInterrupted()) {
-                Log.d(packageName + " event updated");
-                return;
-            }
             ThreadUtils.run(() -> {
                 // 获取应用信息
                 ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
@@ -135,6 +125,12 @@ public class FreezerHandler {
                     memData.getAppStandbyController().forceIdleState(packageName, false);
                 }
             });
+            // 获取目标进程
+            List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(packageName);
+            // 解冻
+            freezeUtils.unFreezer(targetProcessRecords);
+            // 移除被冻结APP
+            memData.getFreezerAppSet().remove(packageName);
             if (Thread.currentThread().isInterrupted()) {
                 Log.d(packageName + " event updated");
                 return;
