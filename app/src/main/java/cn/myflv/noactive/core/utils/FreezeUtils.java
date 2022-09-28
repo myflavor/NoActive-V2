@@ -12,6 +12,8 @@ import cn.myflv.noactive.FreezerInterface;
 import cn.myflv.noactive.constant.ClassConstants;
 import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.entity.MemData;
+import cn.myflv.noactive.core.error.FreezeFailedException;
+import cn.myflv.noactive.core.error.UnKnowException;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.utils.BaseFreezeUtils;
 import de.robv.android.xposed.XposedHelpers;
@@ -225,7 +227,7 @@ public class FreezeUtils {
             if (result) {
                 Log.d("freeze " + processRecord.getProcessName());
             } else {
-                throw new Exception("not supported");
+                throw new FreezeFailedException();
             }
         } catch (Throwable throwable) {
             Log.e("freezeV2", throwable);
@@ -243,7 +245,7 @@ public class FreezeUtils {
             if (result) {
                 Log.d("thaw " + processRecord.getProcessName());
             } else {
-                throw new Exception("process died or not supported");
+                throw new FreezeFailedException();
             }
         } catch (Throwable throwable) {
             Log.e("thawV1", throwable);
@@ -262,7 +264,7 @@ public class FreezeUtils {
                 Log.d("freeze " + processRecord.getProcessName());
 
             } else {
-                throw new Exception("not supported");
+                throw new FreezeFailedException();
             }
         } catch (Throwable throwable) {
             Log.e("freezeV1", throwable);
@@ -280,7 +282,7 @@ public class FreezeUtils {
             if (result) {
                 Log.d("kill -" + sig + " " + processRecord.getProcessName());
             } else {
-                throw new Exception("unknown");
+                throw new UnKnowException();
             }
         } catch (Throwable throwable) {
             Log.e("kill", throwable);
