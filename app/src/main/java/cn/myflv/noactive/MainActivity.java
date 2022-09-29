@@ -3,6 +3,7 @@ package cn.myflv.noactive;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -54,23 +55,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initMenu() {
-        UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
-        int nightMode = uiModeManager.getNightMode();
-
         Toolbar toolbar = findViewById(R.id.toolbar);
-        if (nightMode == 2) {
+        int mode = this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if (mode == Configuration.UI_MODE_NIGHT_YES) {
             toolbar.inflateMenu(R.menu.main_night);
         } else {
             toolbar.inflateMenu(R.menu.main);
         }
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, SettingActivity.class);
-                startActivity(intent);
-                return true;
-            }
+        toolbar.setOnMenuItemClickListener(item -> {
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, SettingActivity.class);
+            startActivity(intent);
+            return true;
         });
     }
 
