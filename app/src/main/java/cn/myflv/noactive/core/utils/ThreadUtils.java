@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -12,11 +14,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class ThreadUtils {
 
-    public final static long NO_DELAY = 0L;
-
     private final static String LOCK_KEY_PREFIX = "lock:key:";
-    // 缓存线程池
-    private final static ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
+    // 解冻专用线程池
+    private final static ExecutorService thawActionPool = new ThreadPoolExecutor(
+            2, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS,
+            new SynchronousQueue<>());
+    // 其他动作线程池
+    private final static ExecutorService otherActionPool = new ThreadPoolExecutor(4, Integer.MAX_VALUE,
+            60L, TimeUnit.SECONDS,
+            new SynchronousQueue<>());
     // 单线程定时线程池
     private final static ScheduledExecutorService scheduledThreadPool = Executors.newSingleThreadScheduledExecutor();
     private final static Map<String, Long> threadTokenMap = new HashMap<>();
@@ -39,12 +45,21 @@ public class ThreadUtils {
      * @param runnable 执行内容
      */
     public static void newThread(Runnable runnable) {
-        cachedThreadPool.execute(() -> {
+        otherActionPool.execute(() -> {
             try {
                 runnable.run();
             } catch (Throwable throwable) {
                 printStackTrace(throwable);
             }
+        });
+    }
+
+    public static void thawThread(String key, Runnable runnable) {
+        thawActionPool.execute(() -> {
+            synchronized (threadTokenMap) {
+                threadTokenMap.remove(key);
+            }
+            runWithLock(key, runnable);
         });
     }
 
@@ -55,23 +70,18 @@ public class ThreadUtils {
      * @param runnable 执行方法
      * @param delay    延迟
      */
-    public synchronized static void newThread(String key, Runnable runnable, long delay) {
+    public static void newThread(String key, Runnable runnable, long delay) {
         // 生成Token
         long currentToken = System.currentTimeMillis();
         // 新开线程
-        newThread(() -> {
+        otherActionPool.execute(() -> {
             // 锁线程Map
             synchronized (threadTokenMap) {
                 // 存放Token
                 threadTokenMap.put(key, currentToken);
             }
-            if (delay == NO_DELAY) {
-                newThread(() -> runWithLock(key, runnable));
-                return;
-            } else {
-                // 延迟
-                sleep(delay);
-            }
+            // 延迟
+            sleep(delay);
             // 锁线程Map
             synchronized (threadTokenMap) {
                 // 获取Token
@@ -82,18 +92,8 @@ public class ThreadUtils {
                     return;
                 }
             }
-            newThread(() -> runWithLock(key, runnable));
+            runWithLock(key, runnable);
         });
-    }
-
-    /**
-     * 无延迟新开线程执行方法.
-     *
-     * @param key      线程Key
-     * @param runnable 执行方法
-     */
-    public static void newThread(String key, Runnable runnable) {
-        newThread(key, runnable, NO_DELAY);
     }
 
     /**

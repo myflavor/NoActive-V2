@@ -110,7 +110,7 @@ public class FreezerHandler {
         if (!handle) {
             return;
         }
-        ThreadUtils.newThread(packageName, () -> {
+        ThreadUtils.thawThread(packageName, () -> {
             ThreadUtils.safeRun(() -> {
                 // 获取应用信息
                 ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
@@ -135,6 +135,7 @@ public class FreezerHandler {
                 Log.d(packageName + " event updated");
                 return;
             }
+
             if (runnable != null) {
                 runnable.run();
             }
