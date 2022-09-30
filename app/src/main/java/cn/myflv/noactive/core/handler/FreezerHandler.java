@@ -91,7 +91,7 @@ public class FreezerHandler {
                     // 解冻
                     onResume(true, packageName, ActivityManagerService.MAIN_USER, () -> {
                         // 冻结
-                        onPause(true, packageName, 3000, ActivityManagerService.MAIN_USER, () -> {
+                        onPause(true, packageName, ActivityManagerService.MAIN_USER, 3000, () -> {
                             Log.d(packageName + " interval unfreeze finish");
                         });
                     });
