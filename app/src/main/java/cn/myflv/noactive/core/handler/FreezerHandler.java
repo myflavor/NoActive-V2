@@ -5,10 +5,12 @@ import android.content.pm.ApplicationInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cn.myflv.noactive.constant.ClassConstants;
 import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.entity.MemData;
+import cn.myflv.noactive.core.server.ActivityManagerService;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.utils.FreezeUtils;
 import cn.myflv.noactive.core.utils.FreezerConfig;
@@ -42,32 +44,32 @@ public class FreezerHandler {
      */
     public void enableIntervalFreeze() {
         ThreadUtils.scheduleInterval(() -> {
-            // 如果没有APP被冻结就不处理了
-            if (memData.getFreezerAppSet().isEmpty()) {
-                return;
-            }
-            // 获取包名分组进程
-            Map<String, List<ProcessRecord>> processMap = memData.getActivityManagerService().getProcessList().getProcessMap();
-            // 遍历被冻结的APP
-            for (String packageName : memData.getFreezerAppSet()) {
-                ThreadUtils.runWithLock(packageName, () -> {
-                    // 再次检查是否被冻结
-                    if (!memData.getFreezerAppSet().contains(packageName)) {
-                        return;
-                    }
-                    // 获取应用进程
-                    List<ProcessRecord> processRecords = processMap.get(packageName);
-                    if (processRecords == null) {
-                        return;
-                    }
-                    // 冻结
-                    for (ProcessRecord processRecord : processRecords) {
-                        if (memData.isTargetProcess(true, processRecord)) {
-                            freezeUtils.freezer(processRecord);
+            synchronized (memData.getUserFreezerAppMap()) {
+                Set<String> freezerAppSet = memData.getUserFreezerAppMap().get(ActivityManagerService.MAIN_USER);
+                if (freezerAppSet == null) {
+                    return;
+                }
+                // 获取包名分组进程
+                Map<String, List<ProcessRecord>> processMap = memData.getActivityManagerService().getProcessList().getProcessMap();
+                // 遍历被冻结的APP
+                for (String packageName : freezerAppSet) {
+                    ThreadUtils.runWithLock(packageName, () -> {
+                        // 获取应用进程
+                        List<ProcessRecord> processRecords = processMap.get(packageName);
+                        if (processRecords == null) {
+                            return;
                         }
-                    }
-                });
+                        // 冻结
+                        for (ProcessRecord processRecord : processRecords) {
+                            if (memData.isTargetProcess(true, ActivityManagerService.MAIN_USER, processRecord)) {
+                                freezeUtils.freezer(processRecord);
+                            }
+                        }
+                    });
+                }
             }
+            // 如果没有APP被冻结就不处理了
+
         }, 1);
         Log.i("Interval freeze");
     }
@@ -77,27 +79,34 @@ public class FreezerHandler {
      */
     public void enableIntervalUnfreeze() {
         ThreadUtils.scheduleInterval(() -> {
-            // 遍历被冻结的进程
-            for (String packageName : memData.getFreezerAppSet()) {
-                Log.d(packageName + " interval unfreeze start");
-                // 解冻
-                onResume(true, packageName, () -> {
-                    // 冻结
-                    onPause(true, packageName, 3000, () -> {
-                        Log.d(packageName + " interval unfreeze finish");
+            synchronized (memData.getUserFreezerAppMap()) {
+
+                Set<String> freezerAppSet = memData.getUserFreezerAppMap().get(ActivityManagerService.MAIN_USER);
+                if (freezerAppSet == null) {
+                    return;
+                }
+                // 遍历被冻结的进程
+                for (String packageName : freezerAppSet) {
+                    Log.d(packageName + " interval unfreeze start");
+                    // 解冻
+                    onResume(true, packageName, ActivityManagerService.MAIN_USER, () -> {
+                        // 冻结
+                        onPause(true, packageName, 3000, ActivityManagerService.MAIN_USER, () -> {
+                            Log.d(packageName + " interval unfreeze finish");
+                        });
                     });
-                });
-                // 结束循环
-                // 相当于只解冻没有最久没有打开的 APP
-                break;
+                    // 结束循环
+                    // 相当于只解冻没有最久没有打开的 APP
+                    break;
+                }
             }
         }, 1);
         Log.i("Interval unfreeze");
     }
 
 
-    public void onResume(boolean handle, String packageName) {
-        onResume(handle, packageName, null);
+    public void onResume(boolean handle, String packageName, int userId) {
+        onResume(handle, packageName, userId, null);
     }
 
     /**
@@ -105,12 +114,12 @@ public class FreezerHandler {
      *
      * @param packageName 包名
      */
-    public void onResume(boolean handle, String packageName, Runnable runnable) {
+    public void onResume(boolean handle, String packageName, int userId, Runnable runnable) {
         // 不处理就跳过
         if (!handle) {
             return;
         }
-        ThreadUtils.thawThread(packageName, () -> {
+        ThreadUtils.thawThread(userId + ":" + packageName, () -> {
             ThreadUtils.safeRun(() -> {
                 // 获取应用信息
                 ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
@@ -126,11 +135,11 @@ public class FreezerHandler {
                 }
             });
             // 获取目标进程
-            List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(packageName);
+            List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(userId, packageName);
             // 解冻
             freezeUtils.unFreezer(targetProcessRecords);
             // 移除被冻结APP
-            memData.getFreezerAppSet().remove(packageName);
+            memData.setAppFreezer(userId, packageName, false);
             if (Thread.currentThread().isInterrupted()) {
                 Log.d(packageName + " event updated");
                 return;
@@ -142,8 +151,8 @@ public class FreezerHandler {
         });
     }
 
-    public void onPause(boolean handle, String packageName, long delay) {
-        onPause(handle, packageName, delay, null);
+    public void onPause(boolean handle, String packageName, int userId, long delay) {
+        onPause(handle, packageName, userId, delay, null);
     }
 
     /**
@@ -151,27 +160,27 @@ public class FreezerHandler {
      *
      * @param packageName 包名
      */
-    public void onPause(boolean handle, String packageName, long delay, Runnable runnable) {
+    public void onPause(boolean handle, String packageName, int userId, long delay, Runnable runnable) {
         // 不处理就跳过
         if (!handle) {
             return;
         }
-        ThreadUtils.newThread(packageName, () -> {
+        ThreadUtils.newThread(userId + ":" + packageName, () -> {
             // 如果是前台应用就不处理
             if (isAppForeground(packageName)) {
                 Log.d(packageName + " is in foreground");
                 return;
             }
             // 获取目标进程
-            List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(packageName);
+            List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(userId, packageName);
             // 如果目标进程为空就不处理
             if (targetProcessRecords.isEmpty()) {
                 return;
             }
             // 后台应用添加包名
-            memData.getFreezerAppSet().add(packageName);
+            memData.setAppFreezer(userId, packageName, true);
             // 等待应用未执行广播
-            boolean broadcastIdle = memData.waitBroadcastIdle(packageName);
+            boolean broadcastIdle = memData.waitBroadcastIdle(userId, packageName);
             if (!broadcastIdle) {
                 return;
             }
@@ -257,12 +266,12 @@ public class FreezerHandler {
             Log.w("uid  " + uid + "  not found");
             return;
         }
-        if (!memData.getFreezerAppSet().contains(packageName)) {
+        if (!memData.isAppFreezer(ActivityManagerService.MAIN_USER, packageName)) {
             return;
         }
         Log.i(packageName + " " + reason);
-        onResume(true, packageName, () -> {
-            onPause(true, packageName, 3000);
+        onResume(true, packageName, ActivityManagerService.MAIN_USER, () -> {
+            onPause(true, packageName, ActivityManagerService.MAIN_USER, 3000);
         });
     }
 

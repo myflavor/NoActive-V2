@@ -9,6 +9,7 @@ import cn.myflv.noactive.core.hook.base.MethodHook;
 import cn.myflv.noactive.core.server.BroadcastFilter;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.server.ReceiverList;
+import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 
@@ -62,24 +63,16 @@ public class BroadcastDeliverHook extends MethodHook {
                     return;
                 }
 
-                // 不是目标进程就不处理
-                if (!memData.isTargetProcess(processRecord)) {
-                    return;
-                }
-
                 String packageName = processRecord.getPackageName();
-
-                // 不是冻结APP就不处理
-                if (!memData.getFreezerAppSet().contains(packageName)) {
-                    // 意味着广播执行
-                    broadcastStart(param, packageName);
+                broadcastStart(param, processRecord.getUserId(), packageName);
+                if (!memData.isProcessFreezer(processRecord.getUserId(), processRecord)) {
                     return;
                 }
 
                 // 暂存
                 Object app = processRecord.getProcessRecord();
                 param.setObjectExtra(FieldConstants.app, app);
-                // Log.d(processRecord.getProcessName() + " clear broadcast");
+                Log.d(processRecord.getProcessName() + " clear broadcast");
                 // 清楚广播
                 receiverList.clear();
             }
@@ -99,23 +92,22 @@ public class BroadcastDeliverHook extends MethodHook {
      *
      * @param packageName 包名
      */
-    private void broadcastStart(XC_MethodHook.MethodHookParam param, String packageName) {
-        memData.setBroadcastApp(packageName);
+    private void broadcastStart(XC_MethodHook.MethodHookParam param, int userId, String packageName) {
+        memData.setBroadcastApp(userId, packageName);
+        param.setObjectExtra(FieldConstants.userId, userId);
         param.setObjectExtra(FieldConstants.packageName, packageName);
-        // Log.d(packageName + " broadcast executing start");
     }
 
     /**
      * 广播结束执行
      */
     private void broadcastFinish(XC_MethodHook.MethodHookParam param) {
-        Object obj = param.getObjectExtra(FieldConstants.packageName);
+        Object obj = param.getObjectExtra(FieldConstants.userId);
         if (obj == null) {
             return;
         }
-        memData.setBroadcastApp(null);
-        String packageName = (String) obj;
-        // Log.d(packageName + " broadcast executing finish");
+        int userId = (int) obj;
+        memData.removeBroadcastApp(userId);
     }
 
     /**

@@ -90,9 +90,9 @@ public class ActivitySwitchHook extends MethodHook {
 
                 // 判断事件用户
                 int userId = (int) args[1];
-                if (userId != ActivityManagerService.MAIN_USER) {
+                /* if (userId != ActivityManagerService.MAIN_USER) {
                     return;
-                }
+                }*/
 
                 // 获取切换事件
                 int event = (int) args[2];
@@ -130,14 +130,14 @@ public class ActivitySwitchHook extends MethodHook {
                     memData.setActivityManagerService(new ActivityManagerService(param.thisObject));
                 }
                 // 是否解冻
-                boolean handleTo = memData.isTargetApp(toPackageName) || memData.getFreezerAppSet().contains(toPackageName);
+                boolean handleTo = memData.isTargetApp(toPackageName) || memData.isAppFreezer(userId, toPackageName);
                 // 是否冻结
                 boolean handleFrom = memData.isTargetApp(fromPackageName);
                 Log.d(fromPackageName + covertHandle(handleFrom) + " -> " + toPackageName + covertHandle(handleTo));
                 // 执行进入前台
-                freezerHandler.onResume(handleTo, toPackageName);
+                freezerHandler.onResume(handleTo, toPackageName, userId);
                 // 执行进入后台
-                freezerHandler.onPause(handleFrom, fromPackageName, 3000);
+                freezerHandler.onPause(handleFrom, fromPackageName, userId, 3000);
             }
         };
     }

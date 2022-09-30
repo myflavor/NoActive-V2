@@ -75,13 +75,12 @@ public class ANRHook extends MethodHook {
                     ProcessRecord processRecord = new ProcessRecord(args[0]);
                     // 进程对应包名
                     String packageName = processRecord.getPackageName();
-                    // 不是目标APP就调用原方法
-                    if (!memData.isTargetApp(packageName)) {
-                        return invokeOriginalMethod(param);
+                    if (memData.isAppFreezer(processRecord.getUserId(), packageName)) {
+                        Log.d("Keep " + (processRecord.getProcessName() != null ? processRecord.getProcessName() : packageName));
+                        // 不处理
+                        return null;
                     }
-                    Log.d("Keep " + (processRecord.getProcessName() != null ? processRecord.getProcessName() : packageName));
-                    // 不处理
-                    return null;
+                    return invokeOriginalMethod(param);
                 }
             };
         } else {

@@ -1,15 +1,16 @@
 package cn.myflv.noactive.core.entity;
 
-
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.os.FileObserver;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import cn.myflv.noactive.constant.CommonConstants;
@@ -32,10 +33,34 @@ import lombok.Data;
 @Data
 public class MemData {
 
-    /**
-     * 已冻结APP.
-     */
-    private final Set<String> freezerAppSet = Collections.synchronizedSet(FreezerConfig.isScheduledOn() ? new LinkedHashSet<>() : new HashSet<>());
+    private final Map<Integer, Set<String>> userFreezerAppMap = new HashMap<>();
+
+    public void setAppFreezer(int userId, String packageName, boolean frozen) {
+        synchronized (userFreezerAppMap) {
+            Set<String> freezerAppSet = userFreezerAppMap.computeIfAbsent(userId, k -> FreezerConfig.isScheduledOn() ? new LinkedHashSet<>() : new HashSet<>());
+            if (frozen) {
+                freezerAppSet.add(packageName);
+            } else {
+                freezerAppSet.remove(packageName);
+            }
+        }
+    }
+
+    public boolean isAppFreezer(int userId, String packageName) {
+        synchronized (userFreezerAppMap) {
+            Set<String> freezerAppSet = userFreezerAppMap.computeIfAbsent(userId, k -> FreezerConfig.isScheduledOn() ? new LinkedHashSet<>() : new HashSet<>());
+            return freezerAppSet.contains(packageName);
+        }
+    }
+
+    public boolean isProcessFreezer(int userId, ProcessRecord processRecord) {
+        boolean targetProcess = isTargetProcess(userId, processRecord);
+        if (!targetProcess) {
+            return false;
+        }
+        return isAppFreezer(userId, processRecord.getPackageName());
+    }
+
     /**
      * 配置文件监听.
      */
@@ -43,7 +68,31 @@ public class MemData {
     /**
      * 正在执行广播的APP.
      */
-    private String broadcastApp = null;
+    private final Map<Integer, String> broadcastApp = new HashMap<>();
+
+    public void setBroadcastApp(int userId, String packageName) {
+        synchronized (broadcastApp) {
+            broadcastApp.put(userId, packageName);
+        }
+    }
+
+    public void removeBroadcastApp(int userId) {
+        synchronized (broadcastApp) {
+            broadcastApp.remove(userId);
+        }
+    }
+
+    /**
+     * 应用是否正在执行广播.
+     *
+     * @param packageName 包名
+     */
+    public boolean isBroadcastApp(int userId, String packageName) {
+        synchronized (broadcastApp) {
+            return packageName.equals(broadcastApp.get(userId));
+        }
+    }
+
     /**
      * 白名单APP.
      */
@@ -93,8 +142,8 @@ public class MemData {
      *
      * @param packageName 包名
      */
-    public boolean waitBroadcastIdle(String packageName) {
-        while (isBroadcastApp(packageName)) {
+    public boolean waitBroadcastIdle(int userId, String packageName) {
+        while (isBroadcastApp(userId, packageName)) {
             Log.d(packageName + " is executing broadcast");
             boolean sleep = ThreadUtils.sleep(100);
             if (!sleep) {
@@ -106,14 +155,7 @@ public class MemData {
         return true;
     }
 
-    /**
-     * 应用是否正在执行广播.
-     *
-     * @param packageName 包名
-     */
-    public boolean isBroadcastApp(String packageName) {
-        return packageName.equals(broadcastApp);
-    }
+
 
     /**
      * 是否目标APP.
@@ -149,8 +191,8 @@ public class MemData {
      * @param processRecord 进程
      * @return 是否目标进程
      */
-    public boolean isTargetProcess(ProcessRecord processRecord) {
-        return isTargetProcess(false, processRecord);
+    public boolean isTargetProcess(int userId, ProcessRecord processRecord) {
+        return isTargetProcess(false, userId, processRecord);
     }
 
     /**
@@ -159,7 +201,7 @@ public class MemData {
      * @param ignoreApp     是否忽略APP判断
      * @param processRecord 进程
      */
-    public boolean isTargetProcess(boolean ignoreApp, ProcessRecord processRecord) {
+    public boolean isTargetProcess(boolean ignoreApp, int userId, ProcessRecord processRecord) {
         if (activityManagerService == null) {
             return false;
         }
@@ -192,7 +234,7 @@ public class MemData {
      * @param packageName 包名
      * @return 目标进程列表
      */
-    public List<ProcessRecord> getTargetProcessRecords(String packageName) {
+    public List<ProcessRecord> getTargetProcessRecords(int userId, String packageName) {
 
         // 存放需要冻结/解冻的 processRecord
         List<ProcessRecord> targetProcessRecords = new ArrayList<>();
@@ -209,7 +251,7 @@ public class MemData {
         List<ProcessRecord> processRecords = processList.getProcessList(packageName);
         // 遍历进程列表
         for (ProcessRecord processRecord : processRecords) {
-            boolean targetProcess = isTargetProcess(true, processRecord);
+            boolean targetProcess = isTargetProcess(true, userId, processRecord);
             if (targetProcess) {
                 // 添加目标进程
                 targetProcessRecords.add(processRecord);
