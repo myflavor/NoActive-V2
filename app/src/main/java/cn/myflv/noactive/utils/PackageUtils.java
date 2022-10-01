@@ -98,7 +98,12 @@ public class PackageUtils {
         AppInfo appInfo = new AppInfo();
         try {
             PackageManager packageManager = context.getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.MATCH_UNINSTALLED_PACKAGES | PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES | PackageManager.GET_RECEIVERS | PackageManager.GET_PROVIDERS);
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName,
+                    PackageManager.MATCH_UNINSTALLED_PACKAGES |
+                            PackageManager.GET_ACTIVITIES |
+                            PackageManager.GET_SERVICES |
+                            PackageManager.GET_RECEIVERS |
+                            PackageManager.GET_PROVIDERS);
             Set<String> processSet = new LinkedHashSet<>();
             List<ComponentInfo> componentInfoList = new ArrayList<>();
             if (packageInfo.activities != null) {
