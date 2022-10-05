@@ -13,18 +13,17 @@ android {
 
     defaultConfig {
         applicationId "cn.myflv.noactive"
-        minSdk 26
+        minSdk 29
         targetSdk 32
         versionCode 230
         versionName "2.3-LTS"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -57,18 +56,7 @@ dependencies {
     implementation "androidx.core:core-ktx:1.8.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    // api 'com.github.topjohnwu.libsu:core:3.2.1'
-    // api "com.github.topjohnwu.libsu:io:3.2.1"
-
     def libsuVersion = '5.0.3'
-
-    // The core module that provides APIs to a shell
     implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
-
-    // Optional: APIs for creating root services. Depends on ":core"
-    // implementation "com.github.topjohnwu.libsu:service:${libsuVersion}"
-
-    // Optional: Provides remote file system support
-    // implementation "com.github.topjohnwu.libsu:nio:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
 }
