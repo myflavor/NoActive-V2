@@ -11,6 +11,7 @@ public class AppInfo {
     public boolean white;
     public boolean black;
     public boolean direct;
+    public boolean top;
     public boolean socket;
     public Set<String> processSet;
     public Set<String> killProcessSet;

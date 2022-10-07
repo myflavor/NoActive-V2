@@ -48,7 +48,7 @@
 
 
             <TextView
-                android:id="@+id/direct_app"
+                android:id="@+id/app_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

@@ -49,20 +49,27 @@ class SubActivity : MIUIActivity() {
                     }
                 })
 
-                TextWithSwitch(TextV("忽略前台"), SwitchV("binding", defValue = appInfo.direct) {
-                    if (it) {
-                        ConfigUtils.addIfNot(FreezerConfig.directAppConfig, packageName)
-                    } else {
-                        ConfigUtils.delIfExist(FreezerConfig.directAppConfig, packageName)
-                    }
-                }, dataBindingRecv = binding.getRecv(if (appInfo.system) 1 else 2))
-
-
                 TextWithSwitch(TextV("保持连接"), SwitchV("binding", defValue = appInfo.socket) {
                     if (it) {
                         ConfigUtils.addIfNot(FreezerConfig.socketAppConfig, packageName)
                     } else {
                         ConfigUtils.delIfExist(FreezerConfig.socketAppConfig, packageName)
+                    }
+                }, dataBindingRecv = binding.getRecv(if (appInfo.system) 1 else 2))
+
+
+                TextWithSpinner(TextV("后台级别"), SpinnerV(if (appInfo.top) "可见窗口" else (if (appInfo.direct) "强制冻结" else "前台服务")) {
+                    add("前台服务") {
+                        ConfigUtils.delIfExist(FreezerConfig.directAppConfig, packageName)
+                        ConfigUtils.delIfExist(FreezerConfig.topAppConfig, packageName)
+                    }
+                    add("可见窗口") {
+                        ConfigUtils.addIfNot(FreezerConfig.topAppConfig, packageName)
+                        ConfigUtils.delIfExist(FreezerConfig.directAppConfig, packageName)
+                    }
+                    add("强制冻结") {
+                        ConfigUtils.addIfNot(FreezerConfig.directAppConfig, packageName)
+                        ConfigUtils.delIfExist(FreezerConfig.topAppConfig, packageName)
                     }
                 }, dataBindingRecv = binding.getRecv(if (appInfo.system) 1 else 2))
 

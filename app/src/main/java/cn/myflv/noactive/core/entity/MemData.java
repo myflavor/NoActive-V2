@@ -49,6 +49,10 @@ public class MemData {
      */
     private Set<String> whiteApps = new HashSet<>();
     /**
+     * 可见窗口APP.
+     */
+    private Set<String> topApps = new HashSet<>();
+    /**
      * 忽略前台APP.
      */
     private Set<String> directApps = new HashSet<>();

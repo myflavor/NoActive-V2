@@ -39,8 +39,16 @@ public class AppItemAdapter extends ArrayAdapter<AppItem> {
         TextView black_app = convertView.findViewById(R.id.black_app);
         black_app.setVisibility(appItem.isBlack() ? View.VISIBLE : View.GONE);
 
-        TextView direct_app = convertView.findViewById(R.id.direct_app);
-        direct_app.setVisibility((!appItem.isWhite() && appItem.isDirect()) ? View.VISIBLE : View.GONE);
+        TextView app_background = convertView.findViewById(R.id.app_background);
+        if (appItem.isTop()) {
+            app_background.setText(R.string.top_app);
+            app_background.setVisibility(!appItem.isWhite() ? View.VISIBLE : View.GONE);
+        } else if (appItem.isDirect()) {
+            app_background.setText(R.string.direct_app);
+            app_background.setVisibility(!appItem.isWhite() ? View.VISIBLE : View.GONE);
+        } else {
+            app_background.setVisibility(View.GONE);
+        }
 
         TextView other_config = convertView.findViewById(R.id.other_config);
         boolean otherConfig = (appItem.getWhiteProcCount() + appItem.getKillProcCount() > 0) || appItem.isSocket();

@@ -59,6 +59,9 @@ public class ConfigFileObserver extends FileObserver {
                 case FreezerConfig.blackSystemAppConfig:
                     memData.setBlackSystemApps(newConfig);
                     break;
+                case FreezerConfig.topAppConfig:
+                    memData.setTopApps(newConfig);
+                    break;
                 case FreezerConfig.directAppConfig:
                     memData.setDirectApps(newConfig);
                     break;

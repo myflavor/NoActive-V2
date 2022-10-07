@@ -41,6 +41,7 @@ public class PackageUtils {
         Set<String> blackAppSet = ConfigUtils.get(FreezerConfig.blackSystemAppConfig);
         Set<String> whiteAppSet = ConfigUtils.get(FreezerConfig.whiteAppConfig);
         Set<String> directAppSet = ConfigUtils.get(FreezerConfig.directAppConfig);
+        Set<String> topAppSet = ConfigUtils.get(FreezerConfig.topAppConfig);
         Set<String> socketAppSet = ConfigUtils.get(FreezerConfig.socketAppConfig);
         Set<String> killProcessSet = ConfigUtils.get(FreezerConfig.killProcessConfig);
         Set<String> whiteProcessSet = ConfigUtils.get(FreezerConfig.whiteProcessConfig);
@@ -74,15 +75,17 @@ public class PackageUtils {
             boolean isWhite = whiteAppSet.contains(packageName);
             boolean isBlack = blackAppSet.contains(packageName);
             boolean isDirect = directAppSet.contains(packageName);
+            boolean isTop = topAppSet.contains(packageName);
             boolean isSocket = socketAppSet.contains(packageName);
             int killProcCount = killProcessMap.computeIfAbsent(packageName, k -> new ArrayList<>()).size();
             int whiteProcCount = whiteProcessMap.computeIfAbsent(packageName, k -> new ArrayList<>()).size();
-            AppItem appItem = new AppItem(appName, packageName, appIcon, installedPackage, isWhite, isBlack, isDirect, isSocket, killProcCount, whiteProcCount);
+            AppItem appItem = new AppItem(appName, packageName, appIcon, installedPackage, isWhite, isBlack, isTop, isDirect, isSocket, killProcCount, whiteProcCount);
             appItemList.add(appItem);
         }
         if (appItemList.size() > 0) {
             appItemList = appItemList.stream()
                     .sorted(Comparator.comparing(AppItem::isWhite)
+                            .thenComparing(AppItem::isTop)
                             .thenComparing(AppItem::isDirect)
                             .thenComparing(AppItem::isBlack)
                             .thenComparing(AppItem::isSocket)
@@ -134,9 +137,11 @@ public class PackageUtils {
             }
             Set<String> whiteAppConfig = ConfigUtils.get(FreezerConfig.whiteAppConfig);
             Set<String> directAppConfig = ConfigUtils.get(FreezerConfig.directAppConfig);
+            Set<String> topAppConfig = ConfigUtils.get(FreezerConfig.topAppConfig);
             Set<String> socketAppConfig = ConfigUtils.get(FreezerConfig.socketAppConfig);
             appInfo.setWhite(whiteAppConfig.contains(packageName));
             appInfo.setDirect(directAppConfig.contains(packageName));
+            appInfo.setTop(topAppConfig.contains(packageName));
             appInfo.setSocket(socketAppConfig.contains(packageName));
             Set<String> whiteProcessConfig = ConfigUtils.get(FreezerConfig.whiteProcessConfig);
             appInfo.setWhiteProcessSet(whiteProcessConfig);

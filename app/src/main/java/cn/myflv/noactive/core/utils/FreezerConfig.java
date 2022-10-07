@@ -19,6 +19,7 @@ public class FreezerConfig {
     public final static String ConfigDir = "/data/system/NoActive";
     public final static String LogDir = ConfigDir + "/log";
     public final static String whiteAppConfig = "whiteApp.conf";
+    public final static String topAppConfig = "topApp.conf";
     public final static String directAppConfig = "directApp.conf";
     public final static String socketAppConfig = "socketApp.conf";
     public final static String blackSystemAppConfig = "blackSystemApp.conf";
@@ -39,7 +40,7 @@ public class FreezerConfig {
     public final static String IntervalFreeze = "interval.freeze";
     public final static String SuExcute = "su.excute";
     public final static String[] listenConfig = {whiteAppConfig, whiteProcessConfig,
-            killProcessConfig, blackSystemAppConfig, directAppConfig, socketAppConfig};
+            killProcessConfig, blackSystemAppConfig, directAppConfig, topAppConfig, socketAppConfig};
 
     public static boolean isScheduledOn() {
         return isConfigOn(IntervalUnfreeze);

@@ -236,12 +236,14 @@ public class FreezerHandler {
      */
     public boolean isAppForeground(AppInfo appInfo) {
         String packageName = appInfo.getPackageName();
-        // 忽略前台 就代表不在后台
-        if (memData.getDirectApps().contains(packageName)) {
+        if (memData.getTopApps().contains(packageName)) {
             return memData.getActivityManagerService().isTopApp(appInfo);
+        } else if (memData.getDirectApps().contains(packageName)) {
+            return false;
+        } else {
+            // 调用AMS的方法判断
+            return memData.getActivityManagerService().isForegroundApp(appInfo);
         }
-        // 调用AMS的方法判断
-        return memData.getActivityManagerService().isForegroundApp(appInfo);
     }
 
     /**

@@ -15,6 +15,7 @@ public class AppItem {
     private PackageInfo packageInfo;
     private boolean white;
     private boolean black;
+    private boolean top;
     private boolean direct;
     private boolean socket;
     private int killProcCount;

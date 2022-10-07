@@ -6,6 +6,7 @@
     <string name="app_info">应用详情</string>
     <string name="white_app">白名单</string>
     <string name="black_app">黑名单</string>
-    <string name="direct_app">忽略前台</string>
+    <string name="direct_app">强制冻结</string>
+    <string name="top_app">可见窗口</string>
     <string name="other_config">其他配置</string>
 </resources>
