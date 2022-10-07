@@ -12,7 +12,7 @@ public class AppInfo {
 
 
     public String getKey() {
-        if (userId == null || userId == 0) {
+        if (userId == ActivityManagerService.MAIN_USER) {
             return packageName;
         }
         return packageName + ":" + userId;

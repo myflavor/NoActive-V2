@@ -16,7 +16,7 @@ android {
         minSdk 29
         targetSdk 32
         versionCode 233
-        versionName "2.5-Alpha"
+        versionName "2.5-Beta"
     }
 
 
