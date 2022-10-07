@@ -10,6 +10,7 @@ import cn.myflv.noactive.core.hook.base.MethodHook;
 import cn.myflv.noactive.core.server.BroadcastFilter;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.server.ReceiverList;
+import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 
@@ -80,7 +81,7 @@ public class BroadcastDeliverHook extends MethodHook {
                 // 暂存
                 Object app = processRecord.getProcessRecord();
                 param.setObjectExtra(FieldConstants.app, app);
-                // Log.d(processRecord.getProcessName() + " clear broadcast");
+                Log.d(processRecord.getProcessNameWithUser() + " clear broadcast");
                 // 清楚广播
                 receiverList.clear();
             }
