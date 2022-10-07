@@ -124,10 +124,7 @@ public class FreezerHandler {
                     return;
                 }
                 memData.getPowerManagerService().setWakeLocksDisabled(appInfo, applicationInfo.uid, false);
-                if (memData.getSocketApps().contains(packageName)) {
-                    // 清除网络监控
-                    memData.clearMonitorNet(applicationInfo);
-                } else {
+                if (!memData.getSocketApps().contains(packageName)) {
                     // 恢复StandBy
                     memData.getAppStandbyController().forceIdleState(appInfo, false);
                 }
@@ -219,8 +216,6 @@ public class FreezerHandler {
                 if (!memData.getSocketApps().contains(appInfo.getPackageName())) {
                     memData.getAppStandbyController().forceIdleState(appInfo, true);
                     memData.getNetworkManagementService().socketDestroy(applicationInfo);
-                } else {
-                    memData.monitorNet(applicationInfo);
                 }
             });
             if (Thread.currentThread().isInterrupted()) {
