@@ -46,7 +46,8 @@ public class PowerManagerService {
         }
         for (WakeLock wakeLock : wakeLocks) {
             wakeLock.setDisabled(disabled);
-            Log.d(wakeLock.getTag() + ":" + appInfo.getUserId() + " " + (disabled ? "disabled" : "enabled"));
+            String tag = wakeLock.getPackageName() + ":" + appInfo.getUserId() + "(" + wakeLock.getTag() + ")";
+            Log.d(tag + " wakelock " + (disabled ? "disabled" : "enabled"));
         }
     }
 
