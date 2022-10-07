@@ -59,7 +59,12 @@ public class ThreadUtils {
             synchronized (threadTokenMap) {
                 threadTokenMap.remove(key);
             }
-            runWithLock(key, runnable);
+            try {
+                runWithLock(key, runnable);
+            } catch (Throwable throwable) {
+                Log.e("thawThread-" + key, throwable);
+                printStackTrace(throwable);
+            }
         });
     }
 

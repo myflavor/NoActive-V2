@@ -3,6 +3,7 @@ package cn.myflv.noactive.core.hook;
 import cn.myflv.noactive.constant.ClassConstants;
 import cn.myflv.noactive.constant.FieldConstants;
 import cn.myflv.noactive.constant.MethodConstants;
+import cn.myflv.noactive.core.entity.AppInfo;
 import cn.myflv.noactive.core.entity.MemData;
 import cn.myflv.noactive.core.hook.base.AbstractMethodHook;
 import cn.myflv.noactive.core.hook.base.MethodHook;
@@ -63,16 +64,16 @@ public class BroadcastDeliverHook extends MethodHook {
                 }
 
                 // 不是目标进程就不处理
-                if (!memData.isTargetProcess(processRecord)) {
+                if (!memData.isTargetProcess(processRecord.getUserId(), processRecord)) {
                     return;
                 }
 
-                String packageName = processRecord.getPackageName();
+                AppInfo appInfo = new AppInfo(processRecord.getUserId(), processRecord.getPackageName());
 
                 // 不是冻结APP就不处理
-                if (!memData.getFreezerAppSet().contains(packageName)) {
+                if (!memData.getFreezerAppSet().contains(appInfo.getKey())) {
                     // 意味着广播执行
-                    broadcastStart(param, packageName);
+                    broadcastStart(param, processRecord);
                     return;
                 }
 
@@ -97,11 +98,11 @@ public class BroadcastDeliverHook extends MethodHook {
     /**
      * 广播开始执行
      *
-     * @param packageName 包名
+     * @param processRecord 包名
      */
-    private void broadcastStart(XC_MethodHook.MethodHookParam param, String packageName) {
-        memData.setBroadcastApp(packageName);
-        param.setObjectExtra(FieldConstants.packageName, packageName);
+    private void broadcastStart(XC_MethodHook.MethodHookParam param, ProcessRecord processRecord) {
+        memData.setBroadcastApp(new AppInfo(processRecord.getUserId(), processRecord.getPackageName()));
+        param.setObjectExtra(FieldConstants.packageName, processRecord.getPackageName());
         // Log.d(packageName + " broadcast executing start");
     }
 
@@ -114,8 +115,6 @@ public class BroadcastDeliverHook extends MethodHook {
             return;
         }
         memData.setBroadcastApp(null);
-        String packageName = (String) obj;
-        // Log.d(packageName + " broadcast executing finish");
     }
 
     /**

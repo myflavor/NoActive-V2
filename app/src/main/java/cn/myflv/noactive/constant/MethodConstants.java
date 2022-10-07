@@ -62,4 +62,5 @@ public interface MethodConstants {
     String get = "get";
     String isIdle = "isIdle";
     String getCurProcState = "getCurProcState";
+    String getApplicationInfoAsUser = "getApplicationInfoAsUser";
 }

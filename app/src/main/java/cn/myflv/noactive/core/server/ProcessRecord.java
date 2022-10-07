@@ -47,4 +47,19 @@ public class ProcessRecord {
         return processName.equals(packageName);
     }
 
+    public String getProcessNameWithUser() {
+        if (userId == 0) {
+            return processName;
+        } else {
+            return processName + ":" + userId;
+        }
+    }
+
+    public String getPackageNameWithUser() {
+        if (userId == 0) {
+            return packageName;
+        } else {
+            return packageName + ":" + userId;
+        }
+    }
 }

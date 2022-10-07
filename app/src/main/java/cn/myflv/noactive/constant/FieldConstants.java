@@ -42,4 +42,6 @@ public interface FieldConstants {
     String mActiveUids = "mActiveUids";
     String PROCESS_STATE_BOUND_TOP = "PROCESS_STATE_BOUND_TOP";
     String idle = "idle";
+    String mOwnerUid = "mOwnerUid";
+    String mDisabled = "mDisabled";
 }

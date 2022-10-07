@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.Build;
 
 import cn.myflv.noactive.constant.ClassConstants;
+import cn.myflv.noactive.constant.CommonConstants;
 import cn.myflv.noactive.constant.MethodConstants;
+import cn.myflv.noactive.core.entity.AppInfo;
 import cn.myflv.noactive.core.entity.MemData;
 import cn.myflv.noactive.core.handler.FreezerHandler;
 import cn.myflv.noactive.core.hook.base.AbstractMethodHook;
@@ -23,11 +25,11 @@ public class ActivitySwitchHook extends MethodHook {
     /**
      * 进入前台.
      */
-    private final int ACTIVITY_RESUMED = UsageEvents.Event.MOVE_TO_FOREGROUND;
+    private final int ACTIVITY_RESUMED = UsageEvents.Event.ACTIVITY_RESUMED;
     /**
      * 进入后台.
      */
-    private final int ACTIVITY_PAUSED = UsageEvents.Event.MOVE_TO_BACKGROUND;
+    private final int ACTIVITY_PAUSED = UsageEvents.Event.ACTIVITY_PAUSED;
     /**
      * 内存数据.
      */
@@ -35,9 +37,9 @@ public class ActivitySwitchHook extends MethodHook {
 
     private final FreezerHandler freezerHandler;
     /**
-     * 上一次事件包名.
+     * 上一次事件应用信息
      */
-    private String lastPackageName = "android";
+    private AppInfo lastAppInfo = new AppInfo(ActivityManagerService.MAIN_USER, CommonConstants.ANDROID);
 
     public ActivitySwitchHook(ClassLoader classLoader, MemData memData, FreezerHandler freezerHandler) {
         super(classLoader);
@@ -88,56 +90,57 @@ public class ActivitySwitchHook extends MethodHook {
                 // 获取方法参数
                 Object[] args = param.args;
 
-                // 判断事件用户
-                int userId = (int) args[1];
-                if (userId != ActivityManagerService.MAIN_USER) {
-                    return;
-                }
-
                 // 获取切换事件
                 int event = (int) args[2];
                 if (event != ACTIVITY_PAUSED && event != ACTIVITY_RESUMED) {
                     return;
                 }
 
-
+                // 本次事件用户
+                int userId = (int) args[1];
                 // 本次事件包名
-                String toPackageName = ((ComponentName) args[0]).getPackageName();
-                if (toPackageName == null) {
-                    return;
-                }
-                Log.d(toPackageName + " " + (event == ACTIVITY_PAUSED ? "paused" : "resumed"));
-
-                // 本次等于上次 即无变化 不处理
-                if (toPackageName.equals(lastPackageName)) {
-                    Log.d(toPackageName + " activity changed");
+                String packageName = ((ComponentName) args[0]).getPackageName();
+                if (packageName == null) {
                     return;
                 }
 
                 // 忽略系统框架
-                if (toPackageName.equals("android")) {
-                    Log.d("android(" + lastPackageName + ") -> ignored");
+                if (packageName.equals("android")) {
+                    Log.d("android(" + lastAppInfo.getPackageName() + ") -> ignored");
                     return;
                 }
 
+                // 当前事件应用
+                AppInfo eventTo = new AppInfo(userId, packageName);
+
+                Log.d(eventTo.getKey() + " " + (event == ACTIVITY_PAUSED ? "paused" : "resumed"));
+
+
+                // 本次等于上次 即无变化 不处理
+                if (eventTo.equals(lastAppInfo)) {
+                    Log.d(eventTo.getKey() + " activity changed");
+                    return;
+                }
+
+
                 // 切换前的包名等于上次包名
-                String fromPackageName = lastPackageName;
+                AppInfo eventFrom = lastAppInfo;
                 // 重新设置上次包名为切换后的包名 下次用
-                lastPackageName = toPackageName;
+                lastAppInfo = eventTo;
 
                 // 为防止一直new，存到内存数据
                 if (memData.getActivityManagerService() == null) {
                     memData.setActivityManagerService(new ActivityManagerService(param.thisObject));
                 }
                 // 是否解冻
-                boolean handleTo = memData.isTargetApp(toPackageName) || memData.getFreezerAppSet().contains(toPackageName);
+                boolean handleTo = memData.isTargetApp(eventTo.getPackageName());
                 // 是否冻结
-                boolean handleFrom = memData.isTargetApp(fromPackageName);
-                Log.d(fromPackageName + covertHandle(handleFrom) + " -> " + toPackageName + covertHandle(handleTo));
+                boolean handleFrom = memData.isTargetApp(eventFrom.getPackageName());
+                Log.d(eventFrom.getKey() + covertHandle(handleFrom) + " -> " + eventTo.getKey() + covertHandle(handleTo));
                 // 执行进入前台
-                freezerHandler.onResume(handleTo, toPackageName);
+                freezerHandler.onResume(handleTo, eventTo);
                 // 执行进入后台
-                freezerHandler.onPause(handleFrom, fromPackageName, 3000);
+                freezerHandler.onPause(handleFrom, eventFrom, 3000);
             }
         };
     }

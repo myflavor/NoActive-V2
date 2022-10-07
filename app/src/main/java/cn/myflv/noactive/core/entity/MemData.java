@@ -43,7 +43,7 @@ public class MemData {
     /**
      * 正在执行广播的APP.
      */
-    private String broadcastApp = null;
+    private AppInfo broadcastApp = null;
     /**
      * 白名单APP.
      */
@@ -91,28 +91,28 @@ public class MemData {
     /**
      * 等待应用未执行广播.
      *
-     * @param packageName 包名
+     * @param appInfo 包名
      */
-    public boolean waitBroadcastIdle(String packageName) {
-        while (isBroadcastApp(packageName)) {
-            Log.d(packageName + " is executing broadcast");
+    public boolean waitBroadcastIdle(AppInfo appInfo) {
+        while (isBroadcastApp(appInfo)) {
+            Log.d(appInfo.getKey() + " is executing broadcast");
             boolean sleep = ThreadUtils.sleep(100);
             if (!sleep) {
-                Log.d(packageName + " broadcast idle wait canceled ");
+                Log.d(appInfo.getKey() + " broadcast idle wait canceled ");
                 return false;
             }
         }
-        Log.d(packageName + " broadcast state idle");
+        Log.d(appInfo.getKey() + " broadcast state idle");
         return true;
     }
 
     /**
      * 应用是否正在执行广播.
      *
-     * @param packageName 包名
+     * @param appInfo 包名
      */
-    public boolean isBroadcastApp(String packageName) {
-        return packageName.equals(broadcastApp);
+    public boolean isBroadcastApp(AppInfo appInfo) {
+        return appInfo.equals(broadcastApp);
     }
 
     /**
@@ -149,8 +149,8 @@ public class MemData {
      * @param processRecord 进程
      * @return 是否目标进程
      */
-    public boolean isTargetProcess(ProcessRecord processRecord) {
-        return isTargetProcess(false, processRecord);
+    public boolean isTargetProcess(int userId, ProcessRecord processRecord) {
+        return isTargetProcess(false, userId, processRecord);
     }
 
     /**
@@ -159,12 +159,12 @@ public class MemData {
      * @param ignoreApp     是否忽略APP判断
      * @param processRecord 进程
      */
-    public boolean isTargetProcess(boolean ignoreApp, ProcessRecord processRecord) {
+    public boolean isTargetProcess(boolean ignoreApp, int userId, ProcessRecord processRecord) {
         if (activityManagerService == null) {
             return false;
         }
         // 不是主用户就不是目标APP
-        if (processRecord.getUserId() != ActivityManagerService.MAIN_USER) {
+        if (processRecord.getUserId() != userId) {
             return false;
         }
         // 获取进程名
@@ -189,11 +189,11 @@ public class MemData {
     /**
      * 获取目标进程.
      *
-     * @param packageName 包名
      * @return 目标进程列表
      */
-    public List<ProcessRecord> getTargetProcessRecords(String packageName) {
-
+    public List<ProcessRecord> getTargetProcessRecords(AppInfo appInfo) {
+        int userId = appInfo.getUserId();
+        String packageName = appInfo.getPackageName();
         // 存放需要冻结/解冻的 processRecord
         List<ProcessRecord> targetProcessRecords = new ArrayList<>();
         if (activityManagerService == null) {
@@ -209,7 +209,7 @@ public class MemData {
         List<ProcessRecord> processRecords = processList.getProcessList(packageName);
         // 遍历进程列表
         for (ProcessRecord processRecord : processRecords) {
-            boolean targetProcess = isTargetProcess(true, processRecord);
+            boolean targetProcess = isTargetProcess(true, userId, processRecord);
             if (targetProcess) {
                 // 添加目标进程
                 targetProcessRecords.add(processRecord);

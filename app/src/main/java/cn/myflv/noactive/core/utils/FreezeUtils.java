@@ -106,9 +106,6 @@ public class FreezeUtils {
                     execute(() -> freezeV2(processRecord));
                 }
             } else {
-                if (processRecord.isSandboxProcess()) {
-                    return;
-                }
                 execute(() -> freezeV1(processRecord));
             }
             // freezeBinder(processRecord, true);
@@ -135,9 +132,6 @@ public class FreezeUtils {
                     execute(() -> thawV2(processRecord));
                 }
             } else {
-                if (processRecord.isSandboxProcess()) {
-                    return;
-                }
                 execute(() -> thawV1(processRecord));
             }
             // freezeBinder(processRecord, false);
@@ -150,7 +144,7 @@ public class FreezeUtils {
         ThreadUtils.runNoThrow(() -> {
             Class<?> Process = XposedHelpers.findClass(ClassConstants.Process, classLoader);
             XposedHelpers.callStaticMethod(Process, MethodConstants.setProcessFrozen, pid, uid, frozen);
-            Log.d((frozen ? "freeze" : "unfreeze") + " " + processRecord.getProcessName());
+            Log.d((frozen ? "freeze" : "unfreeze") + " " + processRecord.getProcessNameWithUser());
         });
 
     }
@@ -163,7 +157,7 @@ public class FreezeUtils {
             for (int i = 0; i < BINDER_FREEZE_TRY; i++) {
                 int result = (int) XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodConstants.freezeBinder, pid, frozen);
                 if (result == 0) {
-                    Log.d((frozen ? "freeze" : "unfreeze") + " binder " + processRecord.getProcessName());
+                    Log.d((frozen ? "freeze" : "unfreeze") + " binder " + processRecord.getProcessNameWithUser());
                     return;
                 }
             }
@@ -207,7 +201,7 @@ public class FreezeUtils {
                 result = BaseFreezeUtils.thawPid(false, processRecord.getPid(), processRecord.getUid());
             }
             if (result) {
-                Log.d("thaw " + processRecord.getProcessName());
+                Log.d("thaw " + processRecord.getProcessNameWithUser());
             } else {
                 throw new Exception("process died or not supported");
             }
@@ -225,7 +219,7 @@ public class FreezeUtils {
                 result = BaseFreezeUtils.freezePid(false, processRecord.getPid(), processRecord.getUid());
             }
             if (result) {
-                Log.d("freeze " + processRecord.getProcessName());
+                Log.d("freeze " + processRecord.getProcessNameWithUser());
             } else {
                 throw new FreezeFailedException();
             }
@@ -243,7 +237,7 @@ public class FreezeUtils {
                 result = BaseFreezeUtils.thawPid(false, processRecord.getPid());
             }
             if (result) {
-                Log.d("thaw " + processRecord.getProcessName());
+                Log.d("thaw " + processRecord.getProcessNameWithUser());
             } else {
                 throw new FreezeFailedException();
             }
@@ -261,7 +255,7 @@ public class FreezeUtils {
                 result = BaseFreezeUtils.freezePid(false, processRecord.getPid());
             }
             if (result) {
-                Log.d("freeze " + processRecord.getProcessName());
+                Log.d("freeze " + processRecord.getProcessNameWithUser());
 
             } else {
                 throw new FreezeFailedException();
@@ -280,7 +274,7 @@ public class FreezeUtils {
                 result = BaseFreezeUtils.kill(false, sig, processRecord.getPid());
             }
             if (result) {
-                Log.d("kill -" + sig + " " + processRecord.getProcessName());
+                Log.d("kill -" + sig + " " + processRecord.getProcessNameWithUser());
             } else {
                 throw new UnKnowException();
             }

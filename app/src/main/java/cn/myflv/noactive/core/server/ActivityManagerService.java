@@ -12,6 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import cn.myflv.noactive.constant.ClassConstants;
 import cn.myflv.noactive.constant.FieldConstants;
 import cn.myflv.noactive.constant.MethodConstants;
+import cn.myflv.noactive.core.entity.AppInfo;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
@@ -23,18 +24,18 @@ public class ActivityManagerService {
     private static final int STANDBY_BUCKET_NEVER = 50;
     private final Object activityManagerService;
     private final ProcessList processList;
-    private final ActiveServices activeServices;
     private final Context context;
 
     public ActivityManagerService(Object activityManagerService) {
         this.activityManagerService = activityManagerService;
         this.processList = new ProcessList(XposedHelpers.getObjectField(activityManagerService, FieldConstants.mProcessList));
-        this.activeServices = new ActiveServices(XposedHelpers.getObjectField(activityManagerService, FieldConstants.mServices));
         this.context = (Context) XposedHelpers.getObjectField(activityManagerService, FieldConstants.mContext);
     }
 
-    public boolean isForegroundApp(String packageName) {
-        ApplicationInfo applicationInfo = getApplicationInfo(packageName);
+    public boolean isForegroundApp(AppInfo appInfo) {
+        String packageName = appInfo.getPackageName();
+        Integer userId = appInfo.getUserId();
+        ApplicationInfo applicationInfo = getApplicationInfo(userId, packageName);
         if (applicationInfo == null) {
             return true;
         }
@@ -56,9 +57,11 @@ public class ActivityManagerService {
     }
 
 
-    public boolean isTopApp(String packageName) {
+    public boolean isTopApp(AppInfo appInfo) {
+        int userId = appInfo.getUserId();
+        String packageName = appInfo.getPackageName();
         try {
-            ApplicationInfo applicationInfo = getApplicationInfo(packageName);
+            ApplicationInfo applicationInfo = getApplicationInfo(userId, packageName);
             if (applicationInfo == null) {
                 return true;
             }
@@ -99,7 +102,7 @@ public class ActivityManagerService {
 
 
     public boolean isSystem(String packageName) {
-        ApplicationInfo applicationInfo = getApplicationInfo(packageName);
+        ApplicationInfo applicationInfo = getApplicationInfo(MAIN_USER, packageName);
         if (applicationInfo == null) {
             return true;
         }
@@ -107,19 +110,27 @@ public class ActivityManagerService {
     }
 
     public boolean isImportantSystemApp(String packageName) {
-        ApplicationInfo applicationInfo = getApplicationInfo(packageName);
+        ApplicationInfo applicationInfo = getApplicationInfo(MAIN_USER, packageName);
         if (applicationInfo == null) {
             return true;
         }
         return applicationInfo.uid < 10000;
     }
 
-    public ApplicationInfo getApplicationInfo(String packageName) {
+    public ApplicationInfo getApplicationInfo(AppInfo appInfo) {
+        return getApplicationInfo(appInfo.getUserId(), appInfo.getPackageName());
+    }
+
+    public ApplicationInfo getApplicationInfo(int userId, String packageName) {
         try {
             PackageManager packageManager = context.getPackageManager();
-            return packageManager.getApplicationInfo(packageName, PackageManager.MATCH_UNINSTALLED_PACKAGES);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.w(packageName + " not found");
+            Object applicationInfoAsUser = XposedHelpers.callMethod(packageManager, MethodConstants.getApplicationInfoAsUser, packageName, PackageManager.MATCH_UNINSTALLED_PACKAGES, userId);
+            if (applicationInfoAsUser == null) {
+                return null;
+            }
+            return (ApplicationInfo) applicationInfoAsUser;
+        } catch (Throwable throwable) {
+            Log.w(packageName + " getApplicationInfo", throwable);
         }
         return null;
     }

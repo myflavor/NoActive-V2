@@ -56,6 +56,10 @@ public class Log {
         unify(WARN, msg);
     }
 
+    public static void w(String msg, Throwable throwable) {
+        unify(WARN, msg + " failed : " + throwable.getMessage());
+    }
+
     public static void e(String msg) {
         unify(ERROR, msg);
     }

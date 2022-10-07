@@ -79,7 +79,9 @@ public class ANRHook extends MethodHook {
                     if (!memData.isTargetApp(packageName)) {
                         return invokeOriginalMethod(param);
                     }
-                    Log.d("Keep " + (processRecord.getProcessName() != null ? processRecord.getProcessName() : packageName));
+                    String processNameWithUser = processRecord.getProcessNameWithUser();
+                    String packageNameWithUser = processRecord.getPackageNameWithUser();
+                    Log.d("Keep " + (processNameWithUser != null ? processNameWithUser : packageNameWithUser));
                     // 不处理
                     return null;
                 }

@@ -17,11 +17,6 @@ import de.robv.android.xposed.XC_MethodHook;
 public class NetReceiveHook extends MethodHook {
     private final static String REASON = "received socket data";
     /**
-     * 正在Binder通信
-     */
-    private final Set<Integer> netReceiveSet = Collections.synchronizedSet(new HashSet<>());
-
-    /**
      * 应用切换Hook
      */
     private final FreezerHandler freezerHandler;

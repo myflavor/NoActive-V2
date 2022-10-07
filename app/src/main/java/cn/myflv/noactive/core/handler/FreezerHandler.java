@@ -8,6 +8,7 @@ import java.util.Map;
 
 import cn.myflv.noactive.constant.ClassConstants;
 import cn.myflv.noactive.constant.MethodConstants;
+import cn.myflv.noactive.core.entity.AppInfo;
 import cn.myflv.noactive.core.entity.MemData;
 import cn.myflv.noactive.core.server.ProcessRecord;
 import cn.myflv.noactive.core.utils.FreezeUtils;
@@ -49,20 +50,21 @@ public class FreezerHandler {
             // 获取包名分组进程
             Map<String, List<ProcessRecord>> processMap = memData.getActivityManagerService().getProcessList().getProcessMap();
             // 遍历被冻结的APP
-            for (String packageName : memData.getFreezerAppSet()) {
-                ThreadUtils.runWithLock(packageName, () -> {
+            for (String key : memData.getFreezerAppSet()) {
+                AppInfo appInfo = AppInfo.getInstance(key);
+                ThreadUtils.runWithLock(appInfo.getKey(), () -> {
                     // 再次检查是否被冻结
-                    if (!memData.getFreezerAppSet().contains(packageName)) {
+                    if (!memData.getFreezerAppSet().contains(key)) {
                         return;
                     }
                     // 获取应用进程
-                    List<ProcessRecord> processRecords = processMap.get(packageName);
+                    List<ProcessRecord> processRecords = processMap.get(appInfo.getPackageName());
                     if (processRecords == null) {
                         return;
                     }
                     // 冻结
                     for (ProcessRecord processRecord : processRecords) {
-                        if (memData.isTargetProcess(true, processRecord)) {
+                        if (memData.isTargetProcess(true, appInfo.getUserId(), processRecord)) {
                             freezeUtils.freezer(processRecord);
                         }
                     }
@@ -78,13 +80,14 @@ public class FreezerHandler {
     public void enableIntervalUnfreeze() {
         ThreadUtils.scheduleInterval(() -> {
             // 遍历被冻结的进程
-            for (String packageName : memData.getFreezerAppSet()) {
-                Log.d(packageName + " interval unfreeze start");
+            for (String key : memData.getFreezerAppSet()) {
+                AppInfo appInfo = AppInfo.getInstance(key);
+                Log.d(appInfo.getKey() + " interval unfreeze start");
                 // 解冻
-                onResume(true, packageName, () -> {
+                onResume(true, appInfo, () -> {
                     // 冻结
-                    onPause(true, packageName, 3000, () -> {
-                        Log.d(packageName + " interval unfreeze finish");
+                    onPause(true, appInfo, 3000, () -> {
+                        Log.d(appInfo.getKey() + " interval unfreeze finish");
                     });
                 });
                 // 结束循环
@@ -96,43 +99,47 @@ public class FreezerHandler {
     }
 
 
-    public void onResume(boolean handle, String packageName) {
-        onResume(handle, packageName, null);
+    public void onResume(boolean handle, AppInfo appInfo) {
+        onResume(handle, appInfo, null);
     }
 
     /**
      * APP切换至前台.
      *
-     * @param packageName 包名
+     * @param appInfo 事件信息
      */
-    public void onResume(boolean handle, String packageName, Runnable runnable) {
+    public void onResume(boolean handle, AppInfo appInfo, Runnable runnable) {
         // 不处理就跳过
         if (!handle) {
             return;
         }
-        ThreadUtils.thawThread(packageName, () -> {
+        ThreadUtils.thawThread(appInfo.getKey(), () -> {
             ThreadUtils.safeRun(() -> {
+                // 获取包名
+                String packageName = appInfo.getPackageName();
                 // 获取应用信息
-                ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
+                ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(appInfo);
+                // 白名单主进程跳过
                 if (memData.getWhiteProcessList().contains(packageName)) {
                     return;
                 }
+                memData.getPowerManagerService().setWakeLocksDisabled(appInfo, applicationInfo.uid, false);
                 if (memData.getSocketApps().contains(packageName)) {
                     // 清除网络监控
                     memData.clearMonitorNet(applicationInfo);
                 } else {
                     // 恢复StandBy
-                    memData.getAppStandbyController().forceIdleState(packageName, false);
+                    memData.getAppStandbyController().forceIdleState(appInfo, false);
                 }
             });
             // 获取目标进程
-            List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(packageName);
+            List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(appInfo);
             // 解冻
             freezeUtils.unFreezer(targetProcessRecords);
             // 移除被冻结APP
-            memData.getFreezerAppSet().remove(packageName);
+            memData.getFreezerAppSet().remove(appInfo.getKey());
             if (Thread.currentThread().isInterrupted()) {
-                Log.d(packageName + " event updated");
+                Log.d(appInfo.getKey() + " event updated");
                 return;
             }
 
@@ -142,51 +149,51 @@ public class FreezerHandler {
         });
     }
 
-    public void onPause(boolean handle, String packageName, long delay) {
-        onPause(handle, packageName, delay, null);
+    public void onPause(boolean handle, AppInfo appInfo, long delay) {
+        onPause(handle, appInfo, delay, null);
     }
 
     /**
      * APP切换至后台.
      *
-     * @param packageName 包名
+     * @param appInfo 包名
      */
-    public void onPause(boolean handle, String packageName, long delay, Runnable runnable) {
+    public void onPause(boolean handle, AppInfo appInfo, long delay, Runnable runnable) {
         // 不处理就跳过
         if (!handle) {
             return;
         }
-        ThreadUtils.newThread(packageName, () -> {
+        ThreadUtils.newThread(appInfo.getKey(), () -> {
             // 如果是前台应用就不处理
-            if (isAppForeground(packageName)) {
-                Log.d(packageName + " is in foreground");
+            if (isAppForeground(appInfo)) {
+                Log.d(appInfo.getKey() + " is in foreground");
                 return;
             }
             // 获取目标进程
-            List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(packageName);
+            List<ProcessRecord> targetProcessRecords = memData.getTargetProcessRecords(appInfo);
             // 如果目标进程为空就不处理
             if (targetProcessRecords.isEmpty()) {
                 return;
             }
             // 后台应用添加包名
-            memData.getFreezerAppSet().add(packageName);
+            memData.getFreezerAppSet().add(appInfo.getKey());
             // 等待应用未执行广播
-            boolean broadcastIdle = memData.waitBroadcastIdle(packageName);
+            boolean broadcastIdle = memData.waitBroadcastIdle(appInfo);
             if (!broadcastIdle) {
                 return;
             }
             // 等待 Binder 休眠
-            boolean binderIdle = waitBinderIdle(packageName);
+            boolean binderIdle = waitBinderIdle(appInfo);
             if (!binderIdle) {
                 return;
             }
-            ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
+            ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(appInfo);
             // 存放杀死进程
             List<ProcessRecord> killProcessList = new ArrayList<>();
             // 遍历目标进程
             for (ProcessRecord targetProcessRecord : targetProcessRecords) {
                 if (Thread.currentThread().isInterrupted()) {
-                    Log.d(packageName + " event updated");
+                    Log.d(appInfo.getKey() + " event updated");
                     return;
                 }
                 // 目标进程名
@@ -199,25 +206,25 @@ public class FreezerHandler {
                 }
             }
             if (Thread.currentThread().isInterrupted()) {
-                Log.d(packageName + " event updated");
+                Log.d(appInfo.getKey() + " event updated");
                 return;
             }
             ThreadUtils.safeRun(() -> {
                 // 如果白名单进程不包含主进程就释放唤醒锁
-                if (memData.getWhiteProcessList().contains(packageName)) {
+                if (memData.getWhiteProcessList().contains(appInfo.getPackageName())) {
                     return;
                 }
                 // 是否唤醒锁
-                memData.getPowerManagerService().release(packageName);
-                if (!memData.getSocketApps().contains(packageName)) {
-                    memData.getAppStandbyController().forceIdleState(packageName, true);
+                memData.getPowerManagerService().setWakeLocksDisabled(appInfo, applicationInfo.uid, true);
+                if (!memData.getSocketApps().contains(appInfo.getPackageName())) {
+                    memData.getAppStandbyController().forceIdleState(appInfo, true);
                     memData.getNetworkManagementService().socketDestroy(applicationInfo);
                 } else {
                     memData.monitorNet(applicationInfo);
                 }
             });
             if (Thread.currentThread().isInterrupted()) {
-                Log.d(packageName + " event updated");
+                Log.d(appInfo.getKey() + " event updated");
                 return;
             }
             ThreadUtils.safeRun(() -> {
@@ -231,16 +238,15 @@ public class FreezerHandler {
 
     /**
      * 应用是否前台.
-     *
-     * @param packageName 包名
      */
-    public boolean isAppForeground(String packageName) {
+    public boolean isAppForeground(AppInfo appInfo) {
+        String packageName = appInfo.getPackageName();
         // 忽略前台 就代表不在后台
         if (memData.getDirectApps().contains(packageName)) {
-            return memData.getActivityManagerService().isTopApp(packageName);
+            return memData.getActivityManagerService().isTopApp(appInfo);
         }
         // 调用AMS的方法判断
-        return memData.getActivityManagerService().isForegroundApp(packageName);
+        return memData.getActivityManagerService().isForegroundApp(appInfo);
     }
 
     /**
@@ -252,17 +258,18 @@ public class FreezerHandler {
         if (uid < 10000) {
             return;
         }
-        String packageName = memData.getActivityManagerService().getNameForUid(uid);
-        if (packageName == null) {
+        String key = memData.getActivityManagerService().getNameForUid(uid);
+        if (key == null) {
             Log.w("uid  " + uid + "  not found");
             return;
         }
-        if (!memData.getFreezerAppSet().contains(packageName)) {
+        if (!memData.getFreezerAppSet().contains(key)) {
             return;
         }
-        Log.i(packageName + " " + reason);
-        onResume(true, packageName, () -> {
-            onPause(true, packageName, 3000);
+        AppInfo appInfo = AppInfo.getInstance(key);
+        Log.i(appInfo.getKey() + " " + reason);
+        onResume(true, appInfo, () -> {
+            onPause(true, appInfo, 3000);
         });
     }
 
@@ -287,11 +294,11 @@ public class FreezerHandler {
     /**
      * 等待Binder休眠
      *
-     * @param packageName 包名
+     * @param appInfo 包名
      */
-    public boolean waitBinderIdle(String packageName) {
+    public boolean waitBinderIdle(AppInfo appInfo) {
         // 获取应用信息
-        ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(packageName);
+        ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(appInfo);
         if (applicationInfo == null) {
             return true;
         }
@@ -299,15 +306,15 @@ public class FreezerHandler {
         int retry = 0;
         // 3次重试，如果不进休眠就直接冻结了
         while (binderState(applicationInfo.uid) != BINDER_IDLE && retry < 3) {
-            Log.w(packageName + " binder busy");
+            Log.w(appInfo.getKey() + " binder busy");
             boolean sleep = ThreadUtils.sleep(1000);
             if (!sleep) {
-                Log.d(packageName + " binder idle wait canceled");
+                Log.d(appInfo.getKey() + " binder idle wait canceled");
                 return false;
             }
             retry++;
         }
-        Log.d(packageName + " binder idle");
+        Log.d(appInfo.getKey() + " binder idle");
         return true;
     }
 
