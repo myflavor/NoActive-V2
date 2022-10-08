@@ -139,8 +139,13 @@ public class ActivitySwitchHook extends MethodHook {
                 Log.d(eventFrom.getKey() + covertHandle(handleFrom) + " -> " + eventTo.getKey() + covertHandle(handleTo));
                 // 执行进入前台
                 freezerHandler.onResume(handleTo, eventTo);
-                // 执行进入后台
-                freezerHandler.onPause(handleFrom, eventFrom, 3000);
+                if (memData.getDirectApps().contains(eventFrom.getPackageName())) {
+                    // 执行进入后台
+                    freezerHandler.onPause(handleFrom, eventFrom);
+                } else {
+                    freezerHandler.onPause(handleFrom, eventFrom, 3000);
+                }
+
             }
         };
     }

@@ -59,14 +59,10 @@ public class ThreadUtils {
             synchronized (threadTokenMap) {
                 threadTokenMap.remove(key);
             }
-            try {
-                runWithLock(key, runnable);
-            } catch (Throwable throwable) {
-                Log.e("thawThread-" + key, throwable);
-                printStackTrace(throwable);
-            }
+            runWithLock(key, runnable);
         });
     }
+
 
     /**
      * 新开线程.
@@ -121,8 +117,13 @@ public class ThreadUtils {
         }
         // 带锁运行
         synchronized (getLockKey(key)) {
+            try {
+                runnable.run();
+            } catch (Throwable throwable) {
+                Log.e("actionThread-" + key, throwable);
+                printStackTrace(throwable);
+            }
             // 运行
-            runnable.run();
         }
         // 锁线程Map
         synchronized (threadMap) {

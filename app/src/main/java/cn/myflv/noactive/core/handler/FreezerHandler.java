@@ -146,6 +146,10 @@ public class FreezerHandler {
         });
     }
 
+    public void onPause(boolean handle, AppInfo appInfo) {
+        onPause(handle, appInfo, 0, null);
+    }
+
     public void onPause(boolean handle, AppInfo appInfo, long delay) {
         onPause(handle, appInfo, delay, null);
     }
@@ -235,13 +239,16 @@ public class FreezerHandler {
      * 应用是否前台.
      */
     public boolean isAppForeground(AppInfo appInfo) {
+        // 获取包名
         String packageName = appInfo.getPackageName();
-        if (memData.getTopApps().contains(packageName)) {
+        if (memData.getTopApps().contains(packageName)) { // 如果设置后台级别为可见窗口
+            // 判断是否可见窗口
             return memData.getActivityManagerService().isTopApp(appInfo);
-        } else if (memData.getDirectApps().contains(packageName)) {
+        } else if (memData.getDirectApps().contains(packageName)) { // 如果设置了强制冻结
+            // 直接认为不在前台
             return false;
         } else {
-            // 调用AMS的方法判断
+            // 默认判断是否有前台服务
             return memData.getActivityManagerService().isForegroundApp(appInfo);
         }
     }
