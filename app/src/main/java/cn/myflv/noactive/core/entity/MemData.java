@@ -7,9 +7,11 @@ import android.os.FileObserver;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import cn.myflv.noactive.constant.CommonConstants;
@@ -85,11 +87,24 @@ public class MemData {
     private GreezeManagerService greezeManagerService = null;
     private Context context = null;
 
+    private final Map<String, Boolean> targetAppMap = new HashMap<>();
+    private final Map<String, Boolean> targetProcessMap = new HashMap<>();
+
+
     public MemData() {
         // 初始化监听
         fileObserver = new ConfigFileObserver(this);
         // 开始监听配置文件
         fileObserver.startWatching();
+    }
+
+    public void clearCache() {
+        synchronized (targetAppMap) {
+            targetAppMap.clear();
+        }
+        synchronized (targetProcessMap) {
+            targetProcessMap.clear();
+        }
     }
 
     /**
@@ -119,12 +134,27 @@ public class MemData {
         return appInfo.equals(broadcastApp);
     }
 
+
+    public boolean isTargetApp(String packName) {
+        Boolean targetApp = targetAppMap.get(packName);
+        if (targetApp == null) {
+            synchronized (targetAppMap) {
+                targetApp = targetAppMap.get(packName);
+                if (targetApp == null) {
+                    targetApp = isTargetAppNoCache(packName);
+                    targetAppMap.put(packName, targetApp);
+                }
+            }
+        }
+        return targetApp;
+    }
+
     /**
      * 是否目标APP.
      *
      * @param packageName 包名
      */
-    public boolean isTargetApp(String packageName) {
+    private boolean isTargetAppNoCache(String packageName) {
         if (activityManagerService == null) {
             return false;
         }
@@ -157,13 +187,33 @@ public class MemData {
         return isTargetProcess(false, userId, processRecord);
     }
 
+    public boolean isTargetProcess(boolean ignoreApp, int userId, ProcessRecord processRecord) {
+        String key;
+        if (userId == ActivityManagerService.MAIN_USER) {
+            key = processRecord.getProcessName();
+        } else {
+            key = processRecord.getProcessName() + ":" + userId;
+        }
+        Boolean targetProcess = targetProcessMap.get(key);
+        if (targetProcess == null) {
+            synchronized (targetProcessMap) {
+                targetProcess = targetProcessMap.get(key);
+                if (targetProcess == null) {
+                    targetProcess = isTargetProcessNoCache(ignoreApp, userId, processRecord);
+                    targetProcessMap.put(key, targetProcess);
+                }
+            }
+        }
+        return targetProcess;
+    }
+
     /**
      * 是否目标进程.
      *
      * @param ignoreApp     是否忽略APP判断
      * @param processRecord 进程
      */
-    public boolean isTargetProcess(boolean ignoreApp, int userId, ProcessRecord processRecord) {
+    private boolean isTargetProcessNoCache(boolean ignoreApp, int userId, ProcessRecord processRecord) {
         if (activityManagerService == null) {
             return false;
         }
@@ -236,5 +286,6 @@ public class MemData {
         }
         greezeManagerService.clearMonitorNet(applicationInfo);
     }
+
 
 }

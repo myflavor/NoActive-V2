@@ -69,6 +69,7 @@ public class ConfigFileObserver extends FileObserver {
                     memData.setSocketApps(newConfig);
                     break;
             }
+            memData.clearCache();
         }
     }
 }
