@@ -39,7 +39,7 @@ public class ActivitySwitchHook extends MethodHook {
     /**
      * 上一次事件应用信息
      */
-    private AppInfo lastAppInfo = new AppInfo(ActivityManagerService.MAIN_USER, CommonConstants.ANDROID);
+    private AppInfo lastAppInfo = AppInfo.getInstance(ActivityManagerService.MAIN_USER, CommonConstants.ANDROID);
 
     public ActivitySwitchHook(ClassLoader classLoader, MemData memData, FreezerHandler freezerHandler) {
         super(classLoader);
@@ -111,7 +111,7 @@ public class ActivitySwitchHook extends MethodHook {
                 }
 
                 // 当前事件应用
-                AppInfo eventTo = new AppInfo(userId, packageName);
+                AppInfo eventTo = AppInfo.getInstance(userId, packageName);
 
                 Log.d(eventTo.getKey() + " " + (event == ACTIVITY_PAUSED ? "paused" : "resumed"));
 
@@ -133,7 +133,7 @@ public class ActivitySwitchHook extends MethodHook {
                     memData.setActivityManagerService(new ActivityManagerService(param.thisObject));
                 }
                 // 是否解冻
-                boolean handleTo = memData.isTargetApp(eventTo.getPackageName());
+                boolean handleTo = memData.isTargetApp(eventTo.getPackageName()) || memData.getFreezerAppSet().contains(eventTo.getKey());
                 // 是否冻结
                 boolean handleFrom = memData.isTargetApp(eventFrom.getPackageName());
                 Log.d(eventFrom.getKey() + covertHandle(handleFrom) + " -> " + eventTo.getKey() + covertHandle(handleTo));

@@ -69,12 +69,12 @@ public class BroadcastDeliverHook extends MethodHook {
                     return;
                 }
 
-                AppInfo appInfo = new AppInfo(processRecord.getUserId(), processRecord.getPackageName());
+                AppInfo appInfo = AppInfo.getInstance(processRecord.getUserId(), processRecord.getPackageName());
 
                 // 不是冻结APP就不处理
                 if (!memData.getFreezerAppSet().contains(appInfo.getKey())) {
                     // 意味着广播执行
-                    broadcastStart(param, processRecord);
+                    broadcastStart(param, appInfo);
                     return;
                 }
 
@@ -99,11 +99,11 @@ public class BroadcastDeliverHook extends MethodHook {
     /**
      * 广播开始执行
      *
-     * @param processRecord 包名
+     * @param appInfo 包名
      */
-    private void broadcastStart(XC_MethodHook.MethodHookParam param, ProcessRecord processRecord) {
-        memData.setBroadcastApp(new AppInfo(processRecord.getUserId(), processRecord.getPackageName()));
-        param.setObjectExtra(FieldConstants.packageName, processRecord.getPackageName());
+    private void broadcastStart(XC_MethodHook.MethodHookParam param, AppInfo appInfo) {
+        memData.setBroadcastApp(appInfo);
+        param.setObjectExtra(FieldConstants.packageName, appInfo.getPackageName());
         // Log.d(packageName + " broadcast executing start");
     }
 

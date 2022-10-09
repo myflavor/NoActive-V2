@@ -16,7 +16,7 @@ android {
         minSdk 29
         targetSdk 32
         versionCode 252
-        versionName "2.6-Beta"
+        versionName "2.6-Dev"
     }
 
 
