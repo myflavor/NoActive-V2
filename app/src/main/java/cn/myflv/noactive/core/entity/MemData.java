@@ -88,8 +88,6 @@ public class MemData {
     private Context context = null;
 
     private final Map<String, Boolean> targetAppMap = new HashMap<>();
-    private final Map<String, Boolean> targetProcessMap = new HashMap<>();
-
 
     public MemData() {
         // 初始化监听
@@ -101,9 +99,6 @@ public class MemData {
     public void clearCache() {
         synchronized (targetAppMap) {
             targetAppMap.clear();
-        }
-        synchronized (targetProcessMap) {
-            targetProcessMap.clear();
         }
     }
 
@@ -187,33 +182,13 @@ public class MemData {
         return isTargetProcess(false, userId, processRecord);
     }
 
-    public boolean isTargetProcess(boolean ignoreApp, int userId, ProcessRecord processRecord) {
-        String key;
-        if (userId == ActivityManagerService.MAIN_USER) {
-            key = processRecord.getProcessName();
-        } else {
-            key = processRecord.getProcessName() + ":" + userId;
-        }
-        Boolean targetProcess = targetProcessMap.get(key);
-        if (targetProcess == null) {
-            synchronized (targetProcessMap) {
-                targetProcess = targetProcessMap.get(key);
-                if (targetProcess == null) {
-                    targetProcess = isTargetProcessNoCache(ignoreApp, userId, processRecord);
-                    targetProcessMap.put(key, targetProcess);
-                }
-            }
-        }
-        return targetProcess;
-    }
-
     /**
      * 是否目标进程.
      *
      * @param ignoreApp     是否忽略APP判断
      * @param processRecord 进程
      */
-    private boolean isTargetProcessNoCache(boolean ignoreApp, int userId, ProcessRecord processRecord) {
+    public boolean isTargetProcess(boolean ignoreApp, int userId, ProcessRecord processRecord) {
         if (activityManagerService == null) {
             return false;
         }
