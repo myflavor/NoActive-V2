@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.myflv.noactive.core.server.ActivityManagerService;
-import cn.myflv.noactive.core.utils.Log;
 import lombok.Data;
 
 @Data
@@ -44,8 +43,6 @@ public class AppInfo {
                     cacheMap.put(key, appInfo);
                 }
             }
-        } else {
-            Log.i(key + " has cache");
         }
         return cacheMap.get(key);
     }
