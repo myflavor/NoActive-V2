@@ -40,30 +40,20 @@ public class PowerManagerService {
         return wakeLockMap;
     }
 
-    public void setWakeLocksDisabled(AppInfo appInfo, int uid, boolean disabled) {
+    public void releaseWakeLocks(AppInfo appInfo, int uid) {
         List<WakeLock> wakeLocks = getWakeLockMap().get(uid);
         if (wakeLocks == null || wakeLocks.isEmpty()) {
             return;
         }
         for (WakeLock wakeLock : wakeLocks) {
-            wakeLock.setDisabled(disabled);
-            if (disabled) {
-                notifyWakeLockReleasedLocked(wakeLock);
-            } else {
-                notifyWakeLockAcquiredLocked(wakeLock);
-            }
             String tag = wakeLock.getPackageName() + ":" + appInfo.getUserId() + "(" + wakeLock.getTag() + ")";
-            Log.d(tag + " wakelock " + (disabled ? "disabled" : "enabled"));
+            try {
+                XposedHelpers.callMethod(instance, MethodConstants.releaseWakeLockInternal, wakeLock.getLock(), wakeLock.getFlags());
+                Log.d(tag + " wakelock released");
+            } catch (Throwable throwable) {
+                Log.w(tag + " wakelock released", throwable);
+            }
         }
-    }
-
-
-    public void notifyWakeLockAcquiredLocked(WakeLock wakeLock) {
-        XposedHelpers.callMethod(instance, MethodConstants.notifyWakeLockAcquiredLocked, wakeLock.getInstance());
-    }
-
-    public void notifyWakeLockReleasedLocked(WakeLock wakeLock) {
-        XposedHelpers.callMethod(instance, MethodConstants.notifyWakeLockReleasedLocked, wakeLock.getInstance());
     }
 
 }

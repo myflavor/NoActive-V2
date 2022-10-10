@@ -117,13 +117,10 @@ public class FreezerHandler {
             ThreadUtils.safeRun(() -> {
                 // 获取包名
                 String packageName = appInfo.getPackageName();
-                // 获取应用信息
-                ApplicationInfo applicationInfo = memData.getActivityManagerService().getApplicationInfo(appInfo);
                 // 白名单主进程跳过
                 if (memData.getWhiteProcessList().contains(packageName)) {
                     return;
                 }
-                memData.getPowerManagerService().setWakeLocksDisabled(appInfo, applicationInfo.uid, false);
                 if (!memData.getSocketApps().contains(packageName)) {
                     // 恢复StandBy
                     memData.getAppStandbyController().forceIdleState(appInfo, false);
@@ -216,7 +213,7 @@ public class FreezerHandler {
                     return;
                 }
                 // 是否唤醒锁
-                memData.getPowerManagerService().setWakeLocksDisabled(appInfo, applicationInfo.uid, true);
+                memData.getPowerManagerService().releaseWakeLocks(appInfo, applicationInfo.uid);
                 if (!memData.getSocketApps().contains(appInfo.getPackageName())) {
                     memData.getAppStandbyController().forceIdleState(appInfo, true);
                     memData.getNetworkManagementService().socketDestroy(applicationInfo);
