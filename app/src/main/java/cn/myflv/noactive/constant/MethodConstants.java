@@ -63,4 +63,6 @@ public interface MethodConstants {
     String isIdle = "isIdle";
     String getCurProcState = "getCurProcState";
     String getApplicationInfoAsUser = "getApplicationInfoAsUser";
+    String notifyWakeLockAcquiredLocked = "notifyWakeLockAcquiredLocked";
+    String notifyWakeLockReleasedLocked = "notifyWakeLockReleasedLocked";
 }

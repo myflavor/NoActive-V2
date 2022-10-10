@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.myflv.noactive.constant.FieldConstants;
+import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.entity.AppInfo;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XposedHelpers;
@@ -13,11 +14,11 @@ import lombok.Data;
 
 @Data
 public class PowerManagerService {
-    private final Object powerManagerService;
+    private final Object instance;
     private final Object wakeLocks;
 
     public PowerManagerService(Object powerManagerService) {
-        this.powerManagerService = powerManagerService;
+        this.instance = powerManagerService;
         this.wakeLocks = XposedHelpers.getObjectField(powerManagerService, FieldConstants.mWakeLocks);
     }
 
@@ -46,11 +47,23 @@ public class PowerManagerService {
         }
         for (WakeLock wakeLock : wakeLocks) {
             wakeLock.setDisabled(disabled);
+            if (disabled) {
+                notifyWakeLockReleasedLocked(wakeLock);
+            } else {
+                notifyWakeLockAcquiredLocked(wakeLock);
+            }
             String tag = wakeLock.getPackageName() + ":" + appInfo.getUserId() + "(" + wakeLock.getTag() + ")";
             Log.d(tag + " wakelock " + (disabled ? "disabled" : "enabled"));
         }
     }
 
 
+    public void notifyWakeLockAcquiredLocked(WakeLock wakeLock) {
+        XposedHelpers.callMethod(instance, MethodConstants.notifyWakeLockAcquiredLocked, wakeLock.getInstance());
+    }
+
+    public void notifyWakeLockReleasedLocked(WakeLock wakeLock) {
+        XposedHelpers.callMethod(instance, MethodConstants.notifyWakeLockReleasedLocked, wakeLock.getInstance());
+    }
 
 }
