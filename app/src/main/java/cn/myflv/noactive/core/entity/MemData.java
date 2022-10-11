@@ -86,6 +86,15 @@ public class MemData {
     private NetworkManagementService networkManagementService = null;
     private GreezeManagerService greezeManagerService = null;
     private Context context = null;
+    private boolean screenOn = true;
+
+    public boolean setScreenOn(boolean isOn) {
+        if (screenOn == isOn) {
+            return false;
+        }
+        screenOn = isOn;
+        return true;
+    }
 
     private final Map<String, Boolean> targetAppMap = new HashMap<>();
 

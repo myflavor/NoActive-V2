@@ -10,10 +10,10 @@ import cn.myflv.noactive.core.hook.BroadcastDeliverHook;
 import cn.myflv.noactive.core.hook.CacheFreezerHook;
 import cn.myflv.noactive.core.hook.NetworkManagerHook;
 import cn.myflv.noactive.core.hook.PowerManagerHook;
+import cn.myflv.noactive.core.hook.ScreenStateHook;
 import cn.myflv.noactive.core.hook.TaskTrimHook;
 import cn.myflv.noactive.core.hook.miui.BinderTransHook;
 import cn.myflv.noactive.core.hook.miui.GreezeHook;
-import cn.myflv.noactive.core.hook.miui.NetReceiveHook;
 import cn.myflv.noactive.core.utils.FreezeUtils;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -44,6 +44,8 @@ public class AndroidHook extends AbstractAppHook {
 
         // 加载内存配置
         MemData memData = new MemData();
+
+        new ScreenStateHook(classLoader, memData);
 
         new PowerManagerHook(classLoader, memData);
         new AppStandbyHook(classLoader, memData);
