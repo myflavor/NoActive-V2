@@ -12,7 +12,7 @@ import lombok.Data;
 public class DeviceIdleController {
     private final Object instance;
     private final int STATE_IDLE;
-    private final static String KEY = "deep-doze";
+    private final static String KEY = "NoActive-DeviceIdleController";
 
     private boolean idle = false;
 
