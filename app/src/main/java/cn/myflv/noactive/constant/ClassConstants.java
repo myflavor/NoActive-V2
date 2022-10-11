@@ -50,4 +50,5 @@ public interface ClassConstants {
     String UidRangeParcel = "android.net.UidRangeParcel";
     String FreezeBinder = "com.miui.powerkeeper.millet.FreezeBinder";
     String DisplayPowerController = "com.android.server.display.DisplayPowerController";
+    String DeviceIdleController = "com.android.server.DeviceIdleController";
 }

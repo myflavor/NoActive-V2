@@ -65,8 +65,10 @@ public class ScreenStateHook extends MethodHook {
                 AppInfo lastAppInfo = memData.getLastAppInfo();
                 if (isOn) {
                     freezerHandler.onResume(true, lastAppInfo);
+                    memData.getDeviceIdleController().exitDeepDoze();
                 } else {
                     freezerHandler.onPause(true, lastAppInfo, 30 * 1000);
+                    memData.getDeviceIdleController().deepDoze();
                 }
             }
         };

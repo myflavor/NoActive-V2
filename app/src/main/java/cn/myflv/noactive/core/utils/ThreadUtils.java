@@ -54,6 +54,15 @@ public class ThreadUtils {
         });
     }
 
+    public static void newThread(String key, Runnable runnable) {
+        otherActionPool.execute(() -> {
+            synchronized (threadTokenMap) {
+                threadTokenMap.remove(key);
+            }
+            runWithLock(key, runnable);
+        });
+    }
+
     public static void thawThread(String key, Runnable runnable) {
         thawActionPool.execute(() -> {
             synchronized (threadTokenMap) {

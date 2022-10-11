@@ -66,4 +66,7 @@ public interface MethodConstants {
     String notifyWakeLockAcquiredLocked = "notifyWakeLockAcquiredLocked";
     String notifyWakeLockReleasedLocked = "notifyWakeLockReleasedLocked";
     String setScreenState = "setScreenState";
+    String becomeInactiveIfAppropriateLocked = "becomeInactiveIfAppropriateLocked";
+    String stepIdleStateLocked = "stepIdleStateLocked";
+    String exitForceIdleLocked = "exitForceIdleLocked";
 }

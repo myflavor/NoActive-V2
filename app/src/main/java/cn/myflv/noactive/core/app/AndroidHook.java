@@ -8,6 +8,7 @@ import cn.myflv.noactive.core.hook.ActivitySwitchHook;
 import cn.myflv.noactive.core.hook.AppStandbyHook;
 import cn.myflv.noactive.core.hook.BroadcastDeliverHook;
 import cn.myflv.noactive.core.hook.CacheFreezerHook;
+import cn.myflv.noactive.core.hook.DeviceIdleHook;
 import cn.myflv.noactive.core.hook.NetworkManagerHook;
 import cn.myflv.noactive.core.hook.PowerManagerHook;
 import cn.myflv.noactive.core.hook.ScreenStateHook;
@@ -49,6 +50,7 @@ public class AndroidHook extends AbstractAppHook {
         new PowerManagerHook(classLoader, memData);
         new AppStandbyHook(classLoader, memData);
         new NetworkManagerHook(classLoader, memData);
+        new DeviceIdleHook(classLoader, memData);
         // new ActivityManagerHook(classLoader, memData);
 
         FreezeUtils freezeUtils = new FreezeUtils(classLoader, memData);

@@ -17,6 +17,7 @@ import java.util.Set;
 import cn.myflv.noactive.constant.CommonConstants;
 import cn.myflv.noactive.core.server.ActivityManagerService;
 import cn.myflv.noactive.core.server.AppStandbyController;
+import cn.myflv.noactive.core.server.DeviceIdleController;
 import cn.myflv.noactive.core.server.GreezeManagerService;
 import cn.myflv.noactive.core.server.NetworkManagementService;
 import cn.myflv.noactive.core.server.PowerManagerService;
@@ -90,6 +91,7 @@ public class MemData {
     private AppStandbyController appStandbyController = null;
     private NetworkManagementService networkManagementService = null;
     private GreezeManagerService greezeManagerService = null;
+    private DeviceIdleController deviceIdleController = null;
     private Context context = null;
     private boolean screenOn = true;
 
