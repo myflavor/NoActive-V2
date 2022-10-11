@@ -35,6 +35,11 @@ import lombok.Data;
 public class MemData {
 
     /**
+     * 上一次事件应用信息
+     */
+    private AppInfo lastAppInfo = AppInfo.getInstance(ActivityManagerService.MAIN_USER, CommonConstants.ANDROID);
+
+    /**
      * 已冻结APP.
      */
     private final Set<String> freezerAppSet = Collections.synchronizedSet(FreezerConfig.isScheduledOn() ? new LinkedHashSet<>() : new HashSet<>());

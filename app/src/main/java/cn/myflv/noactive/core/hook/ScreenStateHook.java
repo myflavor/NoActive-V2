@@ -4,7 +4,9 @@ import android.view.Display;
 
 import cn.myflv.noactive.constant.ClassConstants;
 import cn.myflv.noactive.constant.MethodConstants;
+import cn.myflv.noactive.core.entity.AppInfo;
 import cn.myflv.noactive.core.entity.MemData;
+import cn.myflv.noactive.core.handler.FreezerHandler;
 import cn.myflv.noactive.core.hook.base.AbstractMethodHook;
 import cn.myflv.noactive.core.hook.base.MethodHook;
 import cn.myflv.noactive.core.utils.Log;
@@ -14,9 +16,12 @@ public class ScreenStateHook extends MethodHook {
 
     private final MemData memData;
 
-    public ScreenStateHook(ClassLoader classLoader, MemData memData) {
+    private final FreezerHandler freezerHandler;
+
+    public ScreenStateHook(ClassLoader classLoader, MemData memData, FreezerHandler freezerHandler) {
         super(classLoader);
         this.memData = memData;
+        this.freezerHandler = freezerHandler;
     }
 
     @Override
@@ -56,7 +61,13 @@ public class ScreenStateHook extends MethodHook {
                 if (!memData.setScreenOn(isOn)) {
                     return;
                 }
-                Log.i("screen " + (isOn ? "on" : "off"));
+                Log.d("screen " + (isOn ? "on" : "off"));
+                AppInfo lastAppInfo = memData.getLastAppInfo();
+                if (isOn) {
+                    freezerHandler.onResume(true, lastAppInfo);
+                } else {
+                    freezerHandler.onPause(true, lastAppInfo, 30 * 1000);
+                }
             }
         };
     }

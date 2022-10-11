@@ -144,7 +144,7 @@ public class FreezeUtils {
         ThreadUtils.runNoThrow(() -> {
             Class<?> Process = XposedHelpers.findClass(ClassConstants.Process, classLoader);
             XposedHelpers.callStaticMethod(Process, MethodConstants.setProcessFrozen, pid, uid, frozen);
-            Log.d((frozen ? "freeze" : "unfreeze") + " " + processRecord.getProcessNameWithUser());
+            Log.d((frozen ? "freeze" : "thaw") + " " + processRecord.getProcessNameWithUser());
         });
 
     }
@@ -157,7 +157,7 @@ public class FreezeUtils {
             for (int i = 0; i < BINDER_FREEZE_TRY; i++) {
                 int result = (int) XposedHelpers.callStaticMethod(CachedAppOptimizer, MethodConstants.freezeBinder, pid, frozen);
                 if (result == 0) {
-                    Log.d((frozen ? "freeze" : "unfreeze") + " binder " + processRecord.getProcessNameWithUser());
+                    Log.d((frozen ? "freeze" : "thaw") + " binder " + processRecord.getProcessNameWithUser());
                     return;
                 }
             }

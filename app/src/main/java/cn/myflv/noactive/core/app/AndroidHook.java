@@ -45,7 +45,6 @@ public class AndroidHook extends AbstractAppHook {
         // 加载内存配置
         MemData memData = new MemData();
 
-        new ScreenStateHook(classLoader, memData);
 
         new PowerManagerHook(classLoader, memData);
         new AppStandbyHook(classLoader, memData);
@@ -57,6 +56,7 @@ public class AndroidHook extends AbstractAppHook {
 
         // Hook 切换事件
         new ActivitySwitchHook(classLoader, memData, freezerHandler);
+        new ScreenStateHook(classLoader, memData, freezerHandler);
 
         // Hook 广播分发
         new BroadcastDeliverHook(classLoader, memData);
