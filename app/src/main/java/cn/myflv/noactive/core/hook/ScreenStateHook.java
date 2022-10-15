@@ -116,12 +116,12 @@ public class ScreenStateHook extends MethodHook {
         // 取消冻结定时器
         if (isFreezeNow) {
             alarmManager.cancel(freezerListener);
-            Log.d("Give up to freeze");
+            Log.d("give up to freeze");
         }
         if (isDozeNow) {
             // 取消Doze定时器
             alarmManager.cancel(deepDozeListener);
-            Log.d("Give up to doze");
+            Log.d("give up to doze");
         }
     }
 
