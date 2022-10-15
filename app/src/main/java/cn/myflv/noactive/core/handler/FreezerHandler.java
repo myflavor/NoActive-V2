@@ -84,7 +84,7 @@ public class FreezerHandler {
                 AppInfo appInfo = AppInfo.getInstance(key);
                 Log.d(appInfo.getKey() + " interval unfreeze start");
                 // 解冻
-                onResume(true, appInfo, () -> {
+                onResume(true, appInfo, true, () -> {
                     // 冻结
                     onPause(true, appInfo, 3000, () -> {
                         Log.d(appInfo.getKey() + " interval unfreeze finish");
@@ -100,7 +100,7 @@ public class FreezerHandler {
 
 
     public void onResume(boolean handle, AppInfo appInfo) {
-        onResume(handle, appInfo, null);
+        onResume(handle, appInfo, false, null);
     }
 
     /**
@@ -108,13 +108,16 @@ public class FreezerHandler {
      *
      * @param appInfo 事件信息
      */
-    public void onResume(boolean handle, AppInfo appInfo, Runnable runnable) {
+    public void onResume(boolean handle, AppInfo appInfo, boolean temporary, Runnable runnable) {
         // 不处理就跳过
         if (!handle) {
             return;
         }
         ThreadUtils.thawThread(appInfo.getKey(), () -> {
             ThreadUtils.safeRun(() -> {
+                if (temporary) {
+                    return;
+                }
                 // 获取包名
                 String packageName = appInfo.getPackageName();
                 // 白名单主进程跳过
@@ -269,7 +272,7 @@ public class FreezerHandler {
         }
         AppInfo appInfo = AppInfo.getInstance(key);
         Log.i(appInfo.getKey() + " " + reason);
-        onResume(true, appInfo, () -> {
+        onResume(true, appInfo, true, () -> {
             onPause(true, appInfo, 3000);
         });
     }
