@@ -13,6 +13,7 @@ import cn.fkj233.ui.activity.view.SpinnerV
 import cn.fkj233.ui.activity.view.SwitchV
 import cn.fkj233.ui.activity.view.TextV
 import cn.myflv.noactive.core.utils.FreezerConfig
+import cn.myflv.noactive.utils.PackageUtils
 import com.topjohnwu.superuser.io.SuFile
 
 
@@ -53,7 +54,6 @@ class SettingActivity : MIUIActivity() {
                         resources.getString(R.string.author_blog), round = 16f, onClickListener = {
                     jumpUrl("http://www.myflv.cn")
                 })
-
             }
         }
     }
