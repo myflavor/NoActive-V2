@@ -25,7 +25,7 @@ public class ScreenStateHook extends MethodHook {
     private final FreezerHandler freezerHandler;
 
     private final AlarmManager.OnAlarmListener deepDozeListener;
-    private final AlarmManager.OnAlarmListener freezeListener;
+    private final AlarmManager.OnAlarmListener freezerListener;
     private boolean isDozeNow = false;
     private boolean isFreezeNow = false;
 
@@ -33,7 +33,7 @@ public class ScreenStateHook extends MethodHook {
         super(classLoader);
         this.memData = memData;
         this.freezerHandler = freezerHandler;
-        freezeListener = () -> {
+        freezerListener = () -> {
             synchronized (ScreenStateHook.this) {
                 freezerHandler.onPause(true, memData.getLastAppInfo());
                 isFreezeNow = false;
@@ -99,7 +99,7 @@ public class ScreenStateHook extends MethodHook {
                 memData.getDeviceIdleController().exitDeepDoze();
             } else {
                 isFreezeNow = true;
-                run(30 * 1000, "Freeze", freezeListener);
+                run(30 * 1000, "Freezer", freezerListener);
                 isDozeNow = true;
                 run(60 * 1000, "Doze", deepDozeListener);
             }
@@ -115,13 +115,13 @@ public class ScreenStateHook extends MethodHook {
         AlarmManager alarmManager = context.getSystemService(AlarmManager.class);
         // 取消冻结定时器
         if (isFreezeNow) {
-            alarmManager.cancel(freezeListener);
-            Log.d("Freeze canceled");
+            alarmManager.cancel(freezerListener);
+            Log.d("Give up to freeze");
         }
         if (isDozeNow) {
             // 取消Doze定时器
             alarmManager.cancel(deepDozeListener);
-            Log.d("Doze canceled");
+            Log.d("Give up to doze");
         }
     }
 
