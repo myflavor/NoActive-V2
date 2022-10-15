@@ -1,9 +1,11 @@
 package cn.myflv.noactive.core.entity;
 
 
+import android.app.AlarmManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.os.FileObserver;
+import android.os.Handler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +19,7 @@ import java.util.Set;
 import cn.myflv.noactive.constant.CommonConstants;
 import cn.myflv.noactive.core.server.ActivityManagerService;
 import cn.myflv.noactive.core.server.AppStandbyController;
+import cn.myflv.noactive.core.server.DeviceIdleController;
 import cn.myflv.noactive.core.server.GreezeManagerService;
 import cn.myflv.noactive.core.server.NetworkManagementService;
 import cn.myflv.noactive.core.server.PowerManagerService;
@@ -33,6 +36,11 @@ import lombok.Data;
  */
 @Data
 public class MemData {
+
+    /**
+     * 上一次事件应用信息
+     */
+    private AppInfo lastAppInfo = AppInfo.getInstance(ActivityManagerService.MAIN_USER, CommonConstants.ANDROID);
 
     /**
      * 已冻结APP.
@@ -85,6 +93,16 @@ public class MemData {
     private AppStandbyController appStandbyController = null;
     private NetworkManagementService networkManagementService = null;
     private GreezeManagerService greezeManagerService = null;
+    private DeviceIdleController deviceIdleController = null;
+    private Boolean screenOn = true;
+
+    public boolean setScreenOn(boolean isOn) {
+        if (screenOn == isOn) {
+            return false;
+        }
+        screenOn = isOn;
+        return true;
+    }
 
     public Context getContext() {
         if (activityManagerService == null) {
@@ -267,6 +285,5 @@ public class MemData {
         }
         greezeManagerService.clearMonitorNet(applicationInfo);
     }
-
 
 }

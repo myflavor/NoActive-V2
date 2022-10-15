@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Build;
 
 import cn.myflv.noactive.constant.ClassConstants;
-import cn.myflv.noactive.constant.CommonConstants;
 import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.entity.AppInfo;
 import cn.myflv.noactive.core.entity.MemData;
@@ -36,10 +35,6 @@ public class ActivitySwitchHook extends MethodHook {
     private final MemData memData;
 
     private final FreezerHandler freezerHandler;
-    /**
-     * 上一次事件应用信息
-     */
-    private AppInfo lastAppInfo = AppInfo.getInstance(ActivityManagerService.MAIN_USER, CommonConstants.ANDROID);
 
     public ActivitySwitchHook(ClassLoader classLoader, MemData memData, FreezerHandler freezerHandler) {
         super(classLoader);
@@ -106,7 +101,7 @@ public class ActivitySwitchHook extends MethodHook {
 
                 // 忽略系统框架
                 if (packageName.equals("android")) {
-                    Log.d("android(" + lastAppInfo.getPackageName() + ") -> ignored");
+                    Log.d("android(" + memData.getLastAppInfo().getPackageName() + ") -> ignored");
                     return;
                 }
 
@@ -117,16 +112,16 @@ public class ActivitySwitchHook extends MethodHook {
 
 
                 // 本次等于上次 即无变化 不处理
-                if (eventTo.equals(lastAppInfo)) {
+                if (eventTo.equals(memData.getLastAppInfo())) {
                     Log.d(eventTo.getKey() + " activity changed");
                     return;
                 }
 
 
                 // 切换前的包名等于上次包名
-                AppInfo eventFrom = lastAppInfo;
+                AppInfo eventFrom = memData.getLastAppInfo();
                 // 重新设置上次包名为切换后的包名 下次用
-                lastAppInfo = eventTo;
+                memData.setLastAppInfo(eventTo);
 
                 // 为防止一直new，存到内存数据
                 if (memData.getActivityManagerService() == null) {

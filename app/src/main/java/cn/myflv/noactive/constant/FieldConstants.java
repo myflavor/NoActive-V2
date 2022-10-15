@@ -44,4 +44,8 @@ public interface FieldConstants {
     String idle = "idle";
     String mOwnerUid = "mOwnerUid";
     String mDisabled = "mDisabled";
+    String mDeepEnabled = "mDeepEnabled";
+    String mForceIdle = "mForceIdle";
+    String mState = "mState";
+    String STATE_IDLE = "STATE_IDLE";
 }

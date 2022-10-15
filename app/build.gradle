@@ -15,8 +15,8 @@ android {
         applicationId "cn.myflv.noactive"
         minSdk 29
         targetSdk 32
-        versionCode 260
-        versionName "2.6"
+        versionCode 261
+        versionName "2.7"
     }
 
 
