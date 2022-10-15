@@ -85,7 +85,13 @@ public class MemData {
     private AppStandbyController appStandbyController = null;
     private NetworkManagementService networkManagementService = null;
     private GreezeManagerService greezeManagerService = null;
-    private Context context = null;
+
+    public Context getContext() {
+        if (activityManagerService == null) {
+            return null;
+        }
+        return activityManagerService.getContext();
+    }
 
     private final Map<String, Boolean> targetAppMap = new HashMap<>();
 
