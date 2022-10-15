@@ -9,4 +9,36 @@
     <string name="direct_app">强制冻结</string>
     <string name="top_app">可见窗口</string>
     <string name="other_config">其他配置</string>
+    <string name="not_root">Root权限获取失败</string>
+    <string name="settings">设置</string>
+    <string name="freeze_method">冻结方式</string>
+    <string name="auto">自动</string>
+    <string name="root_mode">提权模式</string>
+    <string name="interval_freeze">定时冻结</string>
+    <string name="interval_unfreeze">轮番解冻</string>
+    <string name="debug_log">详细日志</string>
+    <string name="developer">开发者</string>
+    <string name="discussion">讨论</string>
+    <string name="donate">捐赠</string>
+    <string name="config_set_after_reboot">当前配置重启后生效</string>
+    <string name="start_qq_failed">QQ未安装或版本不支持</string>
+    <string name="qq_group_discussion">NoActive交流群</string>
+    <string name="qq_group_discussion_tips">官方QQ群750812133</string>
+    <string name="donate_developer">打赏开发者</string>
+    <string name="donate_developer_tips">觉得模块不错，可以打赏开发者一瓶可乐</string>
+    <string name="alipay_not_install">觉得模块不错，可以打赏开发者一瓶可乐</string>
+    <string name="foreground_service">前台服务</string>
+    <string name="background_level">后台级别</string>
+    <string name="author">myflavor</string>
+    <string name="author_blog">www.myflv.cn</string>
+    <string name="system_black">系统黑名单</string>
+    <string name="user_white">应用白名单</string>
+    <string name="keep_net">保持连接</string>
+    <string name="freeze">冻结</string>
+    <string name="kill">杀死</string>
+    <string name="user_app">用户应用</string>
+    <string name="sys_app">系统应用</string>
+    <string name="all_app">所有应用</string>
+
+
 </resources>

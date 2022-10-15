@@ -1,14 +1,11 @@
 package cn.myflv.noactive;
 
-import android.app.UiModeManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -46,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         boolean rootAccess = Shell.getShell().isRoot();
         if (!rootAccess) {
-            Toast.makeText(this, "Root权限获取失败", Toast.LENGTH_LONG).show();
+
+            Toast.makeText(this, getResources().getString(R.string.not_root), Toast.LENGTH_LONG).show();
         }
         initEditView();
         initSpinnerView();

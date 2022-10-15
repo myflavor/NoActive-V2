@@ -23,9 +23,9 @@ class SettingActivity : MIUIActivity() {
 
     init {
         initView {
-            registerMain("设置", true) {
-                TextWithSpinner(TextV("冻结方式"), SpinnerV(getMode()) {
-                    add("自动") { setMode(null) }
+            registerMain(resources.getString(R.string.settings), true) {
+                TextWithSpinner(TextV(resources.getString(R.string.freeze_method)), SpinnerV(getMode()) {
+                    add(resources.getString(R.string.auto)) { setMode(null) }
                     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
                         add("API") { setMode(FreezerConfig.freezerApi) }
                     }
@@ -34,21 +34,23 @@ class SettingActivity : MIUIActivity() {
                     add("SIGSTOP") { setMode(FreezerConfig.kill19) }
                     add("SIGTSTP") { setMode(FreezerConfig.kill20) }
                 })
-                TextWithSwitch(TextV("提权模式"), SwitchV("binding", defValue = isConfigOn(FreezerConfig.SuExcute)) {
+                TextWithSwitch(TextV(resources.getString(R.string.root_mode)), SwitchV("binding", defValue = isConfigOn(FreezerConfig.SuExcute)) {
                     setConfig(FreezerConfig.SuExcute, it)
                 })
-                TextWithSwitch(TextV("定时冻结"), SwitchV("binding", defValue = isConfigOn(FreezerConfig.IntervalFreeze)) {
+                TextWithSwitch(TextV(resources.getString(R.string.interval_freeze)), SwitchV("binding", defValue = isConfigOn(FreezerConfig.IntervalFreeze)) {
                     setConfig(FreezerConfig.IntervalFreeze, it)
                 })
-                TextWithSwitch(TextV("轮番解冻"), SwitchV("binding", defValue = isConfigOn(FreezerConfig.IntervalUnfreeze)) {
+                TextWithSwitch(TextV(resources.getString(R.string.interval_unfreeze)), SwitchV("binding", defValue = isConfigOn(FreezerConfig.IntervalUnfreeze)) {
                     setConfig(FreezerConfig.IntervalUnfreeze, it)
                 })
-                TextWithSwitch(TextV("详细日志"), SwitchV("binding", defValue = isConfigOn(FreezerConfig.Debug)) {
+                TextWithSwitch(TextV(resources.getString(R.string.debug_log)), SwitchV("binding", defValue = isConfigOn(FreezerConfig.Debug)) {
                     setConfig(FreezerConfig.Debug, it)
                 })
                 Line()
-                TitleText("开发者")
-                Author(getImg(R.mipmap.ic_head)!!, "myflavor", "www.myflv.cn", round = 16f, onClickListener = {
+                TitleText(resources.getString(R.string.developer))
+                Author(getImg(R.mipmap.ic_head)!!,
+                        resources.getString(R.string.author),
+                        resources.getString(R.string.author_blog), round = 16f, onClickListener = {
                     jumpUrl("http://www.myflv.cn")
                 })
 
@@ -77,7 +79,7 @@ class SettingActivity : MIUIActivity() {
         } else {
             config.delete()
         }
-        showToast("当前配置重启后生效")
+        showToast(resources.getString(R.string.config_set_after_reboot))
     }
 
     fun isConfigOn(name: String): Boolean {
@@ -93,7 +95,7 @@ class SettingActivity : MIUIActivity() {
         if (mode != null) {
             SuFile(FreezerConfig.ConfigDir, mode).createNewFile()
         }
-        showToast("当前配置重启后生效")
+        showToast(resources.getString(R.string.config_set_after_reboot))
     }
 
     fun getMode(): String {
@@ -113,7 +115,7 @@ class SettingActivity : MIUIActivity() {
         if (SuFile(FreezerConfig.ConfigDir, FreezerConfig.kill20).exists()) {
             return "SIGTSTP";
         }
-        return "自动"
+        return resources.getString(R.string.auto)
     }
 
     private fun showToast(string: String) {

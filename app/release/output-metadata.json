@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 255,
-      "versionName": "2.6-Beta",
-      "outputFile": "NoActive-2.6-Beta(255).apk"
+      "versionCode": 260,
+      "versionName": "2.6",
+      "outputFile": "NoActive-2.6(260).apk"
     }
   ],
   "elementType": "File"

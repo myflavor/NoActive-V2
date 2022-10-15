@@ -8,15 +8,15 @@
 
 
     <string-array name="app_filter">
-        <item>用户应用</item>
-        <item>系统应用</item>
-        <item>所有应用</item>
+        <item>@string/user_app</item>
+        <item>@string/sys_app</item>
+        <item>@string/all_app</item>
     </string-array>
 
 
     <string-array name="process_op">
-        <item>冻结</item>
-        <item>杀死</item>
-        <item>白名单</item>
+        <item>@string/freeze</item>
+        <item>@string/kill</item>
+        <item>@string/white_app</item>
     </string-array>
 </resources>
