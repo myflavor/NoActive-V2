@@ -6,7 +6,6 @@ import cn.myflv.noactive.constant.CommonConstants;
 import cn.myflv.noactive.constant.FieldConstants;
 import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.utils.Log;
-import cn.myflv.noactive.core.utils.ThreadUtils;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
 
@@ -51,7 +50,7 @@ public class DeviceIdleController {
         }
         XposedHelpers.callMethod(instance, MethodConstants.exitForceIdleLocked);
         idle = false;
-        Log.d("deep doze exited");
+        Log.d("exit deep doze");
     }
 
     public void stepIdleStateLocked() {

@@ -16,7 +16,7 @@ android {
         minSdk 29
         targetSdk 32
         versionCode 261
-        versionName "2.7"
+        versionName "2.7-Alpha"
     }
 
 
