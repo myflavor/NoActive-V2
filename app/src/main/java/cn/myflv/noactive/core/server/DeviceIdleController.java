@@ -14,7 +14,6 @@ public class DeviceIdleController {
     private final Object instance;
     private final int STATE_IDLE;
     private final static String KEY = "NoActive-DeviceIdleController";
-    private final Handler handler = new Handler();
 
     private boolean idle = false;
 
