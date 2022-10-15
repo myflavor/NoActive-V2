@@ -81,7 +81,7 @@ public class ANRHook extends MethodHook {
                     }
                     String processNameWithUser = processRecord.getProcessNameWithUser();
                     String packageNameWithUser = processRecord.getPackageNameWithUser();
-                    Log.d("Keep " + (processNameWithUser != null ? processNameWithUser : packageNameWithUser));
+                    Log.d("keep " + (processNameWithUser != null ? processNameWithUser : packageNameWithUser));
                     // 不处理
                     return null;
                 }

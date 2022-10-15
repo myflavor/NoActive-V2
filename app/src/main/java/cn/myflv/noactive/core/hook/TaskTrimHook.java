@@ -33,7 +33,7 @@ public class TaskTrimHook extends MethodHook {
         return new AbstractReplaceHook() {
             @Override
             protected Object replaceMethod(MethodHookParam param) throws Throwable {
-                Log.d("Avoid trimInactiveRecentTasks");
+                Log.d("avoid trimInactiveRecentTasks");
                 return null;
             }
         };
