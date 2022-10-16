@@ -123,9 +123,10 @@ public class MemData {
         targetAppMap.clear();
         if (deviceIdleController != null) {
             Set<String> whiteSet = deviceIdleController.getWhiteList();
-            List<String> whiteList = new ArrayList<>(getWhiteApps());
+            whiteSet.addAll(getWhiteApps());
+            List<String> whiteList = new ArrayList<>();
             for (String pkg : whiteSet) {
-                if (!idleApps.contains(pkg) && isTargetApp(pkg)) {
+                if (isIdlePkg(pkg)) {
                     deviceIdleController.removeWhiteList(pkg);
                 } else {
                     whiteList.add(pkg);
@@ -133,6 +134,16 @@ public class MemData {
             }
             deviceIdleController.addWhiteList(whiteList);
         }
+    }
+
+    public boolean isIdlePkg(String pkg) {
+        if (whiteProcessList.contains(pkg)) {
+            return false;
+        }
+        if (idleApps.contains(pkg)) {
+            return true;
+        }
+        return isTargetApp(pkg);
     }
 
     /**
