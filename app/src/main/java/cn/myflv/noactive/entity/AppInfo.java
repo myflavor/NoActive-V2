@@ -13,6 +13,7 @@ public class AppInfo {
     public boolean direct;
     public boolean top;
     public boolean socket;
+    public boolean idle;
     public Set<String> processSet;
     public Set<String> killProcessSet;
     public Set<String> whiteProcessSet;

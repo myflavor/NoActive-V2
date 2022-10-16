@@ -38,6 +38,8 @@ public class AppItemAdapter extends ArrayAdapter<AppItem> {
         white_app.setVisibility(appItem.isWhite() ? View.VISIBLE : View.GONE);
         TextView black_app = convertView.findViewById(R.id.black_app);
         black_app.setVisibility(appItem.isBlack() ? View.VISIBLE : View.GONE);
+        TextView idle_app = convertView.findViewById(R.id.battery_opt);
+        idle_app.setVisibility(appItem.isIdle() ? View.VISIBLE : View.GONE);
 
         TextView app_background = convertView.findViewById(R.id.app_background);
         if (appItem.isTop()) {

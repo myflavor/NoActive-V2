@@ -45,18 +45,24 @@ class SubActivity : MIUIActivity() {
                             val fileName = if (appInfo.system) FreezerConfig.blackSystemAppConfig else FreezerConfig.whiteAppConfig
                             if (it) {
                                 ConfigUtils.addIfNot(fileName, packageName)
+                                if (appInfo.system) {
+                                    ConfigUtils.delIfExist(FreezerConfig.idleAppConfig, packageName)
+                                }
                             } else {
                                 ConfigUtils.delIfExist(fileName, packageName)
+                                if (!appInfo.system) {
+                                    ConfigUtils.delIfExist(FreezerConfig.idleAppConfig, packageName)
+                                }
                             }
                         })
 
-                TextWithSwitch(TextV(resources.getString(R.string.keep_net)), SwitchV("binding", defValue = appInfo.socket) {
+                TextWithSwitch(TextV(resources.getString(R.string.battery_opt)), SwitchV("binding", defValue = appInfo.idle) {
                     if (it) {
-                        ConfigUtils.addIfNot(FreezerConfig.socketAppConfig, packageName)
+                        ConfigUtils.addIfNot(FreezerConfig.idleAppConfig, packageName)
                     } else {
-                        ConfigUtils.delIfExist(FreezerConfig.socketAppConfig, packageName)
+                        ConfigUtils.delIfExist(FreezerConfig.idleAppConfig, packageName)
                     }
-                }, dataBindingRecv = binding.getRecv(if (appInfo.system) 1 else 2))
+                }, dataBindingRecv = binding.getRecv(if (appInfo.system) 2 else 1))
 
 
                 TextWithSpinner(

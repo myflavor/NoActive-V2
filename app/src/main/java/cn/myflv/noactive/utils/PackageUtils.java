@@ -43,6 +43,7 @@ public class PackageUtils {
         Set<String> directAppSet = ConfigUtils.get(FreezerConfig.directAppConfig);
         Set<String> topAppSet = ConfigUtils.get(FreezerConfig.topAppConfig);
         Set<String> socketAppSet = ConfigUtils.get(FreezerConfig.socketAppConfig);
+        Set<String> idleAppSet = ConfigUtils.get(FreezerConfig.idleAppConfig);
         Set<String> killProcessSet = ConfigUtils.get(FreezerConfig.killProcessConfig);
         Set<String> whiteProcessSet = ConfigUtils.get(FreezerConfig.whiteProcessConfig);
         Map<String, List<String>> killProcessMap = killProcessSet.stream().collect(Collectors.groupingBy(proc -> proc.split(":")[0]));
@@ -77,9 +78,10 @@ public class PackageUtils {
             boolean isDirect = directAppSet.contains(packageName);
             boolean isTop = topAppSet.contains(packageName);
             boolean isSocket = socketAppSet.contains(packageName);
+            boolean isIdle = idleAppSet.contains(packageName);
             int killProcCount = killProcessMap.computeIfAbsent(packageName, k -> new ArrayList<>()).size();
             int whiteProcCount = whiteProcessMap.computeIfAbsent(packageName, k -> new ArrayList<>()).size();
-            AppItem appItem = new AppItem(appName, packageName, appIcon, installedPackage, isWhite, isBlack, isTop, isDirect, isSocket, killProcCount, whiteProcCount);
+            AppItem appItem = new AppItem(appName, packageName, appIcon, installedPackage, isWhite, isBlack, isTop, isDirect, isSocket, isIdle, killProcCount, whiteProcCount);
             appItemList.add(appItem);
         }
         if (appItemList.size() > 0) {
@@ -89,6 +91,7 @@ public class PackageUtils {
                             .thenComparing(AppItem::isDirect)
                             .thenComparing(AppItem::isBlack)
                             .thenComparing(AppItem::isSocket)
+                            .thenComparing(AppItem::isIdle)
                             .thenComparing(AppItem::getWhiteProcCount)
                             .thenComparing(AppItem::getKillProcCount)
                             .reversed())
@@ -139,10 +142,12 @@ public class PackageUtils {
             Set<String> directAppConfig = ConfigUtils.get(FreezerConfig.directAppConfig);
             Set<String> topAppConfig = ConfigUtils.get(FreezerConfig.topAppConfig);
             Set<String> socketAppConfig = ConfigUtils.get(FreezerConfig.socketAppConfig);
+            Set<String> idleAppConfig = ConfigUtils.get(FreezerConfig.idleAppConfig);
             appInfo.setWhite(whiteAppConfig.contains(packageName));
             appInfo.setDirect(directAppConfig.contains(packageName));
             appInfo.setTop(topAppConfig.contains(packageName));
             appInfo.setSocket(socketAppConfig.contains(packageName));
+            appInfo.setIdle(idleAppConfig.contains(packageName));
             Set<String> whiteProcessConfig = ConfigUtils.get(FreezerConfig.whiteProcessConfig);
             appInfo.setWhiteProcessSet(whiteProcessConfig);
             Set<String> killProcessConfig = ConfigUtils.get(FreezerConfig.killProcessConfig);

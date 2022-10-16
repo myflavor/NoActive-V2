@@ -18,6 +18,7 @@ public class AppItem {
     private boolean top;
     private boolean direct;
     private boolean socket;
+    private boolean idle;
     private int killProcCount;
     private int whiteProcCount;
 }

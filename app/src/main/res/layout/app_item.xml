@@ -91,6 +91,20 @@
                 android:textSize="11sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/battery_opt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/textview_green"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="3dp"
+                android:text="@string/battery_opt"
+                android:textColor="#3CB371"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
             <!--
                         <TextView
                             android:id="@+id/white_proc"

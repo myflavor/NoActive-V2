@@ -69,6 +69,8 @@ public class ConfigFileObserver extends FileObserver {
                     case FreezerConfig.socketAppConfig:
                         memData.setSocketApps(newConfig);
                         break;
+                    case FreezerConfig.idleAppConfig:
+                        memData.setIdleApps(newConfig);
                 }
             }
             memData.notifyConfigChanged();

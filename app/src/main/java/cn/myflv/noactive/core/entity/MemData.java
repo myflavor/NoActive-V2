@@ -80,6 +80,7 @@ public class MemData {
      * 保持连接.
      */
     private Set<String> socketApps = new HashSet<>();
+    private Set<String> idleApps = new HashSet<>();
     /**
      * PMS.
      */
@@ -124,7 +125,7 @@ public class MemData {
             Set<String> whiteSet = deviceIdleController.getWhiteList();
             List<String> whiteList = new ArrayList<>(getWhiteApps());
             for (String pkg : whiteSet) {
-                if (isTargetApp(pkg)) {
+                if (!idleApps.contains(pkg) && isTargetApp(pkg)) {
                     deviceIdleController.removeWhiteList(pkg);
                 } else {
                     whiteList.add(pkg);

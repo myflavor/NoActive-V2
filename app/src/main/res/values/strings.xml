@@ -39,6 +39,7 @@
     <string name="user_app">用户应用</string>
     <string name="sys_app">系统应用</string>
     <string name="all_app">所有应用</string>
+    <string name="battery_opt">电池优化</string>
 
 
 </resources>
