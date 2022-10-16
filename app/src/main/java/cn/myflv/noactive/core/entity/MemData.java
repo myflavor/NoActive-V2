@@ -141,9 +141,6 @@ public class MemData {
         if (whiteProcessList.contains(pkg)) {
             return false;
         }
-        if (whiteApps.contains(pkg)) {
-            return false;
-        }
         if (idleApps.contains(pkg)) {
             return true;
         }
@@ -206,6 +203,10 @@ public class MemData {
         if (CommonConstants.ANDROID.equals(packageName) || CommonConstants.NOACTIVE_PACKAGE_NAME.equals(packageName)) {
             return false;
         }
+        // 白名单
+        if (whiteApps.contains(packageName)) {
+            return false;
+        }
         // 重要系统APP
         boolean isImportantSystemApp = activityManagerService.isImportantSystemApp(packageName);
         if (isImportantSystemApp) {
@@ -213,12 +214,8 @@ public class MemData {
         }
         // 系统APP
         boolean isSystem = activityManagerService.isSystem(packageName);
-        // 判断是否白名单系统APP
-        if (isSystem && !blackSystemApps.contains(packageName)) {
-            return false;
-        }
-        // 不是白名单就是目标
-        return !whiteApps.contains(packageName);
+        // 不是系统或者是系统黑名单
+        return !isSystem || blackSystemApps.contains(packageName);
     }
 
     /**
