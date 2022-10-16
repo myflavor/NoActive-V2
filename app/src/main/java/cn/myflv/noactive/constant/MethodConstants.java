@@ -69,4 +69,9 @@ public interface MethodConstants {
     String becomeInactiveIfAppropriateLocked = "becomeInactiveIfAppropriateLocked";
     String stepIdleStateLocked = "stepIdleStateLocked";
     String exitForceIdleLocked = "exitForceIdleLocked";
+    String addPowerSaveWhitelistAppsInternal = "addPowerSaveWhitelistAppsInternal";
+    String addPowerSaveWhitelistApps = "addPowerSaveWhitelistApps";
+    String removePowerSaveWhitelistApp = "removePowerSaveWhitelistApp";
+    String keySet = "keySet";
+    String removePowerSaveWhitelistAppInternal = "removePowerSaveWhitelistAppInternal";
 }

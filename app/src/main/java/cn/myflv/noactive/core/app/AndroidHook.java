@@ -8,11 +8,13 @@ import cn.myflv.noactive.core.hook.ActivitySwitchHook;
 import cn.myflv.noactive.core.hook.AppStandbyHook;
 import cn.myflv.noactive.core.hook.BroadcastDeliverHook;
 import cn.myflv.noactive.core.hook.CacheFreezerHook;
-import cn.myflv.noactive.core.hook.DeviceIdleHook;
 import cn.myflv.noactive.core.hook.NetworkManagerHook;
 import cn.myflv.noactive.core.hook.PowerManagerHook;
 import cn.myflv.noactive.core.hook.ScreenStateHook;
 import cn.myflv.noactive.core.hook.TaskTrimHook;
+import cn.myflv.noactive.core.hook.idle.DeviceIdleHook;
+import cn.myflv.noactive.core.hook.idle.IdleWhiteListAddHook;
+import cn.myflv.noactive.core.hook.idle.IdleWhiteListRemoveHook;
 import cn.myflv.noactive.core.hook.miui.BinderTransHook;
 import cn.myflv.noactive.core.hook.miui.GreezeHook;
 import cn.myflv.noactive.core.utils.FreezeUtils;
@@ -58,6 +60,8 @@ public class AndroidHook extends AbstractAppHook {
         new ActivitySwitchHook(classLoader, memData, freezerHandler);
         new ScreenStateHook(classLoader, memData, freezerHandler);
         new DeviceIdleHook(classLoader, memData);
+        new IdleWhiteListAddHook(classLoader);
+        new IdleWhiteListRemoveHook(classLoader);
 
         // Hook 广播分发
         new BroadcastDeliverHook(classLoader, memData);

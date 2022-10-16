@@ -42,34 +42,36 @@ public class ConfigFileObserver extends FileObserver {
     }
 
     public void reload() {
-        for (String file : FreezerConfig.listenConfig) {
-            Log.d("Reload " + file);
-            Set<String> newConfig = new HashSet<>(FreezerConfig.get(file));
-            newConfig.forEach(config -> Log.d(file.replace(".conf", "") + " " + config));
-            switch (file) {
-                case FreezerConfig.whiteAppConfig:
-                    memData.setWhiteApps(newConfig);
-                    break;
-                case FreezerConfig.whiteProcessConfig:
-                    memData.setWhiteProcessList(newConfig);
-                    break;
-                case FreezerConfig.killProcessConfig:
-                    memData.setKillProcessList(newConfig);
-                    break;
-                case FreezerConfig.blackSystemAppConfig:
-                    memData.setBlackSystemApps(newConfig);
-                    break;
-                case FreezerConfig.topAppConfig:
-                    memData.setTopApps(newConfig);
-                    break;
-                case FreezerConfig.directAppConfig:
-                    memData.setDirectApps(newConfig);
-                    break;
-                case FreezerConfig.socketAppConfig:
-                    memData.setSocketApps(newConfig);
-                    break;
+        synchronized (memData) {
+            for (String file : FreezerConfig.listenConfig) {
+                Log.d("Reload " + file);
+                Set<String> newConfig = new HashSet<>(FreezerConfig.get(file));
+                newConfig.forEach(config -> Log.d(file.replace(".conf", "") + " " + config));
+                switch (file) {
+                    case FreezerConfig.whiteAppConfig:
+                        memData.setWhiteApps(newConfig);
+                        break;
+                    case FreezerConfig.whiteProcessConfig:
+                        memData.setWhiteProcessList(newConfig);
+                        break;
+                    case FreezerConfig.killProcessConfig:
+                        memData.setKillProcessList(newConfig);
+                        break;
+                    case FreezerConfig.blackSystemAppConfig:
+                        memData.setBlackSystemApps(newConfig);
+                        break;
+                    case FreezerConfig.topAppConfig:
+                        memData.setTopApps(newConfig);
+                        break;
+                    case FreezerConfig.directAppConfig:
+                        memData.setDirectApps(newConfig);
+                        break;
+                    case FreezerConfig.socketAppConfig:
+                        memData.setSocketApps(newConfig);
+                        break;
+                }
             }
-            memData.clearCache();
+            memData.notifyConfigChanged();
         }
     }
 }

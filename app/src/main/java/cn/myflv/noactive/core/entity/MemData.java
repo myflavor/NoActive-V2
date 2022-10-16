@@ -1,11 +1,9 @@
 package cn.myflv.noactive.core.entity;
 
 
-import android.app.AlarmManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.os.FileObserver;
-import android.os.Handler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -120,9 +118,19 @@ public class MemData {
         fileObserver.startWatching();
     }
 
-    public void clearCache() {
-        synchronized (targetAppMap) {
-            targetAppMap.clear();
+    public void notifyConfigChanged() {
+        targetAppMap.clear();
+        if (deviceIdleController != null) {
+            Set<String> whiteSet = deviceIdleController.getWhiteList();
+            List<String> whiteList = new ArrayList<>(getWhiteApps());
+            for (String pkg : whiteSet) {
+                if (isTargetApp(pkg)) {
+                    deviceIdleController.removeWhiteList(pkg);
+                } else {
+                    whiteList.add(pkg);
+                }
+            }
+            deviceIdleController.addWhiteList(whiteList);
         }
     }
 

@@ -1,6 +1,8 @@
 package cn.myflv.noactive.core.server;
 
-import android.os.Handler;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import cn.myflv.noactive.constant.CommonConstants;
 import cn.myflv.noactive.constant.FieldConstants;
@@ -70,6 +72,35 @@ public class DeviceIdleController {
 
     public int getCurState() {
         return XposedHelpers.getIntField(instance, FieldConstants.mState);
+    }
+
+
+    public Set<String> getWhiteList() {
+        synchronized (instance) {
+            Object mPowerSaveWhitelistUserApps = XposedHelpers.getObjectField(instance, FieldConstants.mPowerSaveWhitelistUserApps);
+            Set<?> whiteSet = (Set<?>) XposedHelpers.callMethod(mPowerSaveWhitelistUserApps, MethodConstants.keySet);
+            Set<String> result = new HashSet<>();
+            for (Object o : whiteSet) {
+                if (o == null) {
+                    continue;
+                }
+                String pkg = (String) o;
+                result.add(pkg);
+            }
+            return result;
+        }
+    }
+
+    public void addWhiteList(List<String> pkgNames) {
+        for (String pkgName : pkgNames) {
+            Log.i(pkgName + " white list add");
+        }
+        XposedHelpers.callMethod(instance, MethodConstants.addPowerSaveWhitelistAppsInternal, pkgNames);
+    }
+
+    public void removeWhiteList(String pkgName) {
+        Log.i(pkgName + " white list remove");
+        XposedHelpers.callMethod(instance, MethodConstants.removePowerSaveWhitelistAppInternal, pkgName);
     }
 
 }

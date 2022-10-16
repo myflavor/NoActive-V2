@@ -1,4 +1,4 @@
-package cn.myflv.noactive.core.hook;
+package cn.myflv.noactive.core.hook.idle;
 
 import cn.myflv.noactive.constant.ClassConstants;
 import cn.myflv.noactive.constant.MethodConstants;
@@ -39,6 +39,9 @@ public class DeviceIdleHook extends MethodHook {
             protected void afterMethod(MethodHookParam param) throws Throwable {
                 DeviceIdleController deviceIdleController = new DeviceIdleController(param.thisObject);
                 memData.setDeviceIdleController(deviceIdleController);
+                synchronized (memData) {
+                    memData.notifyConfigChanged();
+                }
             }
         };
     }
