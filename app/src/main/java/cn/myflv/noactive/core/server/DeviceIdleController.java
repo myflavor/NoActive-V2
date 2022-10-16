@@ -1,5 +1,7 @@
 package cn.myflv.noactive.core.server;
 
+import android.os.Build;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -92,10 +94,14 @@ public class DeviceIdleController {
     }
 
     public void addWhiteList(List<String> pkgNames) {
-        for (String pkgName : pkgNames) {
-            Log.d("power white list add " + pkgName);
+        pkgNames.forEach(pkgName -> Log.d("power white list add " + pkgName));
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            for (String pkgName : pkgNames) {
+                XposedHelpers.callMethod(instance, MethodConstants.addPowerSaveWhitelistAppInternal, pkgName);
+            }
+        } else {
+            XposedHelpers.callMethod(instance, MethodConstants.addPowerSaveWhitelistAppsInternal, pkgNames);
         }
-        XposedHelpers.callMethod(instance, MethodConstants.addPowerSaveWhitelistAppsInternal, pkgNames);
     }
 
     public void removeWhiteList(String pkgName) {

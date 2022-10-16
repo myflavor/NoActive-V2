@@ -1,5 +1,7 @@
 package cn.myflv.noactive.core.hook.idle;
 
+import android.os.Build;
+
 import java.util.List;
 
 import cn.myflv.noactive.constant.ClassConstants;
@@ -23,11 +25,17 @@ public class IdleWhiteListAddHook extends MethodHook {
 
     @Override
     public String getTargetMethod() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            return MethodConstants.addPowerSaveWhitelistApp;
+        }
         return MethodConstants.addPowerSaveWhitelistApps;
     }
 
     @Override
     public Object[] getTargetParam() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            return new Object[]{String.class};
+        }
         return new Object[]{List.class};
     }
 
