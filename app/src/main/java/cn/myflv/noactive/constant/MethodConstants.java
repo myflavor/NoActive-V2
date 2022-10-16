@@ -74,4 +74,5 @@ public interface MethodConstants {
     String removePowerSaveWhitelistApp = "removePowerSaveWhitelistApp";
     String keySet = "keySet";
     String removePowerSaveWhitelistAppInternal = "removePowerSaveWhitelistAppInternal";
+    String setSystemProcess = "setSystemProcess";
 }

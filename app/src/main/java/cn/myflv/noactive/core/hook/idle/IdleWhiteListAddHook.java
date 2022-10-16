@@ -37,7 +37,7 @@ public class IdleWhiteListAddHook extends MethodHook {
         return new AbstractReplaceHook() {
             @Override
             protected Object replaceMethod(MethodHookParam param) throws Throwable {
-                Log.i("avoid add idle white list");
+                Log.d("avoid add idle white list");
                 return 0;
             }
         };

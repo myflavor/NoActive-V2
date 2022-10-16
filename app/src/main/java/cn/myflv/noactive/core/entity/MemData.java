@@ -183,6 +183,7 @@ public class MemData {
      */
     private boolean isTargetAppNoCache(String packageName) {
         if (activityManagerService == null) {
+            Log.i(packageName + " activityManagerService is null");
             return false;
         }
         // 系统框架

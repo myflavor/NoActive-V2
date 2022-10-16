@@ -123,10 +123,6 @@ public class ActivitySwitchHook extends MethodHook {
                 // 重新设置上次包名为切换后的包名 下次用
                 memData.setLastAppInfo(eventTo);
 
-                // 为防止一直new，存到内存数据
-                if (memData.getActivityManagerService() == null) {
-                    memData.setActivityManagerService(new ActivityManagerService(param.thisObject));
-                }
                 // 是否解冻
                 boolean handleTo = memData.isTargetApp(eventTo.getPackageName()) || memData.getFreezerAppSet().contains(eventTo.getKey());
                 // 是否冻结

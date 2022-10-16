@@ -93,13 +93,13 @@ public class DeviceIdleController {
 
     public void addWhiteList(List<String> pkgNames) {
         for (String pkgName : pkgNames) {
-            Log.i(pkgName + " white list add");
+            Log.d(pkgName + " white list add");
         }
         XposedHelpers.callMethod(instance, MethodConstants.addPowerSaveWhitelistAppsInternal, pkgNames);
     }
 
     public void removeWhiteList(String pkgName) {
-        Log.i(pkgName + " white list remove");
+        Log.d(pkgName + " white list remove");
         XposedHelpers.callMethod(instance, MethodConstants.removePowerSaveWhitelistAppInternal, pkgName);
     }
 
