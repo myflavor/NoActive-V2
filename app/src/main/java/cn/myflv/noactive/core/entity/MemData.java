@@ -124,6 +124,7 @@ public class MemData {
         if (deviceIdleController != null) {
             Set<String> whiteSet = deviceIdleController.getWhiteList();
             whiteSet.addAll(getWhiteApps());
+            whiteSet.add(CommonConstants.NOACTIVE_PACKAGE_NAME);
             List<String> whiteList = new ArrayList<>();
             for (String pkg : whiteSet) {
                 if (isIdlePkg(pkg)) {

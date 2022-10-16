@@ -39,7 +39,7 @@ public class AppItemAdapter extends ArrayAdapter<AppItem> {
         TextView black_app = convertView.findViewById(R.id.black_app);
         black_app.setVisibility(appItem.isBlack() ? View.VISIBLE : View.GONE);
         TextView idle_app = convertView.findViewById(R.id.battery_opt);
-        idle_app.setVisibility(appItem.isIdle() ? View.VISIBLE : View.GONE);
+        idle_app.setVisibility((appItem.isWhite() || !appItem.isBlack()) && appItem.isIdle() ? View.VISIBLE : View.GONE);
 
         TextView app_background = convertView.findViewById(R.id.app_background);
         if (appItem.isTop()) {
@@ -54,7 +54,7 @@ public class AppItemAdapter extends ArrayAdapter<AppItem> {
 
         TextView other_config = convertView.findViewById(R.id.other_config);
         boolean otherConfig = (appItem.getWhiteProcCount() + appItem.getKillProcCount() > 0) || appItem.isSocket();
-        other_config.setVisibility(otherConfig ? View.VISIBLE : View.GONE);
+        other_config.setVisibility((!appItem.isWhite() || appItem.isBlack()) && otherConfig ? View.VISIBLE : View.GONE);
         /*
         TextView kill_proc = convertView.findViewById(R.id.kill_proc);
         kill_proc.setText(String.valueOf(appItem.getKillProcCount()));
