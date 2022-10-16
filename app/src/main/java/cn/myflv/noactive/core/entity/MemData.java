@@ -141,6 +141,9 @@ public class MemData {
         if (whiteProcessList.contains(pkg)) {
             return false;
         }
+        if (whiteApps.contains(pkg)) {
+            return false;
+        }
         if (idleApps.contains(pkg)) {
             return true;
         }
@@ -196,7 +199,7 @@ public class MemData {
      */
     private boolean isTargetAppNoCache(String packageName) {
         if (activityManagerService == null) {
-            Log.i(packageName + " activityManagerService is null");
+            Log.e(packageName + " activityManagerService is null");
             return false;
         }
         // 系统框架
