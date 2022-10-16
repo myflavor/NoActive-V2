@@ -1,7 +1,5 @@
 package cn.myflv.noactive.core.hook.idle;
 
-import java.util.List;
-
 import cn.myflv.noactive.constant.ClassConstants;
 import cn.myflv.noactive.constant.MethodConstants;
 import cn.myflv.noactive.core.hook.base.AbstractReplaceHook;
@@ -36,7 +34,7 @@ public class IdleWhiteListRemoveHook extends MethodHook {
         return new AbstractReplaceHook() {
             @Override
             protected Object replaceMethod(MethodHookParam param) throws Throwable {
-                Log.d("avoid remove idle white list");
+                Log.d("avoid remove power idle white list");
                 return null;
             }
         };
@@ -49,6 +47,6 @@ public class IdleWhiteListRemoveHook extends MethodHook {
 
     @Override
     public String successLog() {
-        return "Listen idle remove";
+        return "Listen power idle remove";
     }
 }
