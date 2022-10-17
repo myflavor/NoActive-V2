@@ -52,4 +52,6 @@ public interface ClassConstants {
     String DisplayPowerController = "com.android.server.display.DisplayPowerController";
     String DeviceIdleController = "com.android.server.DeviceIdleController";
     String DeviceIdleControllerBinderService = "com.android.server.DeviceIdleController.BinderService";
+    String AlarmManagerService = "com.android.server.alarm.AlarmManagerService";
+    String AlarmManagerService_R = "com.android.server.AlarmManagerService";
 }

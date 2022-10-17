@@ -77,4 +77,5 @@ public interface MethodConstants {
     String setSystemProcess = "setSystemProcess";
     String addPowerSaveWhitelistApp = "addPowerSaveWhitelistApp";
     String addPowerSaveWhitelistAppInternal = "addPowerSaveWhitelistAppInternal";
+    String removeLocked = "removeLocked";
 }

@@ -93,13 +93,16 @@ public class ScreenStateHook extends MethodHook {
         synchronized (ScreenStateHook.this) {
             Log.d("screen " + (isOn ? "on" : "off"));
             AppInfo lastAppInfo = memData.getLastAppInfo();
+            boolean targetApp = memData.isTargetApp(lastAppInfo.getPackageName());
             if (isOn) {
                 cancelAll();
-                freezerHandler.onResume(true, lastAppInfo);
+                freezerHandler.onResume(targetApp, lastAppInfo);
                 memData.getDeviceIdleController().exitDeepDoze();
             } else {
-                isFreezeNow = true;
-                run(30 * 1000, "Freezer", freezerListener);
+                if (targetApp) {
+                    isFreezeNow = true;
+                    run(30 * 1000, "Freezer", freezerListener);
+                }
                 isDozeNow = true;
                 run(60 * 1000, "Doze", deepDozeListener);
             }
