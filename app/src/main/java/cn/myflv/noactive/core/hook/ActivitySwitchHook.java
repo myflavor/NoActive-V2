@@ -108,12 +108,12 @@ public class ActivitySwitchHook extends MethodHook {
                 // 当前事件应用
                 AppInfo eventTo = AppInfo.getInstance(userId, packageName);
 
-                Log.d(eventTo.getKey() + " " + (event == ACTIVITY_PAUSED ? "paused" : "resumed"));
+                // Log.d(eventTo.getKey() + " " + (event == ACTIVITY_PAUSED ? "paused" : "resumed"));
 
 
                 // 本次等于上次 即无变化 不处理
                 if (eventTo.equals(memData.getLastAppInfo())) {
-                    Log.d(eventTo.getKey() + " activity changed");
+                    // Log.d(eventTo.getKey() + " activity changed");
                     return;
                 }
 

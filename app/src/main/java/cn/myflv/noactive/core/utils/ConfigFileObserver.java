@@ -44,7 +44,7 @@ public class ConfigFileObserver extends FileObserver {
     public void reload() {
         synchronized (memData) {
             for (String file : FreezerConfig.listenConfig) {
-                Log.d("Reload " + file);
+                Log.d("Load " + file);
                 Set<String> newConfig = new HashSet<>(FreezerConfig.get(file));
                 newConfig.forEach(config -> Log.d(file.replace(".conf", "") + " " + config));
                 switch (file) {
