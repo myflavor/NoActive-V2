@@ -219,7 +219,7 @@ public class FreezerHandler {
                 memData.getPowerManagerService().releaseWakeLocks(appInfo, applicationInfo.uid);
                 if (!memData.getSocketApps().contains(appInfo.getPackageName())) {
                     memData.getAppStandbyController().forceIdleState(appInfo, true);
-                    memData.getNetworkManagementService().socketDestroy(applicationInfo);
+                    memData.getNetworkManagementService().socketDestroy(appInfo,applicationInfo);
                 }
             });
             if (Thread.currentThread().isInterrupted()) {

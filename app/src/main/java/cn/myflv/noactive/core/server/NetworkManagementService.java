@@ -8,6 +8,7 @@ import java.lang.reflect.Array;
 import cn.myflv.noactive.constant.ClassConstants;
 import cn.myflv.noactive.constant.FieldConstants;
 import cn.myflv.noactive.constant.MethodConstants;
+import cn.myflv.noactive.core.entity.AppInfo;
 import cn.myflv.noactive.core.utils.Log;
 import de.robv.android.xposed.XposedHelpers;
 import lombok.Data;
@@ -33,9 +34,10 @@ public class NetworkManagementService {
     /**
      * 断开Socket
      *
+     * @param appInfo         app信息
      * @param applicationInfo 应用信息
      */
-    public void socketDestroy(ApplicationInfo applicationInfo) {
+    public void socketDestroy(AppInfo appInfo, ApplicationInfo applicationInfo) {
         try {
             // 获取UID
             int uid = applicationInfo.uid;
@@ -43,7 +45,7 @@ public class NetworkManagementService {
             Object uidRangeParcels = Array.newInstance(UidRangeParcel, 1);
             Array.set(uidRangeParcels, 0, uidRangeParcel);
             XposedHelpers.callMethod(mNetdService, MethodConstants.socketDestroy, uidRangeParcels, new int[0]);
-            Log.d(applicationInfo.packageName + " socket destroyed");
+            Log.d(appInfo.getKey() + " socket destroyed");
         } catch (Throwable throwable) {
             Log.e("socketDestroy", throwable);
         }

@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 262,
-      "versionName": "2.7-Alpha",
-      "outputFile": "NoActive-2.7-Alpha(262).apk"
+      "versionCode": 265,
+      "versionName": "2.7-Dev",
+      "outputFile": "NoActive-2.7-Dev(265).apk"
     }
   ],
   "elementType": "File"
