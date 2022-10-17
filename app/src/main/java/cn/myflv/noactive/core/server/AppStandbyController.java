@@ -20,7 +20,7 @@ public class AppStandbyController {
         String packageName = appInfo.getPackageName();
         try {
             XposedHelpers.callMethod(appStandbyController, MethodConstants.forceIdleState, packageName, userId, idle);
-            Log.d(appInfo.getKey() + " " + (idle ? "idle" : "active"));
+            Log.d(appInfo.getKey() + " standby " + (idle ? "rare" : "active"));
         } catch (Throwable throwable) {
             Log.e("forceIdleState", throwable);
         }
