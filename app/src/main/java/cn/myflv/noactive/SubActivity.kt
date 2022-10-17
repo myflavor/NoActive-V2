@@ -64,6 +64,13 @@ class SubActivity : MIUIActivity() {
                     }
                 }, dataBindingRecv = binding.getRecv(if (appInfo.system) 2 else 1))
 
+                TextWithSwitch(TextV(resources.getString(R.string.keep_net)), SwitchV("binding", defValue = appInfo.socket) {
+                    if (it) {
+                        ConfigUtils.addIfNot(FreezerConfig.socketAppConfig, packageName)
+                    } else {
+                        ConfigUtils.delIfExist(FreezerConfig.socketAppConfig, packageName)
+                    }
+                }, dataBindingRecv = binding.getRecv(if (appInfo.system) 1 else 2))
 
                 TextWithSpinner(
                         TextV(resources.getString(R.string.background_level)),
