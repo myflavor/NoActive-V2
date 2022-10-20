@@ -34,9 +34,10 @@ public class PowerKeeperHook extends AbstractAppHook {
         runNoThrow(() -> {
             XposedHelpers.findAndHookMethod(ClassConstants.MilletConfig, packageParam.classLoader, MethodConstants.getEnable, Context.class, XC_MethodReplacement.returnConstant(false));
         }, "Disable Millet");
-/*        runNoThrow(() -> {
+        //阻止电量与性能调用系统jar中的kill方法杀后台
+        runNoThrow(() -> {
             XposedHelpers.findAndHookMethod(ClassConstants.ProcessManager, packageParam.classLoader, MethodConstants.kill, ClassConstants.ProcessConfig, XC_MethodReplacement.returnConstant(false));
-        }, "Disable kill process");*/
+        }, "Disable kill process");
     }
 
     public void runNoThrow(Runnable runnable, String msg) {
