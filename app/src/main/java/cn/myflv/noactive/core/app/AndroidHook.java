@@ -6,7 +6,6 @@ import cn.myflv.noactive.core.handler.FreezerHandler;
 import cn.myflv.noactive.core.hook.ANRHook;
 import cn.myflv.noactive.core.hook.ActivityManagerHook;
 import cn.myflv.noactive.core.hook.ActivitySwitchHook;
-import cn.myflv.noactive.core.hook.AlarmManagerHook;
 import cn.myflv.noactive.core.hook.AppStandbyHook;
 import cn.myflv.noactive.core.hook.BroadcastDeliverHook;
 import cn.myflv.noactive.core.hook.CacheFreezerHook;
@@ -17,6 +16,7 @@ import cn.myflv.noactive.core.hook.TaskTrimHook;
 import cn.myflv.noactive.core.hook.idle.DeviceIdleHook;
 import cn.myflv.noactive.core.hook.idle.IdleWhiteListAddHook;
 import cn.myflv.noactive.core.hook.idle.IdleWhiteListRemoveHook;
+import cn.myflv.noactive.core.hook.miui.BinderStateHook;
 import cn.myflv.noactive.core.hook.miui.BinderTransHook;
 import cn.myflv.noactive.core.hook.miui.GreezeHook;
 import cn.myflv.noactive.core.utils.FreezeUtils;
@@ -76,6 +76,7 @@ public class AndroidHook extends AbstractAppHook {
         new TaskTrimHook(classLoader);
 
         new BinderTransHook(classLoader, freezerHandler);
+        new BinderStateHook(classLoader, freezerHandler);
 
         new GreezeHook(classLoader, memData);
 

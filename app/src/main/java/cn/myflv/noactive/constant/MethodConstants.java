@@ -78,4 +78,5 @@ public interface MethodConstants {
     String addPowerSaveWhitelistApp = "addPowerSaveWhitelistApp";
     String addPowerSaveWhitelistAppInternal = "addPowerSaveWhitelistAppInternal";
     String removeLocked = "removeLocked";
+    String reportBinderState = "reportBinderState";
 }
