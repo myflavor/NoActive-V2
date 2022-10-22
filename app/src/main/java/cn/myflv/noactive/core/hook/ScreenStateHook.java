@@ -91,7 +91,7 @@ public class ScreenStateHook extends MethodHook {
 
     public void screenChange(boolean isOn) {
         synchronized (ScreenStateHook.this) {
-            Log.d("screen " + (isOn ? "on" : "off"));
+            Log.i("screen " + (isOn ? "on" : "off"));
             AppInfo lastAppInfo = memData.getLastAppInfo();
             boolean targetApp = memData.isTargetApp(lastAppInfo.getPackageName());
             if (isOn) {
