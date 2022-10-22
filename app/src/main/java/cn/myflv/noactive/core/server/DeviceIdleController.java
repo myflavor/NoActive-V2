@@ -43,7 +43,7 @@ public class DeviceIdleController {
             curState = getCurState();
         }
         idle = true;
-        Log.d("deep doze success");
+        Log.i("deep doze success");
     }
 
 
@@ -53,7 +53,7 @@ public class DeviceIdleController {
         }
         XposedHelpers.callMethod(instance, MethodConstants.exitForceIdleLocked);
         idle = false;
-        Log.d("exit deep doze");
+        Log.i("exit deep doze");
     }
 
     public void stepIdleStateLocked() {
