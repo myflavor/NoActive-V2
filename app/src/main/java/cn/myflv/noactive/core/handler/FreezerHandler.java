@@ -221,7 +221,10 @@ public class FreezerHandler {
                 if (!memData.getSocketApps().contains(appInfo.getPackageName())) {
                     memData.getAppStandbyController().forceIdleState(appInfo, true);
                     memData.getNetworkManagementService().socketDestroy(appInfo,applicationInfo);
-                }
+                }else {
+                    //else里可以删除，他是保持链接里网络解冻用的
+                    memData.monitorNet(applicationInfo);
+                      }
             });
             if (Thread.currentThread().isInterrupted()) {
                 Log.d(appInfo.getKey() + " event updated");
