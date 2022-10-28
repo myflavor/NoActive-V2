@@ -18,7 +18,6 @@ import cn.myflv.noactive.core.hook.idle.IdleWhiteListAddHook;
 import cn.myflv.noactive.core.hook.idle.IdleWhiteListRemoveHook;
 import cn.myflv.noactive.core.hook.miui.BinderStateHook;
 import cn.myflv.noactive.core.hook.miui.BinderTransHook;
-import cn.myflv.noactive.core.hook.miui.NetReceiveHook;
 import cn.myflv.noactive.core.hook.miui.GreezeHook;
 import cn.myflv.noactive.core.utils.FreezeUtils;
 import cn.myflv.noactive.core.utils.Log;
@@ -82,7 +81,7 @@ public class AndroidHook extends AbstractAppHook {
         new GreezeHook(classLoader, memData);
 
         // 网络解冻恢复
-        new NetReceiveHook(classLoader, freezerHandler);
+        // new NetReceiveHook(classLoader, freezerHandler);
 
         // 进程移除监听
         // new ProcessRemoveHook(classLoader, memData, freezeUtils);
