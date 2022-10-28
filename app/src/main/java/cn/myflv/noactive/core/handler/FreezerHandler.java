@@ -221,9 +221,7 @@ public class FreezerHandler {
                 if (!memData.getSocketApps().contains(appInfo.getPackageName())) {
                     memData.getAppStandbyController().forceIdleState(appInfo, true);
                     memData.getNetworkManagementService().socketDestroy(appInfo,applicationInfo);
-                }else {
-                    memData.monitorNet(applicationInfo);
-                      }
+                }
             });
             if (Thread.currentThread().isInterrupted()) {
                 Log.d(appInfo.getKey() + " event updated");
