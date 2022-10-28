@@ -80,7 +80,8 @@ public class AndroidHook extends AbstractAppHook {
 
         new GreezeHook(classLoader, memData);
 
-        // new NetReceiveHook(classLoader, freezerHandler);
+        // 网络解冻恢复
+        new NetReceiveHook(classLoader, freezerHandler);
 
         // 进程移除监听
         // new ProcessRemoveHook(classLoader, memData, freezeUtils);
