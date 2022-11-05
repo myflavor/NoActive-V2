@@ -21,7 +21,7 @@ public class GreezeManagerService {
         }
         try {
             XposedHelpers.callMethod(greezeManagerService, MethodConstants.monitorNet, applicationInfo.uid);
-            Log.d(applicationInfo.packageName + " monitorNet");
+            Log.i(applicationInfo.packageName + " monitorNet");
         } catch (Throwable throwable) {
             Log.e("monitorNet", throwable);
         }
