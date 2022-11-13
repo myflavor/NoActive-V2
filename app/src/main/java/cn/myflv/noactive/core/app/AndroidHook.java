@@ -82,7 +82,7 @@ public class AndroidHook extends AbstractAppHook {
         new GreezeHook(classLoader, memData);
 
         // 保持链接里网络解冻恢复.不想用这里可以删除，对应删除import导入的NetRexe，同时删除另一个文件else里的内容
-        new NetReceiveHook(classLoader, freezerHandler);
+        //new NetReceiveHook(classLoader, freezerHandler);
 
         // 进程移除监听
         // new ProcessRemoveHook(classLoader, memData, freezeUtils);
