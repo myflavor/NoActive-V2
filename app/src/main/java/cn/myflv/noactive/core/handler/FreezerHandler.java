@@ -223,7 +223,7 @@ public class FreezerHandler {
                     memData.getNetworkManagementService().socketDestroy(appInfo,applicationInfo);
                 }else {
                     //else里可以删除，他是保持链接里网络解冻用的
-                    memData.monitorNet(applicationInfo);
+                    //memData.monitorNet(applicationInfo);
                       }
             });
             if (Thread.currentThread().isInterrupted()) {
