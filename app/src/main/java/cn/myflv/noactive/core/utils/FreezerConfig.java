@@ -38,7 +38,11 @@ public class FreezerConfig {
     public final static String currentLog = "current.log";
     public final static String Debug = "debug";
     public final static String IntervalUnfreeze = "interval.unfreeze";
+    public final static String IntervalUnfreezeDelay = "interval.unfreeze.delay";
     public final static String IntervalFreeze = "interval.freeze";
+    public final static String IntervalFreezeDelay = "interval.freeze.delay";
+    public final static String BootFreeze = "boot.freeze";
+    public final static String BootFreezeDelay = "boot.freeze.delay";
     public final static String SuExcute = "su.excute";
     public final static String[] listenConfig = {whiteAppConfig, whiteProcessConfig,
             killProcessConfig, blackSystemAppConfig, directAppConfig, topAppConfig, socketAppConfig, idleAppConfig};
@@ -166,6 +170,22 @@ public class FreezerConfig {
             Log.e(name + " file read filed");
         }
         return set;
+    }
+
+    public static String getString(String name) {
+        Set<String> set = get(name);
+        if (set.isEmpty()) {
+            return "";
+        }
+        return set.iterator().next();
+    }
+
+    public static String getString(String name, String defaultValue) {
+        Set<String> set = get(name);
+        if (set.isEmpty()) {
+            return defaultValue;
+        }
+        return set.iterator().next();
     }
 
     public static void createFile(File file) {

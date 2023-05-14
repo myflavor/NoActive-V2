@@ -28,6 +28,15 @@ public class ThreadUtils {
     private final static Map<String, Long> threadTokenMap = new HashMap<>();
     private final static Map<String, Thread> threadMap = new HashMap<>();
 
+    /**
+     * 延迟执行.
+     * @param runnable 执行内容
+     * @param delay 延迟时间
+     */
+    public static void scheduleDelay(Runnable runnable, long delay) {
+        scheduledThreadPool.schedule(runnable, delay, TimeUnit.MINUTES);
+    }
+
 
     /**
      * 间隔定时执行.
