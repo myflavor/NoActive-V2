@@ -80,4 +80,40 @@ public class ConfigUtils {
         }
         return set;
     }
+
+    public static Boolean getBoolean(String name) {
+        SuFile suFile = new SuFile(FreezerConfig.ConfigDir, name);
+        return suFile.exists();
+    }
+
+    public static void setBoolean(String name, Boolean value) {
+        SuFile suFile = new SuFile(FreezerConfig.ConfigDir, name);
+        if (value) {
+            suFile.createNewFile();
+        } else {
+            suFile.delete();
+        }
+    }
+
+    public static String getString(String name) {
+        Set<String> set = get(name);
+        if (set.isEmpty()) {
+            return "";
+        }
+        return set.iterator().next();
+    }
+
+    public static String getString(String name, String defaultValue) {
+        Set<String> set = get(name);
+        if (set.isEmpty()) {
+            return defaultValue;
+        }
+        return set.iterator().next();
+    }
+
+    public static void setString(String name, String value) {
+        Set<String> set = new LinkedHashSet<>();
+        set.add(value);
+        write(name, set);
+    }
 }

@@ -13,9 +13,7 @@ import cn.fkj233.ui.activity.view.SpinnerV
 import cn.fkj233.ui.activity.view.SwitchV
 import cn.fkj233.ui.activity.view.TextV
 import cn.myflv.noactive.core.utils.FreezerConfig
-import cn.myflv.noactive.utils.PackageUtils
-import com.topjohnwu.superuser.io.SuFile
-
+import cn.myflv.noactive.utils.ConfigUtils
 
 class SettingActivity : MIUIActivity() {
     private val handler by lazy { Handler(Looper.getMainLooper()) }
@@ -38,12 +36,45 @@ class SettingActivity : MIUIActivity() {
                 TextWithSwitch(TextV(resources.getString(R.string.root_mode)), SwitchV("binding", defValue = isConfigOn(FreezerConfig.SuExcute)) {
                     setConfig(FreezerConfig.SuExcute, it)
                 })
+                TextWithSwitch(TextV(resources.getString(R.string.boot_freeze)), SwitchV("binding", defValue = isConfigOn(FreezerConfig.BootFreeze)) {
+                    setConfig(FreezerConfig.BootFreeze, it)
+                })
+                TextWithSpinner(
+                    TextV(resources.getString(R.string.boot_freeze_delay)),
+                    SpinnerV(getDelay(FreezerConfig.BootFreezeDelay)) {
+                        add("1分钟") { setDelay(FreezerConfig.BootFreezeDelay, "1") }
+                        add("2分钟") { setDelay(FreezerConfig.BootFreezeDelay, "2") }
+                        add("3分钟") { setDelay(FreezerConfig.BootFreezeDelay, "3") }
+                        add("5分钟") { setDelay(FreezerConfig.BootFreezeDelay, "5") }
+                        add("10分钟") { setDelay(FreezerConfig.BootFreezeDelay, "10") }
+                        add("15分钟") { setDelay(FreezerConfig.BootFreezeDelay, "15") }
+                    })
                 TextWithSwitch(TextV(resources.getString(R.string.interval_freeze)), SwitchV("binding", defValue = isConfigOn(FreezerConfig.IntervalFreeze)) {
                     setConfig(FreezerConfig.IntervalFreeze, it)
                 })
+                TextWithSpinner(
+                    TextV(resources.getString(R.string.interval_freeze_delay)),
+                    SpinnerV(getDelay(FreezerConfig.IntervalFreezeDelay)) {
+                        add("1分钟") { setDelay(FreezerConfig.IntervalFreezeDelay, "1") }
+                        add("2分钟") { setDelay(FreezerConfig.IntervalFreezeDelay, "2") }
+                        add("3分钟") { setDelay(FreezerConfig.IntervalFreezeDelay, "3") }
+                        add("5分钟") { setDelay(FreezerConfig.IntervalFreezeDelay, "5") }
+                        add("10分钟") { setDelay(FreezerConfig.IntervalFreezeDelay, "10") }
+                        add("15分钟") { setDelay(FreezerConfig.IntervalFreezeDelay, "15") }
+                    })
                 TextWithSwitch(TextV(resources.getString(R.string.interval_unfreeze)), SwitchV("binding", defValue = isConfigOn(FreezerConfig.IntervalUnfreeze)) {
                     setConfig(FreezerConfig.IntervalUnfreeze, it)
                 })
+                TextWithSpinner(
+                    TextV(resources.getString(R.string.interval_unfreeze_delay)),
+                    SpinnerV(getDelay(FreezerConfig.IntervalUnfreezeDelay)) {
+                        add("1分钟") { setDelay(FreezerConfig.IntervalUnfreezeDelay, "1") }
+                        add("2分钟") { setDelay(FreezerConfig.IntervalUnfreezeDelay, "2") }
+                        add("3分钟") { setDelay(FreezerConfig.IntervalUnfreezeDelay, "3") }
+                        add("5分钟") { setDelay(FreezerConfig.IntervalUnfreezeDelay, "5") }
+                        add("10分钟") { setDelay(FreezerConfig.IntervalUnfreezeDelay, "10") }
+                        add("15分钟") { setDelay(FreezerConfig.IntervalUnfreezeDelay, "15") }
+                    })
                 TextWithSwitch(TextV(resources.getString(R.string.debug_log)), SwitchV("binding", defValue = isConfigOn(FreezerConfig.Debug)) {
                     setConfig(FreezerConfig.Debug, it)
                 })
@@ -73,49 +104,58 @@ class SettingActivity : MIUIActivity() {
 
 
     fun setConfig(name: String, on: Boolean) {
-        val config = SuFile(FreezerConfig.ConfigDir, name)
-        if (on) {
-            config.createNewFile()
-        } else {
-            config.delete()
-        }
+        ConfigUtils.setBoolean(name, on)
         showToast(resources.getString(R.string.config_set_after_reboot))
     }
 
     fun isConfigOn(name: String): Boolean {
-        return SuFile(FreezerConfig.ConfigDir, name).exists()
+        return ConfigUtils.getBoolean(name)
     }
 
     fun setMode(mode: String?) {
-        SuFile(FreezerConfig.ConfigDir, FreezerConfig.freezerApi).delete()
-        SuFile(FreezerConfig.ConfigDir, FreezerConfig.freezerV2).delete()
-        SuFile(FreezerConfig.ConfigDir, FreezerConfig.freezerV1).delete()
-        SuFile(FreezerConfig.ConfigDir, FreezerConfig.kill19).delete()
-        SuFile(FreezerConfig.ConfigDir, FreezerConfig.kill20).delete()
+        ConfigUtils.setBoolean(FreezerConfig.freezerApi,false)
+        ConfigUtils.setBoolean(FreezerConfig.freezerV2,false)
+        ConfigUtils.setBoolean(FreezerConfig.freezerV1,false)
+        ConfigUtils.setBoolean(FreezerConfig.kill19,false)
+        ConfigUtils.setBoolean(FreezerConfig.kill20,false)
         if (mode != null) {
-            SuFile(FreezerConfig.ConfigDir, mode).createNewFile()
+            ConfigUtils.setBoolean(mode,true)
         }
         showToast(resources.getString(R.string.config_set_after_reboot))
     }
 
     fun getMode(): String {
-        if (SuFile(FreezerConfig.ConfigDir, FreezerConfig.freezerApi).exists()) {
+        if (ConfigUtils.getBoolean(FreezerConfig.freezerApi)) {
             return "API";
         }
-
-        if (SuFile(FreezerConfig.ConfigDir, FreezerConfig.freezerV2).exists()) {
+        if (ConfigUtils.getBoolean(FreezerConfig.freezerV2)) {
             return "V2";
         }
-        if (SuFile(FreezerConfig.ConfigDir, FreezerConfig.freezerV1).exists()) {
+        if (ConfigUtils.getBoolean(FreezerConfig.freezerV1)) {
             return "V1";
         }
-        if (SuFile(FreezerConfig.ConfigDir, FreezerConfig.kill19).exists()) {
+        if (ConfigUtils.getBoolean(FreezerConfig.kill19)) {
             return "SIGSTOP";
         }
-        if (SuFile(FreezerConfig.ConfigDir, FreezerConfig.kill20).exists()) {
+        if (ConfigUtils.getBoolean(FreezerConfig.kill20)) {
             return "SIGTSTP";
         }
         return resources.getString(R.string.auto)
+    }
+
+    fun setDelay(name: String, delay: String) {
+        ConfigUtils.setString(name, delay)
+        showToast(resources.getString(R.string.config_set_after_reboot))
+    }
+
+    fun getDelay(name: String): String {
+        var delay = ConfigUtils.getString(name, "")
+        if (delay == "") {
+            setDelay(name, "1")
+            delay = "1"
+        }
+
+        return delay + "分钟"
     }
 
     private fun showToast(string: String) {

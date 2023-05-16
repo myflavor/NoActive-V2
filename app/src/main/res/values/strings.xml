@@ -14,8 +14,12 @@
     <string name="freeze_method">冻结方式</string>
     <string name="auto">自动</string>
     <string name="root_mode">提权模式</string>
+    <string name="boot_freeze">开机冻结</string>
+    <string name="boot_freeze_delay">开机冻结延迟</string>
     <string name="interval_freeze">定时冻结</string>
+    <string name="interval_freeze_delay">定时冻结间隔</string>
     <string name="interval_unfreeze">轮番解冻</string>
+    <string name="interval_unfreeze_delay">轮番解冻间隔</string>
     <string name="debug_log">详细日志</string>
     <string name="developer">开发者</string>
     <string name="discussion">讨论</string>
