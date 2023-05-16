@@ -22,8 +22,8 @@ public class BaseFreezeUtils {
     private static final int FREEZE_ACTION = 1;
     private static final int UNFREEZE_ACTION = 0;
 
-    private static final String V1_FREEZER_FROZEN_PORCS = "/dev/op_cgroup/freezer/perf/frozen/cgroup.procs";
-    private static final String V1_FREEZER_THAWED_PORCS = "/dev/op_cgroup/freezer/perf/thawed/cgroup.procs";
+    private static final String V1_FREEZER_FROZEN_PORCS = "/sys/fs/cgroup/freezer/perf/frozen/cgroup.procs";
+    private static final String V1_FREEZER_THAWED_PORCS = "/sys/fs/cgroup/freezer/perf/thawed/cgroup.procs";
 
     private static final String UID_ROOT = "/uid_0";
     private static final String UID_SYSTEM = "/uid_1000";
