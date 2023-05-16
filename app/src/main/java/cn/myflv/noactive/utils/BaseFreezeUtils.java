@@ -22,14 +22,14 @@ public class BaseFreezeUtils {
     private static final int FREEZE_ACTION = 1;
     private static final int UNFREEZE_ACTION = 0;
 
-    private static final String V1_FREEZER_FROZEN_PORCS = "/sys/fs/cgroup/freezer/perf/frozen/cgroup.procs";
-    private static final String V1_FREEZER_THAWED_PORCS = "/sys/fs/cgroup/freezer/perf/thawed/cgroup.procs";
+    private static final String V1_FREEZER_FROZEN_PORCS = "/dev/op_cgroup/freezer/perf/frozen/cgroup.procs";
+    private static final String V1_FREEZER_THAWED_PORCS = "/dev/op_cgroup/freezer/perf/thawed/cgroup.procs";
 
     private static final String UID_ROOT = "/uid_0";
     private static final String UID_SYSTEM = "/uid_1000";
     private static final String FROZEN_PATH = "/frozen/cgroup.procs";
     private static final String UNFROZEN_PATH = "/unfrozen/cgroup.procs";
-    private static final String[] FREEZER_PATH_ENUM = {"/sys/fs/cgroup", "/dev/freezer", "/dev/cg2_bpf"};
+    private static final String[] FREEZER_PATH_ENUM = {"/sys/fs/cgroup", "/dev/freezer", "/dev/cg2_bpf","/dev/op_cgroup/freezer"};
     private static Boolean commonV2 = null;
     private static String freezerPath = null;
 
