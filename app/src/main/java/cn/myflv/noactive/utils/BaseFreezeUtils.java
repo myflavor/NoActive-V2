@@ -23,7 +23,7 @@ public class BaseFreezeUtils {
     private static final int UNFREEZE_ACTION = 0;
 
     private static final String V1_FREEZER_FROZEN_PORCS = "/dev/freezer/frozen/cgroup.procs";
-    private static final String V1_FREEZER_THAWED_PORCS = "/dev/freezer/thawed/cgroup.procs";
+    private static final String V1_FREEZER_THAWED_PORCS = "/dev/freezer/thaw/cgroup.procs";
 
     private static final String UID_ROOT = "/uid_0";
     private static final String UID_SYSTEM = "/uid_1000";
