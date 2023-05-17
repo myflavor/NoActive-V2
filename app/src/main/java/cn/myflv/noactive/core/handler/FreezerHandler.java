@@ -277,7 +277,7 @@ public class FreezerHandler {
         AppInfo appInfo = AppInfo.getInstance(key);
         Log.i(appInfo.getKey() + " " + reason);
         onResume(true, appInfo, true, () -> {
-            onPause(true, appInfo, 8000);
+            onPause(true, appInfo, 3000);
         });
     }
 
@@ -313,7 +313,7 @@ public class FreezerHandler {
         // 重试次数
         int retry = 0;
         // 3次重试，如果不进休眠就直接冻结了
-        while (binderState(applicationInfo.uid) != BINDER_IDLE && retry < 8) {
+        while (binderState(applicationInfo.uid) != BINDER_IDLE && retry < 3) {
             Log.w(appInfo.getKey() + " binder busy");
             boolean sleep = ThreadUtils.sleep(1000);
             if (!sleep) {
